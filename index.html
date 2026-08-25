@@ -636,7 +636,7 @@ function renderMain(){
   pstat.textContent='🗓 Координаций: '+coords.length+(lastC?(' · последняя '+daysSince+' дн. назад'):' · ещё не было')+(ovc?(' · ⚠ просрочено: '+ovc):'')+(stopN?(' · ⛔ стопор: '+stopN):'');
   if(lastC && lastC.text){ const lc=el('div','hint'); lc.style.marginTop='2px'; lc.textContent='Последнее: '+lastC.text.replace(/^Координация:?\s*/,'').slice(0,90); pstat.appendChild(lc); }
   pulse.appendChild(pstat);
-  const bCo=el('button','tiny primary','+ Координация'); bCo.onclick=()=>openCoord(p); pulse.appendChild(bCo);
+  if(lead){ const bCo=el('button','tiny primary','+ Координация'); bCo.onclick=()=>openCoord(p); pulse.appendChild(bCo); }
   if((p.status==='approved'||p.status==='in_progress') && (coords.length===0 || (daysSince!==null && daysSince>=7))) pulse.classList.add('bad');
   head.appendChild(pulse);
   //--- документы координаций — прямо здесь, наверху (раскрываются на месте) ---
@@ -698,9 +698,11 @@ function renderMain(){
   p.tasks.forEach((t,idx)=>{ if(matchTaskFilter(t)){ tb.appendChild(taskRow(p,t,idx)); shownT++; } });
   if(p.tasks.length && !shownT){ const em=el('div','minihint','Нет задач по этому фильтру — измените или сбросьте фильтр.'); em.style.padding='12px'; tb.appendChild(em); }
   const add=el('div','addrow');
-  const addBtn=el('button','tiny primary','+ Задача'); addBtn.onclick=()=>{ resetTaskFilter(); const n=p.tasks.length+1; p.tasks.push(newTask(n)); pushEvent(p,'task_added','Добавлена задача №'+n); save(); renderMain(); };
-  add.appendChild(addBtn);
-  add.appendChild(el('span','hint','  «Отчёт» = критерий готовности (заранее). При ✓ спросим «что сделано» — уйдёт в журнал.'));
+  if(canLead(p)){
+    const addBtn=el('button','tiny primary','+ Задача'); addBtn.onclick=()=>{ resetTaskFilter(); const n=p.tasks.length+1; p.tasks.push(newTask(n)); pushEvent(p,'task_added','Добавлена задача №'+n); save(); renderMain(); };
+    add.appendChild(addBtn);
+    add.appendChild(el('span','hint','  «Отчёт» = критерий готовности (заранее). При ✓ спросим «что сделано» — уйдёт в журнал.'));
+  } else add.appendChild(el('span','hint','Задачи в программу добавляет руководитель. Свободную задачу можно взять себе кнопкой «🙋 Взять себе».'));
   tb.appendChild(add);
   m.appendChild(tb);
   //--- подсказки задач (💡 drawer) ---
@@ -754,7 +756,7 @@ function renderSuggestDrawer(p){
   const head=el('div','jhead');
   head.appendChild(el('span','partslab','💡 Подсказки задач ('+p.suggestions.length+')'));
   const tog=el('button','ghost tiny',suggestOpen?'скрыть':'показать'); tog.onclick=()=>{ suggestOpen=!suggestOpen; renderMain(); }; head.appendChild(tog);
-  const clr=el('button','ghost tiny','Очистить'); clr.onclick=()=>{ if(confirm('Убрать все подсказки задач?')){ p.suggestions=[]; save(); renderMain(); } }; head.appendChild(clr);
+  if(canLead(p)){ const clr=el('button','ghost tiny','Очистить'); clr.onclick=()=>{ if(confirm('Убрать все подсказки задач?')){ p.suggestions=[]; save(); renderMain(); } }; head.appendChild(clr); }
   wrap.appendChild(head);
   if(!suggestOpen) return wrap;
   wrap.appendChild(el('div','minihint','Помощник предложил эти задачи. «＋» — взять в программу, «✕» — убрать подсказку.'));
@@ -763,9 +765,13 @@ function renderSuggestDrawer(p){
     const box=el('div','stext');
     const t=el('div',null,(s.type&&s.type!=='work'?('['+typeLabel(s.type)+'] '):'')+s.text); t.style.cssText='font-size:13px;font-weight:600';
     box.appendChild(t); if(s.report) box.appendChild(el('div','hint','Отчёт: '+s.report));
-    const add=el('button','tiny primary','＋'); add.title='Добавить в задачи'; add.onclick=()=>{ p.tasks.push(Object.assign(newTask(p.tasks.length+1),{text:s.text,report:s.report||'',type:s.type||'work'})); p.tasks.forEach((x,j)=>x.n=j+1); p.suggestions.splice(i,1); pushEvent(p,'task_added','Добавлена задача из подсказки: '+(s.text||'').slice(0,50)); save(); renderMain(); };
-    const del=el('button','ghost tiny','✕'); del.title='Убрать подсказку'; del.onclick=()=>{ p.suggestions.splice(i,1); save(); renderMain(); };
-    row.append(box,add,del); wrap.appendChild(row);
+    row.appendChild(box);
+    if(canLead(p)){   // превращает подсказку в задачу только руководитель; остальные видят список
+      const add=el('button','tiny primary','＋'); add.title='Добавить в задачи'; add.onclick=()=>{ p.tasks.push(Object.assign(newTask(p.tasks.length+1),{text:s.text,report:s.report||'',type:s.type||'work'})); p.tasks.forEach((x,j)=>x.n=j+1); p.suggestions.splice(i,1); pushEvent(p,'task_added','Добавлена задача из подсказки: '+(s.text||'').slice(0,50)); save(); renderMain(); };
+      const del=el('button','ghost tiny','✕'); del.title='Убрать подсказку'; del.onclick=()=>{ p.suggestions.splice(i,1); save(); renderMain(); };
+      row.append(add,del);
+    }
+    wrap.appendChild(row);
   });
   return wrap;
 }
@@ -1412,13 +1418,18 @@ async function captureRole(session){
     }
   }catch(e){ console.warn('role',e); }   // сбой сети — не выкидываем, работаем как обычно
 }
-// Доступ отозван: убираем локальные копии, чтобы данные компании не остались на чужом устройстве
+// Доступ отозван. Локальные копии стираем ТОЛЬКО когда сервер подтвердил, что аккаунта
+// больше нет — иначе (сбой, недонастроенная база) человек потерял бы свои данные ни за что.
 async function wipeLocalAndLogout(){
+  let accountGone=false;
+  try{ const {data,error}=await supa.auth.getUser(); accountGone=!!error || !(data&&data.user); }catch(e){ accountGone=false; }
+  if(accountGone){
+    try{ [LS_KEY,LS_SEL,LS_EMP,LS_GROQ,LS_MODEL,'crm_seeded'].forEach(k=>localStorage.removeItem(k)); }catch(e){}
+    try{ indexedDB.deleteDatabase(DB_NAME); }catch(e){}
+    state=[]; employees=[]; selected=null;
+  }
   try{ await supa.auth.signOut(); }catch(e){}
-  try{ [LS_KEY,LS_SEL,LS_EMP,LS_GROQ,LS_MODEL,'crm_seeded'].forEach(k=>localStorage.removeItem(k)); }catch(e){}
-  try{ indexedDB.deleteDatabase(DB_NAME); }catch(e){}
-  state=[]; employees=[]; selected=null;
-  location.reload();
+  showLogin(accountGone?'Доступ закрыт — обратитесь к владельцу.':'Ваш доступ не подтверждён. Попросите владельца добавить вас в команду.');
 }
 (function(){
   const ib=document.getElementById('teamInviteBtn'); if(ib) ib.onclick=teamSubmit;
@@ -1690,13 +1701,14 @@ document.getElementById('btnExportFull').onclick=async()=>{
   const blob=new Blob([JSON.stringify(env)],{type:'application/json'});
   const u=URL.createObjectURL(blob), a=el('a'); a.href=u; a.download='crm-backup-'+today()+'.json'; a.click(); URL.revokeObjectURL(u); toast('Бэкап готов');
 };
-document.getElementById('btnImport').onclick=()=>document.getElementById('fileImport').click();
+document.getElementById('btnImport').onclick=()=>{ if(!(isAdmin()||soloMode())){ toast('Импорт заменяет данные всей команды — это делает только владелец'); return; } document.getElementById('fileImport').click(); };
 document.getElementById('fileImport').onchange=e=>{
   const f=e.target.files[0]; if(!f)return; const rd=new FileReader();
   rd.onload=()=>{ try{ const data=JSON.parse(rd.result);
     const programs=Array.isArray(data)?data:(data.programs||[]);
     const emps=Array.isArray(data)?null:data.employees;
-    if(confirm('Импортировать '+programs.length+' программ'+(emps?(' и '+emps.length+' сотрудников'):'')+'? Текущие данные будут заменены.')){
+    if(!(isAdmin()||soloMode())){ toast('Импорт доступен только владельцу'); return; }
+    if(confirm('Импортировать '+programs.length+' программ'+(emps?(' и '+emps.length+' человек команды'):'')+'?\n\nВНИМАНИЕ: текущие программы будут ЗАМЕНЕНЫ у всей команды (данные в облаке тоже). Отменить будет нельзя.')){
       state=programs.map(normalize);
       if(emps){ employees=emps.map(x=>Object.assign(newEmployee(),x)); saveEmployees(); }
       const ad=(!Array.isArray(data))&&data.attachmentsData;
@@ -1706,7 +1718,7 @@ document.getElementById('fileImport').onchange=e=>{
   }catch(err){ alert('Не удалось прочитать файл JSON.'); } e.target.value=''; };
   rd.readAsText(f);
 };
-document.getElementById('btnSeed').onclick=()=>{ if(confirm('Добавить две программы-образца из шаблонов Высоцкого?')){ seedData().map(migrate).forEach(p=>state.push(p)); selected=state[state.length-1].id; save(); renderMain(); toast('Образцы добавлены'); } };
+document.getElementById('btnSeed').onclick=()=>{ if(!(isAdmin()||soloMode())){ toast('Образцы добавляет только владелец'); return; } if(confirm('Добавить две программы-образца из шаблонов Высоцкого? Их увидит вся команда.')){ seedData().map(migrate).forEach(p=>state.push(p)); selected=state[state.length-1].id; save(); renderMain(); toast('Образцы добавлены'); } };
 function normalize(p){ p.id=p.id||uid(); p.tasks=(p.tasks||[]).map((t,i)=>Object.assign(newTask(i+1),t)); return migrate(Object.assign(newProgram(),p)); }
 
 /* ==== TODO (итерация 2): Telegram-бот ====
