@@ -1,0 +1,1791 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CRM · Программы</title>
+<style>
+  :root{
+    --bg:#f4f5f7; --panel:#ffffff; --ink:#1c2430; --muted:#6b7787; --line:#e3e7ec;
+    --accent:#2f6df6; --accent-soft:#e8f0ff; --ok:#1f9d57; --ok-soft:#e4f6ec;
+    --warn:#c9821a; --warn-soft:#fbf1df; --danger:#d64545; --danger-soft:#fdecec; --shadow:0 1px 2px rgba(20,30,45,.06),0 6px 20px rgba(20,30,45,.05);
+    --r:12px; --r-sm:8px; --r-lg:16px; --faint:#67717f; --accent-ink:#1e5fd8; --ok-ink:#157a42; --warn-ink:#8a5a12;
+    --gold:#f2a900; --silver:#aab4bf; --bronze:#c47b45; --focus:0 0 0 3px var(--accent-soft);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--ink)}
+  button{font:inherit;cursor:pointer;border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 12px;color:var(--ink);transition:border-color .13s,background .13s,box-shadow .13s,transform .13s,color .13s}
+  button:hover{border-color:#cfd6de}
+  button:active{transform:translateY(.5px)}
+  button.primary{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 1px 2px rgba(47,109,246,.25)}
+  button.primary:hover{filter:brightness(1.04);transform:translateY(-1px);box-shadow:0 4px 12px rgba(47,109,246,.28)}
+  button.primary:active{transform:translateY(0);box-shadow:0 1px 2px rgba(47,109,246,.25)}
+  button.ghost{background:transparent;border-color:transparent;color:var(--muted)}
+  button.ghost:hover{background:#eef1f5}
+  button.tiny{padding:3px 8px;font-size:12px;border-radius:7px}
+  input,textarea,select{font:inherit;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:7px 9px;background:#fff;width:100%}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  button:focus-visible,select:focus-visible,.chk:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  textarea{resize:vertical;min-height:38px}
+  a{color:var(--accent)}
+  .app{display:grid;grid-template-columns:340px 1fr;min-height:100vh}
+  /* Sidebar */
+  .side{background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+  .brand{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+  .brand .logo{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,#2f6df6,#7aa6ff);display:grid;place-items:center;color:#fff;font-weight:800;font-size:16px;flex:none;box-shadow:0 2px 7px rgba(47,109,246,.34)}
+  .brand .logo.has-img{background-color:#fff;background-size:contain;background-repeat:no-repeat;background-position:center;color:transparent;box-shadow:var(--shadow)}
+  .brand h1{font-size:15px;margin:0}
+  .brand small{color:var(--muted);font-weight:400}
+  .side .actions{padding:12px 14px;display:flex;flex-direction:column;gap:7px;border-bottom:1px solid var(--line)}
+  .side .actions .primary{font-size:14px;padding:9px 12px}
+  .linkbtn{background:none;border:none;color:var(--accent-ink);font-size:12px;text-align:left;padding:0 2px;cursor:pointer;align-self:flex-start}
+  .linkbtn:hover{text-decoration:underline;background:none;border-color:transparent}
+  .plist{overflow:auto;flex:1;padding:8px}
+  .pcard{position:relative;padding:11px 12px 11px 14px;border-radius:var(--r-sm);border:1px solid transparent;cursor:pointer;margin-bottom:4px;transition:background .13s,border-color .13s,box-shadow .13s}
+  .pcard:hover{background:#f7f9fc;box-shadow:0 1px 3px rgba(20,30,45,.06)}
+  .pcard.active{background:var(--accent-soft);border-color:#cfe0ff}
+  .pcard.active::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:99px;background:var(--accent)}
+  .pcard .ttl{font-weight:600;font-size:13.5px;display:flex;gap:6px;align-items:baseline}
+  .pcard .ttl .num{color:var(--muted);font-weight:600}
+  .pcard .meta{display:flex;align-items:center;gap:6px;margin-top:7px;flex-wrap:wrap}
+  .bar{height:6px;background:#eceff3;border-radius:99px;overflow:hidden;flex:1}
+  .bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--ok),#37bd72);border-radius:99px;transition:width .35s cubic-bezier(.4,0,.2,1)}
+  .pct{font-size:11.5px;color:var(--muted);min-width:34px;text-align:right}
+  .side .foot{padding:9px 12px;border-top:1px solid var(--line);color:var(--faint);font-size:12px;display:flex;flex-direction:column;gap:6px}
+  .footutil{display:flex;flex-wrap:wrap;gap:5px}
+  #btnHelp.hasnew{position:relative}
+  #btnHelp.hasnew::after{content:'';position:absolute;top:1px;right:1px;width:6px;height:6px;background:#e5484d;border-radius:50%}
+  .helpbody h4{margin:16px 0 6px;color:var(--accent-ink,#1e5fd8);font-size:15px}
+  .helpbody p{margin:6px 0} .helpbody ol,.helpbody ul{padding-left:22px;margin:6px 0} .helpbody li{margin:3px 0}
+  .helpbody .hint{background:#f1f5fb;border-left:3px solid var(--accent,#2f6df6);padding:6px 10px;border-radius:0 6px 6px 0;margin:8px 0}
+  .statall{text-align:center;color:var(--faint);font-size:11.5px}
+  .badge{font-size:11px;padding:2px 8px;border-radius:99px;font-weight:600;white-space:nowrap}
+  .b-draft{background:#eef1f5;color:#6b7787}
+  .b-approved{background:var(--warn-soft);color:var(--warn-ink)}
+  .b-in_progress{background:var(--accent-soft);color:var(--accent-ink)}
+  .b-done{background:var(--ok-soft);color:var(--ok-ink)}
+  /* Main */
+  .main{padding:24px 28px;max-width:1100px;width:100%}
+  .empty{display:grid;place-items:center;height:74vh;color:var(--muted);text-align:center}
+  .emptybox{max-width:380px;padding:0 20px}
+  .emptyic{width:78px;height:78px;border-radius:50%;background:radial-gradient(circle at 50% 40%,var(--accent-soft),#eef4ff);display:grid;place-items:center;font-size:36px;margin:0 auto 18px;box-shadow:inset 0 0 0 1px #dbe7ff}
+  .empty h2{font-size:19px;margin:0 0 8px;color:var(--ink);font-weight:800}
+  .empty p{margin:0 0 20px;line-height:1.55}
+  .head{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:inset 0 3px 0 var(--accent),var(--shadow);padding:20px 22px 18px;margin-bottom:18px}
+  .head .row1{display:flex;gap:12px;align-items:flex-start}
+  .head .row1>.field:first-child{flex:none}
+  .head .row1>.field:nth-child(2){flex:1;min-width:0}
+  .head .title-in{font-size:22px;font-weight:800;letter-spacing:-.01em;background:transparent;border-color:transparent}
+  .head .title-in:hover{border-color:var(--line)}
+  .head .title-in:focus{background:#fff;border-color:var(--accent)}
+  .head .num-in{width:64px;flex:none;background:var(--accent-soft);color:var(--accent-ink);font-weight:800;font-size:17px;text-align:center;border-color:transparent}
+  .headlogo{display:none;align-self:center;width:46px;height:46px;border-radius:10px;flex:none;background-color:#fff;background-size:contain;background-repeat:no-repeat;background-position:center;border:1px solid var(--line)}
+  .headlogo.has-img{display:block}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:14px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+  .field label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px;font-weight:600;letter-spacing:.01em}
+  .metarow{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:12px;margin-top:14px;align-items:end}
+  .progresswrap{display:flex;align-items:center;gap:12px;margin-top:16px;padding-top:14px;border-top:1px dashed var(--line)}
+  .progresswrap .big{font-weight:800;font-size:22px;color:var(--ink);font-variant-numeric:tabular-nums;min-width:52px}
+  .progresswrap .bar{height:9px}
+  /* Tasks */
+  .tasks{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+  .tasks .thead,.trow{display:grid;grid-template-columns:34px 1fr 1fr 120px 110px 92px 40px;gap:0}
+  .tasks .thead{background:#fafbfc;border-bottom:1px solid var(--line);font-size:11px;color:var(--faint);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+  .tasks .thead > div,.trow > div{padding:11px 11px;display:flex;align-items:flex-start}
+  .tasks .thead > div{align-items:center}
+  .trow{border-bottom:1px solid var(--line);transition:background .12s}
+  .trow:last-child{border-bottom:none}
+  .trow:hover{background:#f8fafc}
+  .trow.done{background:#fbfdfb}
+  .trow.overdue{background:transparent;box-shadow:inset 3px 0 0 var(--danger)}
+  .trow.overdue .n{color:var(--danger);font-weight:700}
+  .ttype{font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:2px 4px;width:auto;max-width:160px;margin-bottom:4px;background:#fff}
+  .pill{font-size:11px;padding:1px 7px;border-radius:99px;font-weight:600;white-space:nowrap}
+  .pill-over{background:var(--danger-soft);color:var(--danger)}
+  .hintbox{margin-top:12px;background:var(--warn-soft);border:1px solid #f0dcae;border-radius:10px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start;font-size:12.5px}
+  .hintbox .grow{flex:1}
+  .trow .n{justify-content:center;color:var(--muted);font-variant-numeric:tabular-nums}
+  .trow textarea{border:none;padding:2px 0;min-height:26px;background:transparent}
+  .trow textarea:focus{box-shadow:none}
+  .trow .rep{color:var(--muted);font-size:13px}
+  .cellcol{flex-direction:column;align-items:stretch;gap:5px}
+  .cellcol .lab{font-size:10.5px;color:var(--faint);text-transform:uppercase;letter-spacing:.03em}
+  .chk{width:20px;height:20px;accent-color:var(--ok);cursor:pointer}
+  .trow .del{justify-content:center}
+  .addrow{padding:10px;display:flex;gap:8px;border-top:1px solid var(--line);background:#fafbfc}
+  .tasktext{font-size:13.5px;font-weight:500}
+  .strike{text-decoration:line-through;color:var(--muted)}
+  .critrow{display:flex;align-items:flex-start;gap:6px;margin-bottom:2px}
+  .crittext{flex:1;border:none;background:transparent;font-size:13px;padding:2px 0;min-height:24px}
+  .crittext.strike{text-decoration:line-through;color:var(--faint)}
+  .critprog{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+  .critprog .bar{max-width:120px}
+  .emppick{display:flex;align-items:center;gap:8px;padding:7px 4px;border-bottom:1px solid var(--line);cursor:pointer}
+  .emppick:last-child{border-bottom:none}
+  .emppicklab{font-size:13px}
+  .rosterlist{max-height:220px;overflow:auto}
+  .suggest{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:8px 6px;margin-bottom:18px}
+  .srow{display:flex;align-items:flex-start;gap:8px;padding:7px 12px;border-radius:var(--r-sm)}
+  .srow:hover{background:#f7f9fc}
+  .srow .stext{flex:1;min-width:0}
+  #genSuggest{max-height:240px;overflow:auto;border:1px solid var(--line);border-radius:var(--r-sm);padding:4px}
+  #genSuggest .emppick{align-items:flex-start}
+  /* Modal */
+  .modal-bg{position:fixed;inset:0;background:rgba(20,30,45,.45);display:none;place-items:center;z-index:50;padding:20px}
+  .modal-bg.on{display:grid}
+  .modal{background:#fff;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.3);max-width:520px;width:100%;padding:22px}
+  .modal h3{margin:0 0 4px}
+  .modal p{color:var(--muted);margin:0 0 14px;font-size:13px}
+  .modal .field{margin-bottom:12px}
+  .modal .btns{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}
+  .hint{font-size:12px;color:var(--muted)}
+  .genhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+  .steps{display:flex;gap:5px}
+  .steps i{width:22px;height:4px;border-radius:99px;background:var(--line)}
+  .steps i.on{background:var(--accent)}
+  .genrow{display:flex;align-items:center;gap:10px;margin-top:4px}
+  .understand{background:var(--accent-soft);border:1px solid #cfe0ff;border-radius:9px;padding:8px 11px;font-size:13px;margin-bottom:12px}
+  .understand b{color:var(--accent)}
+  .qitem{margin-bottom:10px}
+  .qitem label{display:block;font-size:12.5px;font-weight:600;margin-bottom:4px}
+  .micrec{color:var(--danger)!important;border-color:var(--danger)!important}
+  .keynote{background:var(--warn-soft);border:1px solid #f0dcae;border-radius:9px;padding:8px 11px;font-size:12.5px;margin-bottom:12px}
+  .keynote a{font-weight:600}
+  .parts{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:12px 16px;margin-bottom:18px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .partslab{font-size:11px;color:var(--faint);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+  .chip{display:inline-flex;align-items:center;gap:5px;background:var(--accent-soft);color:var(--accent-ink);border-radius:99px;padding:2px 9px;font-size:12px;font-weight:600;width:fit-content}
+  .chipx{cursor:pointer;opacity:.65;font-size:11px}
+  .chipx:hover{opacity:1}
+  .legacy{font-size:11px;color:var(--faint)}
+  .minihint{font-size:11px;color:var(--faint)}
+  .emprow{display:grid;grid-template-columns:1.4fr 1fr 1.2fr 1fr auto auto;gap:6px;margin-bottom:6px;align-items:center}
+  .emprow input{padding:5px 7px;font-size:12.5px}
+  .empdate{font-size:11px;color:#8a8f98;white-space:nowrap}
+  .emprow.archived{display:flex;justify-content:space-between;gap:8px;opacity:.75;padding:3px 0}
+  .atts{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin-top:3px}
+  .att{display:inline-flex;align-items:center;gap:5px;background:#eef1f5;border-radius:7px;padding:2px 7px;font-size:11px;cursor:pointer;max-width:100%;overflow:hidden;white-space:nowrap}
+  .powner{font-size:11px;color:var(--muted);font-weight:600;margin-bottom:3px}
+  .pulse{display:flex;gap:6px 14px;flex-wrap:wrap;align-items:center;margin-top:12px;background:#f7f9fc;border:1px solid var(--line);border-radius:var(--r-sm);padding:8px 12px;font-size:12.5px;color:var(--muted)}
+  .pulse.bad{background:var(--danger-soft);border-color:#f3c9c9;color:var(--danger);font-weight:600}
+  .pulse .grow{flex:1;min-width:140px}
+  .stopper{font-size:11px;color:var(--muted);cursor:pointer;margin-top:2px}
+  .stopper.on{color:var(--danger);font-weight:600}
+  .journal{margin-top:18px}
+  .jhead{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .jrow{display:flex;gap:8px;padding:7px 10px;border-left:2px solid var(--line);margin-bottom:4px}
+  .jrow.coord{border-left-color:var(--accent);background:var(--accent-soft);border-radius:0 8px 8px 0}
+  .jic{width:18px;text-align:center;flex:none}
+  .jtext{font-size:13px}
+  .jtime{font-size:11px;color:var(--muted);margin-top:2px}
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:#1c2430;color:#fff;padding:10px 16px;border-radius:10px;opacity:0;transition:.25s;z-index:60;font-size:13px}
+  .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+  .spin{display:inline-block;width:13px;height:13px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:sp .6s linear infinite;vertical-align:-2px}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  /* ===== iter3 visual lift: goal hero, leaderboard, filters, polish ===== */
+  ::selection{background:var(--accent-soft)}
+  .plist::-webkit-scrollbar{width:11px}
+  .plist::-webkit-scrollbar-thumb{background:#d5dbe3;border-radius:99px;border:3px solid var(--panel)}
+  .plist::-webkit-scrollbar-thumb:hover{background:#c3ccd6}
+  /* Goal = hero block; Criteria = secondary block (CSS-only over existing .head .grid2 markup) */
+  .head .grid2{grid-template-columns:1fr;gap:0;margin-top:16px}
+  .head .grid2>.field:first-child{position:relative;padding:12px 15px 11px;border-radius:var(--r-sm);background:linear-gradient(180deg,var(--accent-soft),#fff 88%);border:1px solid #d6e3ff;box-shadow:inset 3px 0 0 var(--accent)}
+  .head .grid2>.field:first-child>label{text-transform:uppercase;letter-spacing:.05em;font-size:11px;color:var(--accent-ink);font-weight:800}
+  .head .grid2>.field:first-child>label::before{content:"\1F3AF  "}
+  .head .grid2>.field:first-child textarea{font-size:16.5px;font-weight:600;line-height:1.5;color:var(--ink);background:transparent;border:none;padding:2px 0}
+  .head .grid2>.field:first-child textarea::placeholder{font-weight:500;color:#7f93b5}
+  .head .grid2>.field:first-child textarea:hover{background:rgba(255,255,255,.45);border-radius:6px}
+  .head .grid2>.field:first-child textarea:focus{background:#fff;box-shadow:var(--focus);border-radius:6px;padding:6px 8px}
+  .head .grid2>.field:last-child{margin-top:12px;padding:12px 15px;border-radius:var(--r-sm);background:#fbfcfd;border:1px solid var(--line)}
+  .head .grid2>.field:last-child>label{text-transform:uppercase;letter-spacing:.03em;font-size:11px;color:var(--faint);font-weight:700}
+  .head .grid2>.field:last-child textarea{background:transparent;border:none;padding:2px 0;line-height:1.55}
+  .head .grid2>.field:last-child textarea:focus{background:#fff;box-shadow:var(--focus);border-radius:6px;padding:6px 8px}
+  /* Filter chips (structure wired by UX; visual ready) */
+  .filterbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:2px 0}
+  .filterbar .flab{font-size:11px;color:var(--faint);font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-right:2px}
+  .fchip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:4px 11px;border-radius:99px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer;transition:all .12s;user-select:none}
+  .fchip:hover{border-color:#cfd6de;color:var(--ink)}
+  .fchip.on{background:var(--accent-soft);border-color:#cfe0ff;color:var(--accent-ink)}
+  .fchip.warn.on{background:var(--danger-soft);border-color:#f3c9c9;color:var(--danger)}
+  .fchip .c{opacity:.65;font-variant-numeric:tabular-nums}
+  /* Leaderboard / participant progress (structure wired by UX; visual ready) */
+  .leaderboard{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:8px 6px;margin-bottom:18px}
+  .lbrow{display:grid;grid-template-columns:26px 42px 1fr auto;gap:10px;align-items:center;padding:7px 12px;border-radius:var(--r-sm);transition:background .12s}
+  .lbrow:hover{background:#f7f9fc}
+  .lbrank{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;background:#eef1f5;color:var(--muted)}
+  .lbrank.g1{background:linear-gradient(135deg,#ffdf7e,var(--gold));color:#5a3d00;box-shadow:0 1px 4px rgba(242,169,0,.4)}
+  .lbrank.g2{background:linear-gradient(135deg,#eef2f6,var(--silver));color:#39424c}
+  .lbrank.g3{background:linear-gradient(135deg,#e6bd97,var(--bronze));color:#4a2a10}
+  .ring{position:relative;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--ok) calc(var(--p,0)*1%),#e9edf2 0)}
+  .ring::before{content:"";position:absolute;inset:5px;border-radius:50%;background:var(--panel)}
+  .ring b{position:relative;font-size:10.5px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+  .lbname{font-weight:600;font-size:13.5px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .lbname .role{color:var(--faint);font-weight:500;font-size:12px}
+  .lbmeta{display:flex;align-items:center;gap:10px}
+  .lbcount{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .lbbar{width:120px;height:7px;background:#eceff3;border-radius:99px;overflow:hidden}
+  .lbbar>i{display:block;height:100%;background:linear-gradient(90deg,var(--ok),#37bd72);border-radius:99px;transition:width .35s}
+  /* Print / export: program as a clean document with logo */
+  @media print{
+    body{background:#fff;color:#000}
+    .app{display:block}
+    .side,.addrow,.hintbox,.genhead,.filterbar,.stopper,.chipx,.modal-bg,.toast{display:none!important}
+    button{display:none!important}
+    .main{max-width:100%;padding:0}
+    .head,.tasks,.parts,.leaderboard,.journal{box-shadow:none;border-color:#c9cfd6;break-inside:avoid}
+    .head{border-top:3px solid var(--accent)}
+    .headlogo.has-img{display:block}
+    .trow{break-inside:avoid}
+  }
+  @media(max-width:820px){.app{grid-template-columns:1fr}.side{position:static;height:auto}.grid3,.metarow{grid-template-columns:1fr 1fr}.tasks .thead{display:none}.trow{grid-template-columns:1fr 1fr}.trow>div{border-right:none}}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="side">
+    <div class="brand">
+      <div class="logo" id="brandLogo">П</div>
+      <div><h1>CRM · Программы</h1><small>контроль выполнения</small></div>
+    </div>
+    <div class="actions">
+      <button class="primary" id="btnNew">+ Программа</button>
+      <button class="ghost" id="btnEmp" title="Команда: люди, должности и доступ в CRM — всё в одном месте">👥 Команда</button>
+      <input type="file" id="fileImport" accept="application/json" hidden>
+    </div>
+    <div class="plist" id="plist"></div>
+    <div class="foot">
+      <div class="footutil">
+        <button class="ghost tiny" id="btnImport">⭱ Импорт</button>
+        <button class="ghost tiny" id="btnExport" title="Экспорт структуры (без файлов-вложений)">⭳ Экспорт*</button>
+        <button class="ghost tiny" id="btnExportFull" title="Полный бэкап: программы + сотрудники + вложения">⭳+ Бэкап</button>
+        <button class="ghost tiny" id="btnSettings">⚙</button>
+        <button class="ghost tiny" id="btnSeed" title="Загрузить программы-образцы из шаблонов Высоцкого">↺ образцы</button>
+        <button class="ghost tiny" id="btnHelp" title="Инструкция — как пользоваться">📖 Инструкция</button>
+      </div>
+      <span id="statAll" class="statall">—</span>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main" id="main"></main>
+</div>
+
+<!-- Generate-header modal (context → questions → result) -->
+<div class="modal-bg" id="genBg">
+  <div class="modal" style="max-width:560px">
+    <div class="genhead">
+      <h3 id="genTitleH">✨ Опишите программу</h3>
+      <div class="steps" id="genSteps"><i class="on"></i><i></i><i></i></div>
+    </div>
+    <!-- STEP 1: контекст -->
+    <div id="genStep1">
+      <div class="keynote" id="genKeyNote" hidden></div>
+      <p>Наговорите или напишите своими словами: что это за программа и что нужно сделать. Помощник задаст пару уточнений и предложит название, цель и критерии готовности.</p>
+      <div class="field"><textarea id="genCtx" style="min-height:150px" placeholder="Напр.: надо навести порядок с тарой — подобрать коробки по размеру, чтобы водителю было удобно грузить и на выгрузке не путались…"></textarea></div>
+      <div class="genrow"><button class="ghost tiny" id="genMic" title="Наговорить голосом">🎤 Наговорить</button><span class="hint" id="genMicHint"></span></div>
+    </div>
+    <!-- STEP 2: интервью (один вопрос за раз) -->
+    <div id="genStep2" hidden>
+      <div class="understand" id="genUnderstand"></div>
+      <div class="filterbar" id="genCover"></div>
+      <div id="genQ"></div>
+      <div class="hint" id="genQProgress"></div>
+    </div>
+    <!-- STEP 3: результат -->
+    <div id="genStep3" hidden>
+      <div class="understand" id="genUnderstand2"></div>
+      <div class="field"><label>Название</label><input id="genoTitle"></div>
+      <div class="field"><label>Цель программы</label><textarea id="genoGoal"></textarea></div>
+      <div class="field"><label>Критерии приёмки — как поймём, что работает и завершено</label><textarea id="genoCrit" style="min-height:80px"></textarea></div>
+      <div class="field"><label>Задачи-подсказки — отметьте, какие берёте в программу (остальные останутся в 💡)</label><div id="genSuggest"></div></div>
+      <div id="genFix" hidden class="field"><label>Что поправить?</label><input id="genFixNote" placeholder="напр.: цель слишком общая, привяжи к сроку и цифре"></div>
+    </div>
+    <div class="hint" id="genHint"></div>
+    <div class="btns">
+      <button class="ghost" id="genBack" hidden>← Назад</button>
+      <button class="ghost" id="genCancel">Отмена</button>
+      <button class="ghost" id="genSkip" hidden>Пропустить вопросы</button>
+      <button class="ghost" id="genRedo" hidden>↺ Переделать</button>
+      <button class="primary" id="genNext">Дальше →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Settings modal -->
+<div class="modal-bg" id="setBg">
+  <div class="modal">
+    <h3>⚙ Настройки</h3>
+    <p>Ключ Groq API (опционально) — для настоящей AI-генерации шапки. Без ключа помощник соберёт черновик локально. Ключ хранится только в этом браузере.</p>
+    <div class="field">
+      <label>Groq API key</label>
+      <input id="setKey" type="password" placeholder="gsk_...">
+    </div>
+    <div class="field">
+      <label>Модель</label>
+      <input id="setModel" placeholder="llama-3.3-70b-versatile">
+    </div>
+    <div class="field">
+      <label>Логотип компании — показывается в углу панели, в шапке программы и на печати (PNG/SVG, лучше квадратный, до ~100 КБ)</label>
+      <div class="genrow"><input id="setLogo" type="file" accept="image/*" style="border:none;padding:0;background:transparent;width:auto"><button class="ghost tiny" id="setLogoDel" hidden>Убрать</button></div>
+      <div class="hint" id="setLogoHint"></div>
+    </div>
+    <div class="hint">Telegram-бот (рассылка задач + приём отчёта кнопкой) — следующая итерация; точка подключения помечена в коде.</div>
+    <div class="btns">
+      <button class="ghost" id="setCancel">Закрыть</button>
+      <button class="primary" id="setSave">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- Team modal: люди + доступ, всё в одном месте -->
+<div class="modal-bg" id="empBg">
+  <div class="modal" style="max-width:680px">
+    <h3>👥 Команда</h3>
+    <p>Все люди компании в одном месте: имя, должность, почта, Telegram и <b>доступ в CRM</b>. По почте система узнаёт человека и даёт ему кнопки «про себя» (взять задачу, «я участвую»).</p>
+    <div id="teamInvite">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+        <div class="field"><label>Имя и фамилия</label><input id="teamName" placeholder="Иван Петров"></div>
+        <div class="field"><label>Должность</label><input id="teamPost" placeholder="прораб / логист / офис"></div>
+        <div class="field"><label>Почта (для входа в CRM)</label><input id="teamEmail" type="email" placeholder="ivan@example.com"></div>
+        <div class="field" id="teamRoleField"><label>Права</label><select id="teamRole"><option value="member">Сотрудник (ведёт программы)</option><option value="admin">Администратор (управляет людьми)</option></select></div>
+      </div>
+      <div class="btns" style="justify-content:flex-start;margin-top:2px"><button class="primary" id="teamInviteBtn">➕ Добавить в команду</button><span class="minihint" id="teamInviteHint">С почтой — сразу получит доступ и пароль для входа. Без почты — попадёт в список «без входа».</span></div>
+      <div id="teamInviteResult" hidden style="margin-top:8px;padding:10px;border:1px solid #dcdfe4;border-radius:8px;background:#f8fafc"></div>
+    </div>
+    <div id="empList" style="margin-top:8px"></div>
+    <div class="btns">
+      <button class="ghost" id="empClose">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<!-- Help / instruction modal -->
+<div class="modal-bg" id="helpBg">
+  <div class="modal" style="max-width:720px;max-height:88vh;overflow:auto">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+      <h3 style="margin:0">📖 Как пользоваться</h3>
+      <div style="display:flex;gap:6px"><button class="ghost tiny" id="helpPrint">🖨 Сохранить в PDF</button><button class="ghost tiny" id="helpClose">✕</button></div>
+    </div>
+    <div id="helpBody" class="helpbody"></div>
+    <div class="btns"><button class="primary" id="helpClose2">Понятно</button></div>
+  </div>
+</div>
+
+<!-- Coordination modal -->
+<div class="modal-bg" id="coordBg">
+  <div class="modal">
+    <h3>🗓 Координация по программе</h3>
+    <p>Короткая запись о совещании: кто был и что решили. Все поля по желанию.</p>
+    <div class="field"><label>Дата</label><input id="coordDate" type="date"></div>
+    <div class="field"><label>Кто был на координации (снимите тех, кого не было)</label><div id="coordRoster" class="rosterlist"></div></div>
+    <div class="field"><label>Задачи — отметьте, что готово на эту дату (меняется прямо здесь)</label><div id="coordTasks" class="rosterlist"></div></div>
+    <div class="field"><label>Итог координации</label><textarea id="coordNote" placeholder="что назначили, что доработали, почему двигали сроки"></textarea></div>
+    <div class="btns"><button class="ghost" id="coordCancel">Отмена</button><button class="primary" id="coordSave">Записать</button></div>
+  </div>
+</div>
+
+<!-- Coordination document (read-only) -->
+<div class="modal-bg" id="coordDocBg">
+  <div class="modal" style="max-width:560px">
+    <h3 id="coordDocTitle">🗓 Координация</h3>
+    <div id="coordDocBody"></div>
+    <div class="btns"><button class="primary" id="coordDocClose">Закрыть</button></div>
+  </div>
+</div>
+
+<!-- Participants picker modal -->
+<div class="modal-bg" id="partBg">
+  <div class="modal" style="max-width:560px">
+    <h3>Участники программы</h3>
+    <p>Отметьте галочками, кто участвует. Список — из «👥 Команда».</p>
+    <div id="partList" class="rosterlist"></div>
+    <div class="btns"><button class="primary" id="partClose">Готово</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+"use strict";
+//====================== storage ======================
+const LS_KEY='crm_programs_v1', LS_SEL='crm_selected_v1', LS_GROQ='crm_groq_key', LS_MODEL='crm_groq_model', LS_LOGO='crm_logo';
+const DEFAULT_LOGO="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB4PSIxOSIgeT0iOSIgd2lkdGg9IjYwIiBoZWlnaHQ9Ijc0IiBmaWxsPSJub25lIiBzdHJva2U9IiM1NzU3NTYiIHN0cm9rZS13aWR0aD0iOCIvPjxyZWN0IHg9IjczIiB5PSIyIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiNFNEIyM0MiLz48cGF0aCBkPSJNNTUsMjRMMzQsNDZMNTUsNjgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0U0QjIzQyIgc3Ryb2tlLXdpZHRoPSIxMiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9zdmc+";
+function getLogo(){ try{ return localStorage.getItem(LS_LOGO)||DEFAULT_LOGO; }catch(e){ return DEFAULT_LOGO; } }
+function applyBrandLogo(){ const b=document.getElementById('brandLogo'); if(!b) return; const d=getLogo(); if(d){ b.style.backgroundImage='url('+d+')'; b.classList.add('has-img'); } else { b.style.backgroundImage=''; b.classList.remove('has-img'); } }
+const uid=()=>Math.random().toString(36).slice(2,9);
+const STATUS=[['draft','Черновик'],['approved','Утверждена'],['in_progress','В работе'],['done','Завершена']];
+const statusLabel=s=>(STATUS.find(x=>x[0]===s)||STATUS[0])[1];
+const TASK_TYPES=[['main','Главная'],['first','Первоочередная'],['vital','Жизненно важная'],['work','Рабочая'],['cond','Условная'],['prod','Производственная']];
+const typeLabel=t=>(TASK_TYPES.find(x=>x[0]===t)||TASK_TYPES[3])[1];
+const isOverdue=t=>!!t.due && !t.done && t.due < today();
+function migrate(p){
+  if(!p.id) p.id=uid();
+  if(!Array.isArray(p.tasks)) p.tasks=[];
+  if(!p.status) p.status='draft';
+  if(p.ownerId==null) p.ownerId='';
+  if(p.createdBy==null) p.createdBy='';
+  if(!p.criteria){ const parts=[]; if(p.concept)parts.push(p.concept); if(p.product)parts.push('Конечный продукт: '+p.product); p.criteria=parts.join('\n'); }
+  if(typeof p.criteria==='string') p.criteria=parseCriteria(p.criteria);
+  if(!Array.isArray(p.criteria)) p.criteria=[];
+  delete p.concept; delete p.product;
+  if(!p.participants) p.participants=[];
+  if(!Array.isArray(p.timeline)) p.timeline=[];
+  if(!Array.isArray(p.suggestions)) p.suggestions=[];
+  p.tasks.forEach(t=>{
+    if(!t.type)t.type='work';
+    if(t.assignee!=null && t.assigneeLegacy==null) t.assigneeLegacy=t.assignee;
+    delete t.assignee;
+    if(Array.isArray(t.assignees)){ if(!t.assigneeId && t.assignees.length) t.assigneeId=t.assignees[0]; delete t.assignees; }
+    if(t.assigneeId==null) t.assigneeId='';
+    if(t.assigneeLegacy==null) t.assigneeLegacy='';
+    if(!Array.isArray(t.attachments)) t.attachments=[];
+    if(t.origDue==null) t.origDue='';
+    if(t.stopper==null) t.stopper='';
+    if(t.doneReport==null) t.doneReport='';
+  });
+  return p;
+}
+
+let state=load();
+let selected=localStorage.getItem(LS_SEL)||null;
+let journalExpanded=false;
+let openCoordIds=new Set();   // какие документы координации раскрыты (наверху)
+let coordListExpanded=false;  // показать все координации наверху, а не последние 3
+let lbExpanded=true;
+let suggestOpen=true;
+let editHeaderFor=null;   // id программы, у которой сейчас открыт режим редактирования шапки
+let _editSnap=null;       // снимок шапки до редактирования (для записи изменений в историю)
+let taskFilter={who:'',overdue:false,stopper:false,undone:false};
+function resetTaskFilter(){ taskFilter={who:'',overdue:false,stopper:false,undone:false}; }
+function taskFilterActive(){ return !!(taskFilter.who||taskFilter.overdue||taskFilter.stopper||taskFilter.undone); }
+function matchTaskFilter(t){
+  const f=taskFilter;
+  if(f.who){ if(f.who==='__none__'){ if(t.assigneeId) return false; } else if(t.assigneeId!==f.who) return false; }
+  if(f.overdue && !isOverdue(t)) return false;
+  if(f.stopper && !(t.stopper && !t.done)) return false;
+  if(f.undone && t.done) return false;
+  return true;
+}
+
+function load(){ try{return (JSON.parse(localStorage.getItem(LS_KEY))||[]).map(migrate)}catch(e){ try{ const raw=localStorage.getItem(LS_KEY); if(raw) localStorage.setItem('crm_corrupt_backup',raw); }catch(_){} return []; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,v); return true; }catch(e){ if(typeof toast==='function') toast('⚠ Хранилище переполнено — сделайте «⭳+ Бэкап»'); return false; } }
+function save(){ lsSet(LS_KEY,JSON.stringify(state)); lsSet(LS_SEL,selected||''); renderList(); cloudPushPrograms(); }
+function cur(){ return state.find(p=>p.id===selected)||null; }
+
+//====================== employees (справочник) ======================
+const LS_EMP='crm_employees_v1';
+// у старых записей дат нет — empMigrate дописывает пустые поля, в UI показываем «—»
+function empMigrate(e){ if(e.createdAt==null)e.createdAt=''; if(e.archivedAt==null)e.archivedAt=''; if(!Array.isArray(e.hist))e.hist=[]; return e; }
+function empHist(e,action){ (e.hist||(e.hist=[])).push({a:action,at:today()}); }
+function loadEmployees(){ try{return (JSON.parse(localStorage.getItem(LS_EMP))||[]).map(empMigrate)}catch(e){return[]} }
+function saveEmployees(){ lsSet(LS_EMP,JSON.stringify(employees)); cloudPushEmployees(); }
+function newEmployee(){ return {id:uid(),name:'',role:'',email:'',tg:'',archived:false,createdAt:'',archivedAt:'',hist:[]}; }
+function addEmployee(){ const e=newEmployee(); e.createdAt=today(); empHist(e,'add'); employees.push(e); return e; }
+function emp(id){ return employees.find(e=>e.id===id)||null; }
+function empName(id){ const e=emp(id); return e?(e.name||'(без имени)'):'(удалён)'; }
+function empLabel(id){ const e=emp(id); if(!e) return '(удалён)'; return (e.name||'(без имени)')+(e.role?(' · '+e.role):''); }
+function removeParticipant(p,empId){
+  const usedOwner=p.ownerId===empId;
+  const nTasks=(p.tasks||[]).filter(t=>t.assigneeId===empId).length;
+  if((usedOwner||nTasks) && !confirm('Этот человек '+(usedOwner?'— ответственный за программу':'')+(usedOwner&&nTasks?', и ':'')+(nTasks?('исполнитель '+nTasks+' задач(и)'):'')+'. Убрать из участников? Назначения снимутся.')) return false;
+  if(usedOwner) p.ownerId='';
+  (p.tasks||[]).forEach(t=>{ if(t.assigneeId===empId) t.assigneeId=''; });
+  p.participants=(p.participants||[]).filter(z=>z.empId!==empId);
+  return true;
+}
+let employees=loadEmployees();
+const LS_NUM='crm_next_number';
+function nextProgramNumber(){ let v=parseInt(localStorage.getItem(LS_NUM),10); if(!(v>0)) v=Math.max(0,...state.map(p=>parseInt(p.number,10)||0))+1; lsSet(LS_NUM,String(v+1)); return v; }
+
+//====================== IndexedDB (бинарь вложений) ======================
+const DB_NAME='crm_files', DB_STORE='blobs'; let _db;
+function idb(){ return _db||(_db=new Promise((res,rej)=>{ const r=indexedDB.open(DB_NAME,1); r.onupgradeneeded=()=>r.result.createObjectStore(DB_STORE); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); })); }
+function idbOp(mode,fn){ return idb().then(d=>new Promise((res,rej)=>{ const q=fn(d.transaction(DB_STORE,mode).objectStore(DB_STORE)); q.onsuccess=()=>res(q.result); q.onerror=()=>rej(q.error); })); }
+const putBlob=(id,blob)=>idbOp('readwrite',s=>s.put(blob,id));
+const getBlob=id=>idbOp('readonly',s=>s.get(id));
+const delBlob=id=>idbOp('readwrite',s=>s.delete(id));
+try{ if(typeof navigator!=='undefined'&&navigator.storage&&navigator.storage.persist) navigator.storage.persist(); }catch(e){}
+
+//====================== helpers ======================
+const el=(t,c,txt)=>{const e=document.createElement(t); if(c)e.className=c; if(txt!=null)e.textContent=txt; return e;};
+const esc=s=>(s||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+function toast(m){const t=document.getElementById('toast'); t.textContent=m; t.classList.add('on'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('on'),1900);}
+function progress(p){const n=p.tasks.length, d=p.tasks.filter(t=>t.done).length; return {n,d,pct:n?Math.round(d/n*100):0};}
+
+//====================== sidebar list ======================
+function renderList(){
+  const wrap=document.getElementById('plist'); wrap.innerHTML='';
+  if(!state.length){ wrap.appendChild(el('div','pcard','Пока нет программ. Нажмите «+ Программа».')); }
+  state.forEach(p=>{
+    const {n,d,pct}=progress(p);
+    const c=el('div','pcard'+(p.id===selected?' active':'')); c.onclick=()=>{selected=p.id; journalExpanded=false; resetTaskFilter(); save(); renderMain();};
+    const ownerNm=p.ownerId?empName(p.ownerId):(p.owner||'');
+    if(ownerNm) c.appendChild(el('div','powner','👤 '+ownerNm));
+    const ttl=el('div','ttl'); ttl.appendChild(el('span','num',p.number?('№'+p.number):'—'));
+    ttl.appendChild(el('span',null,p.title||'Без названия')); c.appendChild(ttl);
+    const meta=el('div','meta');
+    const badge=el('span','badge b-'+p.status,statusLabel(p.status)); meta.appendChild(badge);
+    const ov=p.tasks.filter(isOverdue).length; if(ov) meta.appendChild(el('span','pill pill-over','⚠ '+ov));
+    const stopN=p.tasks.filter(x=>x.stopper && !x.done).length; if(stopN) meta.appendChild(el('span','pill pill-over','⛔ '+stopN));
+    const cds=(p.timeline||[]).filter(e=>e.type==='coordination'); const lc=cds.length?cds[cds.length-1]:null; const ds=lc?Math.floor((Date.now()-new Date(lc.at).getTime())/86400000):null; if((p.status==='approved'||p.status==='in_progress') && (cds.length===0 || (ds!==null && ds>=7))) meta.appendChild(el('span','pill pill-over','💤 застой'));
+    const bar=el('div','bar'); const i=el('i'); i.style.width=pct+'%'; if(pct===100)i.style.background='var(--ok)'; bar.appendChild(i); meta.appendChild(bar);
+    meta.appendChild(el('span','pct',d+'/'+n)); c.appendChild(meta);
+    wrap.appendChild(c);
+  });
+  const total=state.length, tasks=state.reduce((a,p)=>a+p.tasks.length,0), done=state.reduce((a,p)=>a+p.tasks.filter(t=>t.done).length,0);
+  document.getElementById('statAll').textContent=`${total} прогр. · ${done}/${tasks} задач`;
+}
+
+//====================== main detail ======================
+function renderMain(){
+  renderList();
+  const m=document.getElementById('main'); m.innerHTML='';
+  const p=cur();
+  if(!p){ const e=el('div','empty'); e.innerHTML='<div class="emptybox"><div class="emptyic">📋</div><h2>Пока не выбрана программа</h2><p>Выберите программу в списке слева или создайте новую — помощник поможет сформулировать цель, критерии и первые шаги.</p><button class="primary" id="emptyNew">✨ Новая программа</button></div>'; m.appendChild(e); const en=document.getElementById('emptyNew'); if(en) en.onclick=()=>document.getElementById('btnNew').click(); return; }
+
+  //--- header card ---
+  const lead=canLead(p);                        // руководитель проекта или владелец
+  const editing=lead && editHeaderFor===p.id;   // открыт ли режим редактирования шапки
+  const head=el('div','head');
+  const row1=el('div','row1');
+  const num=el('input','num-in'); num.value=p.number||''; num.readOnly=true; num.title='Номер присваивается автоматически';
+  const title=inputFor(p,'title'); title.classList.add('title-in'); title.placeholder='Название программы'; if(!editing) title.readOnly=true;
+  const hlogo=el('div','headlogo'); const _ld=getLogo(); if(_ld){ hlogo.style.backgroundImage='url('+_ld+')'; hlogo.classList.add('has-img'); } hlogo.title='Логотип (меняется в ⚙ Настройки)';
+  const delBtn=el('button','ghost tiny','🗑'); delBtn.title='Удалить программу'; delBtn.onclick=()=>{ if(confirm('Удалить программу «'+(p.title||'')+'»?')){ state=state.filter(x=>x.id!==p.id); selected=state[0]?state[0].id:null; save(); renderMain(); } };
+  if(!lead) delBtn.style.display='none';
+  row1.append(wrapField(num,'№'), wrapField(title,'Название программы'), hlogo, delBtn);
+  head.appendChild(row1);
+
+  //--- goal / criteria ---
+  const goalTa=textFor(p,'goal'); if(!editing) goalTa.readOnly=true;
+  const g=el('div','grid2');
+  g.append(
+    wrapField(goalTa,'Цель программы'),
+    wrapField(criteriaBlock(p,editing),'Критерии приёмки — отметьте выполненные (отмечает руководитель)')
+  );
+  head.appendChild(g);
+  //--- редактирование шапки: только руководитель проекта / владелец ---
+  const hbar=el('div'); hbar.style.cssText='display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center';
+  if(editing){
+    const sBtn=el('button','primary tiny','💾 Сохранить'); sBtn.onclick=()=>saveHeaderEdit(p); hbar.appendChild(sBtn);
+    const cBtn=el('button','ghost tiny','Отмена'); cBtn.onclick=()=>{ if(_editSnap){ p.title=_editSnap.title; p.goal=_editSnap.goal; if(_editSnap.critArr) p.criteria=_editSnap.critArr; } editHeaderFor=null; _editSnap=null; save(); renderMain(); }; hbar.appendChild(cBtn);
+    const genBtn=el('button','tiny','✨ Сгенерировать'); genBtn.onclick=openGen; hbar.appendChild(genBtn);
+  } else if(lead){
+    const eBtn=el('button','tiny','✏ Редактировать шапку'); eBtn.onclick=()=>{ editHeaderFor=p.id; _editSnap=headerSnap(p); renderMain(); }; hbar.appendChild(eBtn);
+    const genBtn=el('button','tiny','✨ Сгенерировать шапку'); genBtn.onclick=openGen; hbar.appendChild(genBtn);
+  } else {
+    hbar.appendChild(el('span','minihint','Название, цель и критерии редактирует руководитель проекта'+(p.ownerId?(' — '+empName(p.ownerId)):'')+'.'));
+  }
+  head.appendChild(hbar);
+
+  //--- owner / status / dates ---
+  const mr=el('div','metarow');
+  const sel=el('select'); STATUS.forEach(([v,l])=>{const o=el('option',null,l); o.value=v; if(p.status===v)o.selected=true; sel.appendChild(o);});
+  sel.onchange=()=>{ const nv=sel.value, prev=p.status;
+    if((nv==='approved'||nv==='in_progress') && !p.ownerId){ toast('Сначала назначьте ответственного за программу'); sel.value=prev; return; }
+    const openN=p.tasks.filter(x=>!x.done).length;
+    if(nv==='done' && openN>0 && !confirm('Есть невыполненные задачи ('+openN+'). Всё равно завершить программу?')){ sel.value=prev; return; }
+    const critOpen=(p.criteria||[]).filter(c=>!c.done).length;
+    if(nv==='done' && critOpen>0 && !confirm('Отмечены не все критерии приёмки ('+(p.criteria.length-critOpen)+'/'+p.criteria.length+'). Программа рабочая, когда все критерии — победы. Всё равно завершить?')){ sel.value=prev; return; }
+    p.status=nv;
+    if(nv==='approved' && !p.approvedDate) p.approvedDate=today();
+    if(nv==='done' && !p.doneDate) p.doneDate=today();
+    pushEvent(p,'status_changed','Статус программы: '+statusLabel(nv)); save(); renderMain(); };
+  const due=dateFor(p,'dueDate'); const done=dateFor(p,'doneDate');
+  if(!lead){ sel.disabled=true; sel.title='Статус меняет руководитель программы'; due.disabled=true; done.disabled=true; due.title=done.title='Сроки меняет руководитель программы'; }
+  mr.append(wrapField(ownerCell(p),'Ответственный (из участников)'), wrapField(sel,'Статус'), wrapField(due,'Срок завершения'), wrapField(done,'Дата завершения'));
+  head.appendChild(mr);
+
+  //--- progress ---
+  const {n,d,pct}=progress(p);
+  const pw=el('div','progresswrap');
+  const bigEl=el('span','big',pct+'%'); if(pct===100) bigEl.style.color='var(--ok-ink)'; pw.appendChild(bigEl);
+  const bar=el('div','bar'); const bi=el('i'); bi.style.width=pct+'%'; bar.appendChild(bi); pw.appendChild(bar);
+  pw.appendChild(el('span','hint',d+' из '+n+' задач выполнено'));
+  const ovc=p.tasks.filter(isOverdue).length; if(ovc) pw.appendChild(el('span','pill pill-over','⚠ просрочено: '+ovc));
+  head.appendChild(pw);
+  //--- пульс программы (сводка + вход к координации) ---
+  const coords=(p.timeline||[]).filter(e=>e.type==='coordination');
+  const lastC=coords.length?coords[coords.length-1]:null;
+  const daysSince=lastC?Math.floor((Date.now()-new Date(lastC.at).getTime())/86400000):null;
+  const stopN=p.tasks.filter(x=>x.stopper && !x.done).length;
+  const pulse=el('div','pulse');
+  const pstat=el('div','grow');
+  pstat.textContent='🗓 Координаций: '+coords.length+(lastC?(' · последняя '+daysSince+' дн. назад'):' · ещё не было')+(ovc?(' · ⚠ просрочено: '+ovc):'')+(stopN?(' · ⛔ стопор: '+stopN):'');
+  if(lastC && lastC.text){ const lc=el('div','hint'); lc.style.marginTop='2px'; lc.textContent='Последнее: '+lastC.text.replace(/^Координация:?\s*/,'').slice(0,90); pstat.appendChild(lc); }
+  pulse.appendChild(pstat);
+  const bCo=el('button','tiny primary','+ Координация'); bCo.onclick=()=>openCoord(p); pulse.appendChild(bCo);
+  if((p.status==='approved'||p.status==='in_progress') && (coords.length===0 || (daysSince!==null && daysSince>=7))) pulse.classList.add('bad');
+  head.appendChild(pulse);
+  //--- документы координаций — прямо здесь, наверху (раскрываются на месте) ---
+  if(coords.length){
+    const cwrap=el('div'); cwrap.style.marginTop='6px';
+    const rev=coords.slice().reverse();
+    (coordListExpanded?rev:rev.slice(0,3)).forEach(ev=>{
+      const cr=el('div','jrow coord'); cr.style.marginBottom='4px';
+      const cb=el('div'); cb.style.flex='1';
+      cb.appendChild(el('div','jtext','🗓 '+(ev.date||fmtDateTime(ev.at))+' · '+(ev.attendance==='partial'?('не все'+(ev.absent?(': '+ev.absent):'')):'все были')));
+      const opened=openCoordIds.has(ev.id);
+      const tgl=el('button','linkbtn tiny',opened?'▾ свернуть документ':'▸ показать документ'); tgl.onclick=()=>{ if(openCoordIds.has(ev.id)) openCoordIds.delete(ev.id); else openCoordIds.add(ev.id); renderMain(); };
+      cb.appendChild(tgl);
+      if(opened){ const doc=el('div'); doc.style.cssText='margin:6px 0 2px;padding:8px 10px;background:#fff;border:1px solid #dcdfe4;border-radius:8px'; doc.appendChild(buildCoordDoc(ev)); const fsb=el('button','ghost tiny','⤢ на весь экран'); fsb.style.marginTop='6px'; fsb.onclick=()=>openCoordDoc(ev); doc.appendChild(fsb); cb.appendChild(doc); }
+      cr.appendChild(cb); cwrap.appendChild(cr);
+    });
+    if(rev.length>3){ const t=el('button','ghost tiny',coordListExpanded?'свернуть':('показать все ('+rev.length+')')); t.onclick=()=>{ coordListExpanded=!coordListExpanded; renderMain(); }; cwrap.appendChild(t); }
+    head.appendChild(cwrap);
+  }
+  m.appendChild(head);
+
+  //--- участники программы ---
+  // Набирает команду руководитель/создатель/владелец; любой сотрудник может присоединиться сам.
+  const ps=el('div','parts');
+  ps.appendChild(el('span','partslab','Участники:'));
+  const meId=myEmpId();
+  (p.participants||[]).forEach(pt=>{
+    const chip=el('span','chip',empName(pt.empId));
+    chip.title='в программе с '+(pt.since||'—');
+    if(lead){ const x=el('span','chipx','✕'); x.onclick=()=>{ if(removeParticipant(p,pt.empId)){ pushEvent(p,'edit','Исключён участник: '+empName(pt.empId)); save(); renderMain(); } }; chip.appendChild(x); }
+    ps.appendChild(chip);
+  });
+  const actEmp=employees.filter(e=>!e.archived);
+  if(lead){
+    if(!actEmp.length){ ps.appendChild(el('span','minihint','сначала добавьте людей в «👥 Команда» (кнопка слева)')); }
+    else { const bp=el('button','tiny','+ участники'); bp.title='Отметить галочками, кто участвует'; bp.onclick=()=>openPartPicker(p); ps.appendChild(bp); }
+  } else if(meId && !(p.participants||[]).some(z=>z.empId===meId)){
+    const bj=el('button','tiny','🙋 Я участвую'); bj.title='Добавить себя в участники этой программы';
+    bj.onclick=()=>{ p.participants=[...(p.participants||[]),{empId:meId,since:today()}]; pushEvent(p,'participant_added','Присоединился сам(а): '+empName(meId)); save(); renderMain(); toast('Вы в команде программы'); };
+    ps.appendChild(bj);
+  } else if(!meId){
+    ps.appendChild(el('span','minihint','вашей почты нет в «👥 Команда» — попросите администратора вписать её, чтобы участвовать'));
+  }
+  m.appendChild(ps);
+
+  //--- прогресс участников (лидерборд) — сразу под участниками ---
+  if(p.tasks.length) m.appendChild(renderLeaderboard(p));
+
+  //--- фильтры задач ---
+  if(p.tasks.length) m.appendChild(renderFilterBar(p));
+  //--- tasks table ---
+  const tb=el('div','tasks');
+  const th=el('div','thead');
+  ['№','Тип · задача','Отчёт · критерий «выполнено»','Исполнитель','Срок','Оценка времени','✓'].forEach(h=>th.appendChild(el('div',null,h)));
+  tb.appendChild(th);
+  let shownT=0;
+  p.tasks.forEach((t,idx)=>{ if(matchTaskFilter(t)){ tb.appendChild(taskRow(p,t,idx)); shownT++; } });
+  if(p.tasks.length && !shownT){ const em=el('div','minihint','Нет задач по этому фильтру — измените или сбросьте фильтр.'); em.style.padding='12px'; tb.appendChild(em); }
+  const add=el('div','addrow');
+  const addBtn=el('button','tiny primary','+ Задача'); addBtn.onclick=()=>{ resetTaskFilter(); const n=p.tasks.length+1; p.tasks.push(newTask(n)); pushEvent(p,'task_added','Добавлена задача №'+n); save(); renderMain(); };
+  add.appendChild(addBtn);
+  add.appendChild(el('span','hint','  «Отчёт» = критерий готовности (заранее). При ✓ спросим «что сделано» — уйдёт в журнал.'));
+  tb.appendChild(add);
+  m.appendChild(tb);
+  //--- подсказки задач (💡 drawer) ---
+  if((p.suggestions||[]).length) m.appendChild(renderSuggestDrawer(p));
+
+  //--- подсказчик недостающих типов задач (анти-«умирание») ---
+  const hasType=k=>p.tasks.some(t=>t.type===k);
+  if(p.tasks.length>=3 && !p.hintDismissed && (!hasType('first') || !hasType('vital'))){
+    const hb=el('div','hintbox');
+    const gg=el('div','grow');
+    gg.innerHTML='<b>Похоже, программа из одних рабочих задач.</b> По методике (Высоцкий/Хаббард) это частая причина, что программа «умирает»: не хватает <b>первоочередной</b> (координация и порядок отчётности) и <b>жизненно важной</b> (контроль угроз срыва) задач.';
+    const addBtn=el('button','tiny primary','+ Добавить скелет контроля');
+    addBtn.onclick=()=>{
+      if(!hasType('first')) p.tasks.push(Object.assign(newTask(p.tasks.length+1),{type:'first',text:'Назначить еженедельную координацию по программе и порядок отчётности (кто, кому и когда докладывает о выполнении).',report:'Отправить ответственному расписание координации и правило отчётности.'}));
+      if(!hasType('vital')) p.tasks.push(Object.assign(newTask(p.tasks.length+1),{type:'vital',text:'Определить риски срыва программы и точки контроля; при угрозе — эскалация ответственному.',report:'Отправить ответственному список рисков и точек контроля.'}));
+      p.tasks.forEach((x,i)=>x.n=i+1); save(); renderMain(); toast('Добавлены задачи контроля');
+    };
+    const skip=el('button','ghost tiny','Скрыть'); skip.onclick=()=>{p.hintDismissed=true; save(); renderMain();};
+    const btns=el('div'); btns.style.cssText='display:flex;flex-direction:column;gap:6px'; btns.append(addBtn,skip);
+    hb.append(gg,btns); m.appendChild(hb);
+  }
+
+  //--- журнал жизни программы (свёрнут по умолчанию) ---
+  const jr=el('div','journal');
+  const jhead=el('div','jhead');
+  jhead.appendChild(el('span','partslab','Журнал программы'));
+  const bN=el('button','tiny','+ Заметка'); bN.onclick=()=>{ const v=(prompt('Заметка к программе:','')||'').trim(); if(v){ pushEvent(p,'note',v); save(); renderMain(); } }; jhead.appendChild(bN);
+  jr.appendChild(jhead);
+  const tlAll=(p.timeline||[]).slice().reverse();
+  if(!tlAll.length) jr.appendChild(el('div','minihint','Пока пусто. Отметки задач, переносы сроков и координации будут появляться здесь.'));
+  const tl=journalExpanded?tlAll:tlAll.slice(0,3);
+  tl.forEach(e=>{
+    const isCoord=e.type==='coordination';
+    const row=el('div','jrow'+(isCoord?' coord':''));
+    const ic=isCoord?'🗓':e.type==='task_done'?'✓':e.type==='task_reopened'?'↺':e.type==='date_moved'?'⤳':e.type==='stopper'?'⚠':e.type==='status_changed'?'≡':e.type==='participant_added'?'👤':e.type==='note'?'✎':e.type==='edit'?'✏':e.type==='task_removed'?'✕':e.type==='task_added'?'+':'•';
+    row.appendChild(el('span','jic',ic));
+    const body=el('div'); body.style.flex='1';
+    body.appendChild(el('div','jtext',e.text||''));
+    let sub=fmtDateTime(e.at);
+    if(isCoord) sub+=' · '+(e.attendance==='partial'?('не все'+(e.absent?(': '+e.absent):'')):'все');
+    body.appendChild(el('div','jtime',sub));
+    if(isCoord){ row.style.cursor='pointer'; row.title='Открыть документ координации'; row.onclick=()=>openCoordDoc(e); }
+    row.appendChild(body); jr.appendChild(row);
+  });
+  if(tlAll.length>3){ const tog=el('button','ghost tiny',journalExpanded?'свернуть':('показать всё ('+tlAll.length+')')); tog.onclick=()=>{ journalExpanded=!journalExpanded; renderMain(); }; jr.appendChild(tog); }
+  m.appendChild(jr);
+}
+
+function renderSuggestDrawer(p){
+  const wrap=el('div','suggest');
+  const head=el('div','jhead');
+  head.appendChild(el('span','partslab','💡 Подсказки задач ('+p.suggestions.length+')'));
+  const tog=el('button','ghost tiny',suggestOpen?'скрыть':'показать'); tog.onclick=()=>{ suggestOpen=!suggestOpen; renderMain(); }; head.appendChild(tog);
+  const clr=el('button','ghost tiny','Очистить'); clr.onclick=()=>{ if(confirm('Убрать все подсказки задач?')){ p.suggestions=[]; save(); renderMain(); } }; head.appendChild(clr);
+  wrap.appendChild(head);
+  if(!suggestOpen) return wrap;
+  wrap.appendChild(el('div','minihint','Помощник предложил эти задачи. «＋» — взять в программу, «✕» — убрать подсказку.'));
+  p.suggestions.forEach((s,i)=>{
+    const row=el('div','srow');
+    const box=el('div','stext');
+    const t=el('div',null,(s.type&&s.type!=='work'?('['+typeLabel(s.type)+'] '):'')+s.text); t.style.cssText='font-size:13px;font-weight:600';
+    box.appendChild(t); if(s.report) box.appendChild(el('div','hint','Отчёт: '+s.report));
+    const add=el('button','tiny primary','＋'); add.title='Добавить в задачи'; add.onclick=()=>{ p.tasks.push(Object.assign(newTask(p.tasks.length+1),{text:s.text,report:s.report||'',type:s.type||'work'})); p.tasks.forEach((x,j)=>x.n=j+1); p.suggestions.splice(i,1); pushEvent(p,'task_added','Добавлена задача из подсказки: '+(s.text||'').slice(0,50)); save(); renderMain(); };
+    const del=el('button','ghost tiny','✕'); del.title='Убрать подсказку'; del.onclick=()=>{ p.suggestions.splice(i,1); save(); renderMain(); };
+    row.append(box,add,del); wrap.appendChild(row);
+  });
+  return wrap;
+}
+function renderFilterBar(p){
+  const bar=el('div','filterbar');
+  bar.appendChild(el('span','flab','Фильтр'));
+  const who=el('select','ttype');
+  who.appendChild(Object.assign(el('option',null,'Все исполнители'),{value:''}));
+  (p.participants||[]).forEach(pt=>{ const o=el('option',null,empLabel(pt.empId)); o.value=pt.empId; if(taskFilter.who===pt.empId)o.selected=true; who.appendChild(o); });
+  const oN=el('option',null,'Не распределено'); oN.value='__none__'; if(taskFilter.who==='__none__')oN.selected=true; who.appendChild(oN);
+  who.onchange=()=>{ taskFilter.who=who.value; renderMain(); };
+  bar.appendChild(who);
+  const ov=p.tasks.filter(isOverdue).length;
+  const st=p.tasks.filter(x=>x.stopper && !x.done).length;
+  const un=p.tasks.filter(x=>!x.done).length;
+  const chip=(key,label,cnt,warn)=>{ const c=el('span','fchip'+(warn?' warn':'')+(taskFilter[key]?' on':''),label); if(cnt!=null) c.appendChild(el('span','c',String(cnt))); c.onclick=()=>{ taskFilter[key]=!taskFilter[key]; renderMain(); }; return c; };
+  bar.appendChild(chip('overdue','Просрочено',ov,true));
+  bar.appendChild(chip('stopper','Стопор',st,true));
+  bar.appendChild(chip('undone','Не выполнено',un,false));
+  if(taskFilterActive()){ const rs=el('button','ghost tiny','Сбросить'); rs.onclick=()=>{ resetTaskFilter(); renderMain(); }; bar.appendChild(rs); }
+  return bar;
+}
+function renderLeaderboard(p){
+  const wrap=el('div','leaderboard');
+  const head=el('div','jhead');
+  head.appendChild(el('span','partslab','🏆 Прогресс участников'));
+  const tog=el('button','ghost tiny',lbExpanded?'свернуть':'развернуть'); tog.onclick=()=>{ lbExpanded=!lbExpanded; renderMain(); }; head.appendChild(tog);
+  wrap.appendChild(head);
+  if(!lbExpanded) return wrap;
+  const groups={};
+  p.tasks.forEach(t=>{ const k=t.assigneeId||''; (groups[k]||(groups[k]={done:0,total:0})); groups[k].total++; if(t.done)groups[k].done++; });
+  const none=groups['']; delete groups[''];
+  const rows=Object.entries(groups).map(([id,v])=>({id,done:v.done,total:v.total,pct:v.total?Math.round(v.done/v.total*100):0}));
+  rows.sort((a,b)=> b.done-a.done || b.pct-a.pct || a.total-b.total);
+  if(!rows.length && !(none&&none.total)){ wrap.appendChild(el('div','minihint','Назначьте исполнителей задачам — появится рейтинг.')); return wrap; }
+  rows.forEach((r,i)=>{
+    const row=el('div','lbrow'); row.style.cursor='pointer';
+    if(taskFilter.who===r.id) row.style.background='var(--accent-soft)';
+    const rank=el('div','lbrank'+(i===0?' g1':i===1?' g2':i===2?' g3':''),String(i+1));
+    const ring=el('div','ring'); ring.style.setProperty('--p',r.pct); ring.appendChild(el('b',null,r.pct+'%'));
+    const e=emp(r.id); const nm=el('div','lbname'); nm.append(document.createTextNode(e?(e.name||'(без имени)'):'(удалён)')); if(e&&e.role) nm.appendChild(el('span','role',' · '+e.role));
+    const meta=el('div','lbmeta'); meta.appendChild(el('span','lbcount',r.done+'/'+r.total+' ✓')); const bar=el('div','lbbar'); const bi=el('i'); bi.style.width=r.pct+'%'; bar.appendChild(bi); meta.appendChild(bar);
+    row.append(rank,ring,nm,meta);
+    row.onclick=()=>{ taskFilter.who=(taskFilter.who===r.id?'':r.id); renderMain(); };
+    wrap.appendChild(row);
+  });
+  if(none&&none.total){
+    const row=el('div','lbrow'); row.style.cursor='pointer';
+    if(taskFilter.who==='__none__') row.style.background='var(--accent-soft)';
+    const nm=el('div','lbname'); nm.append(document.createTextNode('Не распределено'));
+    const meta=el('div','lbmeta'); meta.appendChild(el('span','lbcount',none.total+' задач'));
+    row.append(el('div','lbrank','—'), el('div','ring'), nm, meta);
+    row.onclick=()=>{ taskFilter.who=(taskFilter.who==='__none__'?'':'__none__'); renderMain(); };
+    wrap.appendChild(row);
+  }
+  return wrap;
+}
+function taskRow(p,t,idx){
+  const r=el('div','trow'+(t.done?' done':'')+(isOverdue(t)?' overdue':''));
+  r.appendChild(el('div','n',String(t.n||idx+1)));
+  // task text + report
+  const c1=el('div','cellcol');
+  const tp=el('select','ttype'); TASK_TYPES.forEach(([v,l])=>{const o=el('option',null,l); o.value=v; if((t.type||'work')===v)o.selected=true; tp.appendChild(o);}); tp.title='Тип задачи'; tp.onchange=()=>{t.type=tp.value; save(); renderMain();};
+  c1.appendChild(tp);
+  const ta=el('textarea'); ta.className='tasktext'+(t.done?' strike':''); ta.value=t.text||''; ta.placeholder='Что сделать'; autserve(ta); ta.oninput=()=>{t.text=ta.value; debSave();};
+  c1.appendChild(ta);
+  const stp=el('div', t.stopper?'stopper on':'stopper', t.stopper?('⚠ стопор: '+t.stopper):'+ стопор'); stp.onclick=()=>{ const v=(prompt('Что мешает выполнить задачу (стопор)? Пусто — убрать.', t.stopper||'')||'').trim(); const had=!!t.stopper; t.stopper=v; if(v && !had) pushEvent(p,'stopper','Стопор по задаче №'+t.n+': '+v,{taskId:t.id}); save(); renderMain(); }; c1.appendChild(stp);
+  if(t.done && !t.doneReport && !(t.attachments||[]).length) c1.appendChild(el('div','legacy','закрыто без доклада'));
+  r.appendChild(c1);
+  const c2=el('div','cellcol');
+  const rep=el('textarea'); rep.className='rep'; rep.value=t.report||''; rep.placeholder='Отчёт: как считается выполненной'; autserve(rep); rep.oninput=()=>{t.report=rep.value; debSave();};
+  c2.appendChild(rep); c2.appendChild(attachmentsUI(t)); r.appendChild(c2);
+  // assignee
+  const c3=el('div','cellcol'); c3.appendChild(assigneeCell(p,t)); r.appendChild(c3);
+  // due
+  const c4=el('div','cellcol'); const du=el('input'); du.type='date'; du.value=t.due||'';
+  du.onchange=()=>{ const old=t.due||'', nv=du.value; if(nv && !t.origDue) t.origDue=nv; if(old && nv && old!==nv){ const reason=(prompt('Причина переноса срока задачи №'+t.n+'? (можно пусто)','')||'').trim(); pushEvent(p,'date_moved','Срок задачи №'+t.n+': '+fmtD(old)+' → '+fmtD(nv)+(reason?(' — '+reason):''),{taskId:t.id,from:old,to:nv,reason}); } t.due=nv; save(); renderMain(); };
+  c4.appendChild(du);
+  if(t.origDue && t.due && t.origDue!==t.due) c4.appendChild(el('div','legacy','⤳ '+fmtD(t.origDue)+'→'+fmtD(t.due)));
+  r.appendChild(c4);
+  // estimate
+  const c5=el('div','cellcol'); const es=el('input'); es.value=t.estimate||''; es.placeholder='напр. 2ч / 3 дня'; es.title='Примерная оценка времени на исполнение задачи'; es.oninput=()=>{t.estimate=es.value; debSave();}; c5.appendChild(es); r.appendChild(c5);
+  // done checkbox + delete
+  const c6=el('div'); c6.style.flexDirection='column'; c6.style.gap='6px'; c6.style.justifyContent='center';
+  const chk=el('input'); chk.type='checkbox'; chk.className='chk'; chk.checked=!!t.done; chk.title='Выполнена';
+  chk.onchange=()=>{
+    t.done=chk.checked; t.doneDate=chk.checked?today():'';
+    if(chk.checked){
+      const wd=prompt('Что сделано? (коротко — уйдёт в журнал как доклад)', t.doneReport||'');
+      if(wd!=null) t.doneReport=wd.trim();
+      const who=t.assigneeId?(' ('+empName(t.assigneeId)+')'):''; const clip=(t.attachments||[]).length?' 📎':'';
+      pushEvent(p,'task_done','Выполнена задача №'+t.n+who+(t.doneReport?(' — '+t.doneReport.slice(0,100)):' — (без описания)')+clip,{taskId:t.id});
+      if(p.tasks.filter(x=>!x.done).length===0 && p.status!=='done') toast('Все задачи выполнены — можно завершить программу');
+    } else { t.doneReport=''; pushEvent(p,'task_reopened','Снята отметка с задачи №'+t.n,{taskId:t.id}); }
+    save(); renderMain();
+  };
+  const del=el('button','ghost tiny','✕'); del.title='Удалить задачу'; del.onclick=()=>{ pushEvent(p,'task_removed','Удалена задача №'+t.n+(t.text?(' — '+t.text.slice(0,60)):'')); p.tasks=p.tasks.filter(x=>x.id!==t.id); p.tasks.forEach((x,i)=>x.n=i+1); save(); renderMain(); };
+  c6.append(chk,del); r.appendChild(c6);
+  return r;
+}
+
+//--- assignee cell (исполнители из участников программы) ---
+// Права: руководитель/владелец назначает любого участника; участник может только
+// взять свободную задачу на себя или снять себя; чужие назначения участник не трогает.
+function assigneeCell(p,t){
+  const box=el('div'); box.style.cssText='display:flex;flex-direction:column;gap:3px;width:100%';
+  const parts=(p.participants||[]);
+  if(canLead(p)){
+    const sel=el('select','ttype');
+    const o0=el('option',null,parts.length?'— исполнитель —':'нет участников'); o0.value=''; sel.appendChild(o0);
+    parts.forEach(pt=>{ const o=el('option',null,empLabel(pt.empId)); o.value=pt.empId; if(t.assigneeId===pt.empId)o.selected=true; sel.appendChild(o); });
+    sel.onchange=()=>{ t.assigneeId=sel.value; pushEvent(p,'edit','Задача №'+t.n+': исполнитель — '+(sel.value?empName(sel.value):'снят')+' (назначил руководитель)'); save(); renderMain(); };
+    box.appendChild(sel);
+  } else {
+    const meId=myEmpId(), iAmPart=!!meId&&parts.some(z=>z.empId===meId);
+    if(!t.assigneeId && iAmPart){
+      const b=el('button','tiny','🙋 Взять себе'); b.title='Назначить себя исполнителем этой задачи';
+      b.onclick=()=>{ t.assigneeId=meId; pushEvent(p,'edit','Задача №'+t.n+': исполнитель — '+empName(meId)+' (взял(а) сам(а))'); save(); renderMain(); };
+      box.appendChild(b);
+    } else if(t.assigneeId===meId && meId){
+      box.appendChild(el('div',null,empName(meId)));
+      const b=el('button','linkbtn','снять себя');
+      b.onclick=()=>{ if(!confirm('Снять себя с этой задачи?')) return; t.assigneeId=''; pushEvent(p,'edit','Задача №'+t.n+': '+empName(meId)+' снял(а) себя'); save(); renderMain(); };
+      box.appendChild(b);
+    } else {
+      const nm=el('div',null,t.assigneeId?empName(t.assigneeId):'—');
+      nm.title='Исполнителей назначает руководитель программы; свободную задачу можно взять себе'; box.appendChild(nm);
+    }
+  }
+  if(t.assigneeLegacy && !t.assigneeId) box.appendChild(el('div','legacy',t.assigneeLegacy+' (старое)'));
+  return box;
+}
+// Руководителя программы меняет только сам руководитель, создатель программы или владелец (админ)
+function ownerCell(p){
+  const box=el('div'); box.style.cssText='display:flex;flex-direction:column;gap:3px;width:100%';
+  const parts=(p.participants||[]);
+  if(!canLead(p)){
+    const nm=el('div',null,p.ownerId?empLabel(p.ownerId):'— не назначен —');
+    nm.title='Руководителя меняет сам руководитель, создатель программы или владелец'; box.appendChild(nm);
+    return box;
+  }
+  const sel=el('select');
+  const o0=el('option',null,parts.length?'— выбрать —':'сначала добавьте участников'); o0.value=''; sel.appendChild(o0);
+  parts.forEach(pt=>{ const o=el('option',null,empLabel(pt.empId)); o.value=pt.empId; if(p.ownerId===pt.empId)o.selected=true; sel.appendChild(o); });
+  sel.onchange=()=>{ p.ownerId=sel.value; pushEvent(p,'edit','Руководитель программы: '+(sel.value?empName(sel.value):'снят')); save(); renderMain(); };
+  box.appendChild(sel);
+  if(p.owner && !p.ownerId) box.appendChild(el('div','legacy','старое: '+p.owner));
+  return box;
+}
+function criteriaBlock(p, editing){
+  if(!Array.isArray(p.criteria)) p.criteria=[];
+  const box=el('div'); box.style.cssText='display:flex;flex-direction:column;gap:5px;width:100%';
+  const done=p.criteria.filter(c=>c.done).length, tot=p.criteria.length;
+  if(tot){ const pr=el('div','critprog'); const b=el('div','bar'); const i=el('i'); i.style.width=Math.round(done/tot*100)+'%'; if(done===tot)i.style.background='var(--ok)'; b.appendChild(i); pr.appendChild(b); pr.appendChild(el('span','hint','Критерии: '+done+'/'+tot+' ✓')); box.appendChild(pr); }
+  p.criteria.forEach(c=>{
+    const row=el('div','critrow');
+    const cb=el('input'); cb.type='checkbox'; cb.className='chk'; cb.checked=!!c.done; cb.title='Отмечает только руководитель проекта';
+    cb.onchange=()=>{
+      if(cb.checked){
+        if(!canLead(p)){ toast('Отмечать выполнение критериев может только руководитель проекта'+(p.ownerId?(' — '+empName(p.ownerId)):'')); cb.checked=false; return; }
+        if(!p.ownerId){ toast('Сначала назначьте ответственного за программу'); cb.checked=false; return; }
+        if(!confirm('Отметить критерий выполненным (победа)?')){ cb.checked=false; return; }
+        c.done=true; c.doneAt=today(); c.doneBy=p.ownerId; pushEvent(p,'criterion_done','Критерий-победа: '+(c.text||'').slice(0,80));
+      } else {
+        if(!canLead(p)){ toast('Снять отметку может только руководитель проекта'); cb.checked=true; return; }
+        c.done=false; c.doneAt=''; c.doneBy='';
+      }
+      save(); renderMain();
+    };
+    const ta=el('textarea'); ta.className='crittext'+(c.done?' strike':''); ta.value=c.text||''; ta.placeholder='критерий приёмки'; autserve(ta); if(editing){ ta.oninput=()=>{c.text=ta.value; debSave();}; } else { ta.readOnly=true; }
+    row.append(cb,ta);
+    if(editing){ const x=el('span','chipx','✕'); x.title='Удалить критерий'; x.onclick=()=>{ p.criteria=p.criteria.filter(z=>z.id!==c.id); save(); renderMain(); }; row.appendChild(x); }
+    box.appendChild(row);
+  });
+  if(editing){ const add=el('button','tiny','+ критерий'); add.onclick=()=>{ p.criteria.push({id:uid(),text:'',done:false,doneAt:'',doneBy:''}); save(); renderMain(); }; box.appendChild(add); }
+  return box;
+}
+
+//--- вложения к задачам (файлы в IndexedDB, метаданные в задаче) ---
+function fmtSize(n){ n=n||0; return n<1024?n+' Б':n<1048576?(Math.round(n/102.4)/10)+' КБ':(Math.round(n/104857.6)/10)+' МБ'; }
+function attachmentsUI(t){
+  const box=el('div','atts');
+  (t.attachments||[]).forEach(a=>{
+    const chip=el('span','att','📎 '+a.name+' · '+fmtSize(a.size)); chip.title='Открыть — фото и PDF показываются сразу, без скачивания'; chip.onclick=()=>openAttachment(a);
+    const x=el('span','chipx','✕'); x.title='Удалить'; x.onclick=(e)=>{ e.stopPropagation(); if(confirm('Удалить вложение «'+a.name+'»?')){ delBlob(a.id); attCloudRemove(a); t.attachments=t.attachments.filter(z=>z.id!==a.id); save(); renderMain(); } };
+    chip.appendChild(x); box.appendChild(chip);
+  });
+  const add=el('button','tiny','📎 файл'); add.title='Прикрепить фото/файл/документ к отчёту'; add.onclick=()=>attachToTask(t); box.appendChild(add);
+  return box;
+}
+function attachToTask(t){
+  const inp=el('input'); inp.type='file'; inp.multiple=true; inp.accept='image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt';
+  inp.onchange=async()=>{ for(const f of inp.files){ const meta={id:uid(),name:f.name,mime:f.type||'application/octet-stream',size:f.size,addedAt:today()}; try{ await putBlob(meta.id,f); (t.attachments||(t.attachments=[])).push(meta); attCloudUpload(meta,f); }catch(e){ toast('Не удалось сохранить файл (мало места?)'); } } save(); renderMain(); toast('Вложение добавлено'); };
+  inp.click();
+}
+//--- облако файлов: общий доступ команды через Supabase Storage (bucket pp-files) ---
+function attCloudReady(){ return !!(supa && window.__supaReady && window.__meId); }
+async function attCloudUpload(a,blob){
+  if(!attCloudReady()) return;
+  try{
+    const {error}=await supa.storage.from('pp-files').upload(a.id,blob,{contentType:a.mime||'application/octet-stream',upsert:true});
+    if(!error){ a.cloud=true; save(); }
+    else if(!window.__attWarned){ window.__attWarned=1; console.warn('storage upload',error); toast('⚠ Облако файлов не настроено — файл виден только на этом устройстве'); }
+  }catch(e){ console.warn('storage upload',e); }
+}
+async function attCloudRemove(a){ if(!attCloudReady()||!a.cloud) return; try{ await supa.storage.from('pp-files').remove([a.id]); }catch(e){} }
+async function getAttachmentBlob(a){
+  let b=null; try{ b=await getBlob(a.id); }catch(e){}
+  if(b){ if(!a.cloud) attCloudUpload(a,b); return b; }             // фоном доливаем в облако старые файлы
+  if(attCloudReady()){                                             // нет локально — берём из облака и кэшируем
+    try{ const {data,error}=await supa.storage.from('pp-files').download(a.id);
+      if(!error&&data){ try{ await putBlob(a.id,data); }catch(_){} return data; } }catch(e){}
+  }
+  return null;
+}
+async function openAttachment(a){
+  try{
+    const b=await getAttachmentBlob(a);
+    if(!b){ toast(attCloudReady()?'Файл недоступен: загрузивший его человек ещё не открывал его после обновления (файл доедет в облако при первом его открытии у автора)':'Файла нет в этом браузере — восстановите из «⭳+ бэкап»'); return; }
+    const url=URL.createObjectURL(b);
+    if(/^image\//.test(a.mime||'')) showAttPreview(url,a);
+    else if((a.mime||'')==='application/pdf'){ const w=window.open(url,'_blank'); if(!w){ const lk=el('a'); lk.href=url; lk.target='_blank'; lk.click(); } setTimeout(()=>URL.revokeObjectURL(url),120000); }
+    else { const lk=el('a'); lk.href=url; lk.download=a.name; lk.click(); setTimeout(()=>URL.revokeObjectURL(url),60000); }
+  }catch(e){ toast('Не удалось открыть файл'); }
+}
+//--- просмотр фото прямо в приложении (лайтбокс) ---
+function showAttPreview(url,a){
+  let bg=document.getElementById('attBg');
+  if(!bg){
+    bg=el('div','modal-bg'); bg.id='attBg';
+    bg.innerHTML='<div class="modal" style="max-width:min(92vw,900px);text-align:center"><div id="attTtl" style="font-weight:700;margin-bottom:8px;word-break:break-all"></div><img id="attImg" style="max-width:100%;max-height:72vh;border-radius:8px" alt=""><div class="btns" style="justify-content:center"><a id="attDl" class="ghost" style="text-decoration:none;padding:8px 14px;border:1px solid #dcdfe4;border-radius:8px">⭳ Скачать</a><button class="ghost" id="attClose">Закрыть</button></div></div>';
+    document.body.appendChild(bg);
+    bg.onclick=(e)=>{ if(e.target===bg) closeAtt(); };
+    bg.querySelector('#attClose').onclick=closeAtt;
+  }
+  function closeAtt(){ bg.classList.remove('on'); const im=bg.querySelector('#attImg'); if(im&&im.src&&im.src.startsWith('blob:')) setTimeout(()=>URL.revokeObjectURL(im.src),500); }
+  bg.querySelector('#attTtl').textContent=a.name||'';
+  const im=bg.querySelector('#attImg'); im.src=url;
+  const dl=bg.querySelector('#attDl'); dl.href=url; dl.download=a.name||'file';
+  bg.classList.add('on');
+}
+
+//--- field builders ---
+function wrapField(node,label){ const f=el('div','field'); if(label)f.appendChild(el('label',null,label)); f.appendChild(node); return f; }
+function inputFor(o,key,ph){ const i=el('input'); i.value=o[key]||''; if(ph)i.placeholder=ph; i.oninput=()=>{o[key]=i.value; debSave();}; return i; }
+function textFor(o,key){ const t=el('textarea'); t.value=o[key]||''; autserve(t); t.oninput=()=>{o[key]=t.value; debSave();}; return t; }
+function dateFor(o,key){ const i=el('input'); i.type='date'; i.value=o[key]||''; i.oninput=()=>{o[key]=i.value; debSave();}; return i; }
+function autserve(ta){ const fit=()=>{ta.style.height='auto'; ta.style.height=Math.max(26,ta.scrollHeight)+'px';}; setTimeout(fit,0); ta.addEventListener('input',fit); }
+let _t; function debSave(){ clearTimeout(_t); _t=setTimeout(()=>{ lsSet(LS_KEY,JSON.stringify(state)); renderList(); },300); }
+const today=()=>new Date().toISOString().slice(0,10);
+const nowISO=()=>new Date().toISOString();
+const fmtD=d=>{ if(!d)return''; const a=(''+d).split('-'); return a.length===3?(a[2]+'.'+a[1]):(''+d); };
+const fmtDateTime=iso=>{ try{ return new Date(iso).toLocaleString('ru-RU',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}); }catch(e){ return (''+iso).slice(0,16); } };
+function pushEvent(p,type,text,extra){ if(!p) return; (p.timeline||(p.timeline=[])).push(Object.assign({id:uid(),at:nowISO(),type,text},extra||{})); }
+function parseCriteria(s){ return (''+s).split(/\r?\n/).flatMap(l=>l.split('; ')).map(t=>t.trim()).filter(Boolean).map(t=>({id:uid(),text:t,done:false,doneAt:'',doneBy:''})); }
+function headerSnap(p){ return {title:p.title||'', goal:p.goal||'', crit:(p.criteria||[]).map(c=>c.text||'').join(' | '), critArr:JSON.parse(JSON.stringify(p.criteria||[]))}; }
+function saveHeaderEdit(p){
+  const before=_editSnap||headerSnap(p), after=headerSnap(p);
+  const who=(myEmp()&&myEmp().name)||window.__meEmail||'—';
+  const clip=s=>{ s=(''+(s||'')).trim(); return s?(s.length>70?s.slice(0,70)+'…':s):'—'; };
+  let n=0;
+  if(before.title!==after.title){ pushEvent(p,'edit','Название: «'+clip(before.title)+'» → «'+clip(after.title)+'» · '+who); n++; }
+  if(before.goal!==after.goal){ pushEvent(p,'edit','Цель: «'+clip(before.goal)+'» → «'+clip(after.goal)+'» · '+who); n++; }
+  const bA=before.critArr||[], aA=after.critArr||[], bMap={}, aMap={};
+  bA.forEach(c=>bMap[c.id]=c); aA.forEach(c=>aMap[c.id]=c);
+  aA.forEach(c=>{ if(!bMap[c.id]){ if((c.text||'').trim()){ pushEvent(p,'edit','Критерий добавлен: «'+clip(c.text)+'» · '+who); n++; } }
+    else if((bMap[c.id].text||'')!==(c.text||'')){ pushEvent(p,'edit','Критерий изменён: «'+clip(bMap[c.id].text)+'» → «'+clip(c.text)+'» · '+who); n++; } });
+  bA.forEach(c=>{ if(!aMap[c.id] && (c.text||'').trim()){ pushEvent(p,'edit','Критерий удалён: «'+clip(c.text)+'» · '+who); n++; } });
+  editHeaderFor=null; _editSnap=null; save(); renderMain(); toast(n?('Сохранено, в истории записей: '+n):'Без изменений');
+}
+
+//====================== create / new ======================
+function newTask(n){ return {id:uid(),n,text:'',report:'',doneReport:'',assigneeId:'',assigneeLegacy:'',due:'',estimate:'',type:'work',done:false,doneDate:'',origDue:'',stopper:'',attachments:[]}; }
+function newProgram(){ return {id:uid(),number:'',title:'',goal:'',criteria:[],owner:'',ownerId:'',createdBy:(window.__meEmail||''),status:'draft',dueDate:'',doneDate:'',approvedDate:'',participants:[],timeline:[],suggestions:[],tasks:[newTask(1)]}; }
+document.getElementById('btnNew').onclick=()=>{ const p=newProgram(); p.number=String(nextProgramNumber()); state.unshift(p); selected=p.id; save(); renderMain(); openGen(); };
+
+//====================== AI generation (контекст → вопросы → результат) ======================
+const genBg=document.getElementById('genBg');
+const $=id=>document.getElementById(id);
+let genState={step:1,context:'',understanding:'',coverage:{},transcript:[],curQ:null,suggestions:[]};
+
+function openGen(){
+  const p=cur(); if(!p) return;
+  genState={step:1,context:(p.goal?'':(p.title||'')),understanding:'',coverage:{},transcript:[],curQ:null,suggestions:[]};
+  $('genCtx').value=genState.context; $('genFix').hidden=true; $('genFixNote').value='';
+  const kn=$('genKeyNote'), hasKey=!!localStorage.getItem(LS_GROQ); kn.hidden=hasKey;
+  if(!hasKey){ kn.innerHTML='⚠ Умная генерация не подключена — соберётся локальный черновик из ваших слов. <a href="#" id="genKeyLink">Подключить ключ Groq</a>, и помощник будет писать цель и критерии сам.'; $('genKeyLink').onclick=(e)=>{ e.preventDefault(); genBg.classList.remove('on'); document.getElementById('btnSettings').onclick(); }; }
+  genShow(1); setupMic(); genBg.classList.add('on'); setTimeout(()=>$('genCtx').focus(),50);
+}
+function genShow(step){
+  genState.step=step;
+  $('genStep1').hidden=step!==1; $('genStep2').hidden=step!==2; $('genStep3').hidden=step!==3;
+  [...$('genSteps').children].forEach((d,i)=>d.classList.toggle('on',i<step));
+  $('genTitleH').textContent=step===1?'✨ Опишите программу':step===2?'✨ Интервью помощника':'✨ Программа: проверьте и выберите';
+  $('genBack').hidden=step===1; $('genSkip').hidden=step!==2; $('genRedo').hidden=step!==3;
+  $('genRedo').textContent='↺ Переделать';
+  $('genSkip').textContent='Хватит — к задачам';
+  $('genNext').textContent=step===1?'Дальше →':step===2?'Ответить →':'Применить в программу';
+  $('genHint').textContent='';
+}
+$('genCancel').onclick=()=>{stopMic(); genBg.classList.remove('on');};
+$('genBack').onclick=()=>{ if(genState.step===3){ genShow(2); renderQuestion(genState.curQ); } else genShow(1); };
+$('genSkip').onclick=()=>{ genMake(); };
+$('genRedo').onclick=()=>{ const f=$('genFix'); if(f.hidden){f.hidden=false; $('genFixNote').focus(); $('genRedo').textContent='↺ Сгенерировать заново';} else genMake(); };
+$('genNext').onclick=()=>{ if(genState.step===1) genAsk(); else if(genState.step===2) genAnswerNext(); else genApply(); };
+function genBusy(on,label){ const b=$('genNext'); b.disabled=on; ['genSkip','genRedo','genBack'].forEach(id=>{const x=$(id); if(x)x.disabled=on;}); if(on){b.dataset.t=b.textContent; b.innerHTML='<span class="spin"></span> '+(label||'…');} else if(b.dataset.t) b.textContent=b.dataset.t; }
+
+const COVER=[['result','Результат'],['steady','Работает постоянно'],['deadline','Срок · ответственный'],['scope','Охват']];
+const Q_CAP=12;
+function renderCoverage(){ const w=$('genCover'); if(!w) return; w.innerHTML=''; w.appendChild(el('span','flab','Понято')); COVER.forEach(([k,l])=>w.appendChild(el('span','fchip'+(genState.coverage&&genState.coverage[k]?' on':''),l))); }
+function renderQuestion(q){
+  $('genUnderstand').innerHTML=genState.understanding?('<b>Я понял так:</b> '+esc(genState.understanding)):'';
+  renderCoverage();
+  const wrap=$('genQ'); wrap.innerHTML='';
+  if(!q){ $('genQProgress').textContent='Данных достаточно. Нажмите «Хватит — к задачам».'; return; }
+  const d=el('div','qitem'); d.appendChild(el('label',null,q.question));
+  const inp=el('textarea'); inp.id='genCurA'; inp.placeholder=q.placeholder||''; inp.style.cssText='min-height:72px;width:100%'; inp.onkeydown=e=>{ if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){ e.preventDefault(); genAnswerNext(); } }; d.appendChild(inp);
+  const mrow=el('div','genrow'); const mb=el('button','ghost tiny','🎤 Наговорить'); mb.id='genMicA'; mb.type='button'; mb.title='Наговорить ответ голосом'; mb.onclick=()=>{ _rec?stopMic():startMic('genCurA','genMicA'); }; if(!micSupported()) mb.style.display='none'; mrow.appendChild(mb); d.appendChild(mrow);
+  wrap.appendChild(d);
+  $('genQProgress').textContent='Вопрос '+(genState.transcript.length+1)+' — коротко, можно пропустить (оставьте пустым).';
+  setTimeout(()=>{ const a=$('genCurA'); if(a) a.focus(); },30);
+}
+async function genAsk(){
+  const ctx=$('genCtx').value.trim();
+  if(ctx.length<8){ $('genHint').textContent='Опишите чуть подробнее — хотя бы одним предложением.'; return; }
+  genState.context=ctx; stopMic(); genBusy(true,'Читаю…');
+  const r=await interviewNext(); genBusy(false);
+  if(r.understanding) genState.understanding=r.understanding;
+  genState.coverage=Object.assign({},genState.coverage,r.coverage||{});
+  if(r.done||!r.question){ genState.curQ=null; return genMake(); }
+  genState.curQ=r; genShow(2); renderQuestion(r);
+}
+async function genAnswerNext(){
+  const inp=$('genCurA'); const a=inp?inp.value.trim():'';
+  if(genState.curQ) genState.transcript.push({q:genState.curQ.question,a});
+  genBusy(true,'Слушаю…');
+  const r=await interviewNext(); genBusy(false);
+  if(r.understanding) genState.understanding=r.understanding;
+  genState.coverage=Object.assign({},genState.coverage,r.coverage||{});
+  if(r.done||!r.question || genState.transcript.length>=Q_CAP){ genState.curQ=null; return genMake(); }
+  genState.curQ=r; renderQuestion(r);
+}
+function buildInterviewUser(){
+  let u='Описание программы от владельца:\n'+genState.context;
+  if(genState.transcript.length){ u+='\n\nУже выяснено (вопрос → ответ):'; genState.transcript.forEach(t=>{ u+='\n- '+t.q+' → '+(t.a||'(пропущено)'); }); }
+  u+='\n\nЗадай СЛЕДУЮЩИЙ один вопрос, которого не хватает для чёткой цели и критериев, ИЛИ верни done=true, если данных уже достаточно.';
+  return u;
+}
+async function interviewNext(){
+  if(genState.transcript.length>=Q_CAP) return {done:true,coverage:genState.coverage};
+  if(!groqCfg().key) return localInterview();
+  try{ const r=await groqJSON(SYS_INTERVIEW,buildInterviewUser(),0.3);
+    return {done:!!r.done,understanding:(r.understanding||'').trim(),coverage:r.coverage||{},question:(r.question||'').trim(),placeholder:(r.placeholder||'').trim()};
+  }catch(e){ $('genHint').textContent='⚠ Groq не ответил (проверьте ключ/интернет в ⚙) — базовые вопросы.'; return localInterview(); }
+}
+async function genMake(){
+  const fix=(!$('genFix').hidden && $('genFixNote').value.trim())||'';
+  genBusy(true,'Собираю программу…');
+  let r; try{ r=await makeAll(genState.context,genState.transcript,fix); }
+  catch(e){ r=localMake(genState.context,genState.transcript); $('genHint').textContent='⚠ Groq не ответил — собрал черновик локально.'; }
+  genBusy(false);
+  $('genUnderstand2').innerHTML=r.understanding?('<b>Как я понял:</b> '+esc(r.understanding)+' <span class="hint">— не так? нажмите «Переделать».</span>'):'';
+  $('genoTitle').value=r.title||''; $('genoGoal').value=r.goal||''; $('genoCrit').value=r.criteria||'';
+  genState.suggestions=(r.tasks||[]).map(t=>({text:t.text||'',report:t.report||'',type:t.type||'work',role:t.role||'',take:true}));
+  renderSuggestChecklist();
+  $('genFix').hidden=true; $('genFixNote').value=''; genShow(3);
+}
+function renderSuggestChecklist(){
+  const w=$('genSuggest'); w.innerHTML='';
+  if(!genState.suggestions.length){ w.appendChild(el('div','minihint','Подсказок задач нет — добавьте задачи вручную в программе.')); return; }
+  const head=el('div','genrow');
+  const all=el('button','ghost tiny','Выбрать все'); all.onclick=()=>{genState.suggestions.forEach(s=>s.take=true);renderSuggestChecklist();};
+  const none=el('button','ghost tiny','Снять все'); none.onclick=()=>{genState.suggestions.forEach(s=>s.take=false);renderSuggestChecklist();};
+  head.append(all,none); w.appendChild(head);
+  genState.suggestions.forEach(s=>{
+    const row=el('label','emppick');
+    const cb=el('input'); cb.type='checkbox'; cb.className='chk'; cb.checked=s.take; cb.onchange=()=>{s.take=cb.checked;};
+    const box=el('div'); box.style.flex='1';
+    const tl=typeLabel(s.type); const t=el('div',null,(s.type&&s.type!=='work'?('['+tl+'] '):'')+s.text); t.style.cssText='font-size:13px;font-weight:600';
+    box.appendChild(t);
+    if(s.report) box.appendChild(el('div','hint','Отчёт: '+s.report));
+    row.append(cb,box); w.appendChild(row);
+  });
+}
+function genApply(){
+  const p=cur(); if(!p) return;
+  const t=$('genoTitle').value.trim(),g=$('genoGoal').value.trim(),c=$('genoCrit').value.trim();
+  const take=genState.suggestions.filter(s=>s.take), rest=genState.suggestions.filter(s=>!s.take);
+  if(!t&&!g&&!c&&!take.length){ $('genHint').textContent='Пусто — заполните хотя бы цель.'; return; }
+  if(t) p.title=t; p.goal=g;
+  if(c){ if((p.criteria||[]).some(x=>x.done) && !confirm('Критерии уже частично отмечены. Заменить их сгенерированными (отметки сбросятся)?')){ /* оставляем текущие */ } else p.criteria=parseCriteria(c); }
+  else if(!Array.isArray(p.criteria)) p.criteria=[];
+  if(take.length){
+    const isBlank=x=>!(x.text||'').trim() && !(x.report||'').trim() && !x.assigneeId && !x.due && !(x.attachments||[]).length;
+    if(p.tasks.every(isBlank)) p.tasks=[];
+    take.forEach(s=>p.tasks.push(Object.assign(newTask(p.tasks.length+1),{text:s.text,report:s.report||'',type:s.type||'work'})));
+    p.tasks.forEach((x,i)=>x.n=i+1);
+  }
+  const seen=new Set((p.suggestions||[]).map(s=>s.text));
+  p.suggestions=[...(p.suggestions||[]), ...rest.filter(s=>!seen.has(s.text)).map(s=>({text:s.text,report:s.report||'',type:s.type||'work',role:s.role||''}))];
+  stopMic(); save(); genBg.classList.remove('on'); renderMain(); toast(take.length?('Добавлено задач: '+take.length):'Шапка применена');
+}
+
+//--- Groq + фолбэк ---
+function groqCfg(){ return {key:localStorage.getItem(LS_GROQ),model:localStorage.getItem(LS_MODEL)||'llama-3.3-70b-versatile'}; }
+// Общий AI-ключ команды — хранится в облаке (pp_meta), чтобы каждому не вводить заново
+async function cloudSetMeta(key,value){ try{ if(supa) await supa.from('pp_meta').upsert({key,value}); }catch(e){ console.warn('meta set',e); } }
+async function cloudGetMeta(key){ try{ if(supa){ const {data}=await supa.from('pp_meta').select('value').eq('key',key).maybeSingle(); return data?data.value:null; } }catch(e){} return null; }
+async function loadSharedKey(){ const v=await cloudGetMeta('groq'); if(v && v.key){ try{ localStorage.setItem(LS_GROQ,v.key); if(v.model) localStorage.setItem(LS_MODEL,v.model); }catch(e){} } }
+async function groqJSON(system,user,temp){
+  const {key,model}=groqCfg(); const ctrl=new AbortController(); const to=setTimeout(()=>ctrl.abort(),30000);
+  try{
+    const r=await fetch('https://api.groq.com/openai/v1/chat/completions',{method:'POST',signal:ctrl.signal,
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
+      body:JSON.stringify({model,temperature:temp,response_format:{type:'json_object'},
+        messages:[{role:'system',content:system},{role:'user',content:user}]})});
+    if(!r.ok) throw new Error('Groq '+r.status); const j=await r.json();
+    return JSON.parse(j.choices[0].message.content);
+  } finally{ clearTimeout(to); }
+}
+const GOAL_RULES=`Что такое хорошая ЦЕЛЬ (методология Хаббарда/Высоцкого; используй для формулировок, но термины в текст не вставляй): цель конкретна и отвечает «зачем»; по возможности измерима и во времени; описывает не разовое действие, а результат, который должен РАБОТАТЬ постоянно (у него есть ценный конечный продукт). Плохая цель — общая («навести порядок»), без признака «работает постоянно», без ответственного. Программа «умирает», если нет ясного «зачем», признака постоянной работы и ответственного.`;
+const SYS_INTERVIEW=`Ты — методолог-помощник по системе управления Хаббарда/Высоцкого (формат «Программа офиса владельца»). Ты берёшь у владельца ИНТЕРВЬЮ, чтобы понять программу: задаёшь по ОДНОМУ короткому вопросу за раз (как живой методолог), пока не хватит данных для чёткой цели и критериев.
+${GOAL_RULES}
+Тебе дают исходное описание и уже полученные ответы. Верни СЛЕДУЮЩИЙ один вопрос ИЛИ done=true.
+Правила: один вопрос за раз, коротко, по-русски, без нумерации и жаргона. Не повторяй уже выясненное. Закрывай пробелы по важности: конечный результат (result) → признак «работает постоянно» (steady) → срок и ответственный (deadline) → масштаб/охват (scope). Задавай столько вопросов, сколько реально нужно (обычно 3–7, максимум ~12). Если всё ключевое уже ясно — done=true.
+coverage — что уже понятно на данный момент (true/false по каждому ключу). Ответь СТРОГО в JSON, без markdown:
+{"done": false, "understanding": "одна фраза — как понял задачу", "coverage": {"result": false, "steady": false, "deadline": false, "scope": false}, "question": "текст следующего вопроса", "placeholder": "пример короткого хорошего ответа"}`;
+const SYS_MAKE2=`Ты — методолог-помощник по системе управления Хаббарда/Высоцкого (формат «Программа офиса владельца»). На входе — описание программы и ответы владельца на интервью. Составь программу: ШАПКУ и ПОЛНЫЙ реалистичный список задач.
+${GOAL_RULES}
+Ответь СТРОГО в JSON, без markdown:
+{"understanding":"одна фраза — как понял задачу","title":"короткое рабочее название до 60 символов без кавычек","goal":"ЦЕЛЬ — одно предложение по правилам выше","criteria":"3–6 проверяемых критериев приёмки, каждый с новой строки (\\n); обязателен признак, что результат воспроизводим и работает постоянно, а не сделан разово","tasks":[{"text":"задача одной строкой, глаголом","report":"отчёт-критерий: что прислать/показать/утвердить, чтобы стало ОЧЕВИДНО, что задача выполнена","type":"first|vital|work","role":"кто примерно исполняет — роль"}]}
+Правила для tasks:
+- 10–25 задач, реалистичный объём (НЕ 3–5). Порядок — как реально выполняются, сцепкой: отчёт одной задачи подводит к следующей.
+- Каждая задача сформулирована так, чтобы её ОТЧЁТ делал выполнение очевидным (прислать на утверждение, фото, КП, одобрение финансирования и т.п.). Пример сцепки: «найти поставщика тары» → отчёт: прислать варианты с фото и КП на утверждение → «получить одобрение закупки» → отчёт: одобрение (текст/фото) → и т.д.
+- Обязательно включи ОДНУ задачу type="first" (назначить координацию и порядок отчётности: кто, кому и когда докладывает) и ОДНУ type="vital" (определить угрозы срыва и точки контроля, эскалация ответственному). Остальные — type="work".
+- Не выдумывай фактов, которых нет во вводных; где данных мало — по здравому смыслу, но отчёты держи проверяемыми. Деловой русский.`;
+async function makeAll(ctx,transcript,fix){
+  if(!groqCfg().key) return localMake(ctx,transcript);
+  let u='Описание программы от владельца:\n'+ctx+'\n\nОтветы владельца на интервью:';
+  (transcript||[]).forEach(t=>{ u+='\n- '+t.q+' → '+(t.a||'(пропущено)'); });
+  if(!transcript||!transcript.some(t=>t.a)) u+='\n(владелец почти не уточнял — сделай разумные допущения)';
+  if(fix) u+='\n\nПоправка владельца, учти обязательно: '+fix;
+  const r=await groqJSON(SYS_MAKE2,u,0.4);
+  return {understanding:(r.understanding||'').trim(),title:(r.title||'').replace(/^["'«»\s]+|["'«»\s]+$/g,'').slice(0,80),goal:(r.goal||'').trim(),criteria:(r.criteria||'').trim(),
+    tasks:Array.isArray(r.tasks)?r.tasks.map(t=>({text:String(t.text||'').trim(),report:String(t.report||'').trim(),type:['first','vital','work','main','cond','prod'].includes(t.type)?t.type:'work',role:String(t.role||'').trim()})).filter(t=>t.text):[]};
+}
+const LOCAL_Q=[
+  {question:'Что конкретно должно появиться или измениться, когда программа завершена?',placeholder:'работает единый стандарт упаковки, все грузят по нему',cover:'result'},
+  {question:'По какому признаку поймёте, что это работает ПОСТОЯННО, а не сделано один раз?',placeholder:'2 недели подряд нет ошибок при выгрузке',cover:'steady'},
+  {question:'К какому сроку завершить и кто отвечает?',placeholder:'до 30.08, отвечает бригадир',cover:'deadline'},
+  {question:'Какой масштаб/охват — где и для кого это должно работать?',placeholder:'все склады, вся бригада',cover:'scope'} ];
+function localInterview(){
+  const i=genState.transcript.length, cov=Object.assign({},genState.coverage);
+  for(let k=0;k<i && k<LOCAL_Q.length;k++){ if(LOCAL_Q[k].cover) cov[LOCAL_Q[k].cover]=true; }
+  if(i>=LOCAL_Q.length) return {done:true,coverage:cov,understanding:genState.understanding||''};
+  const q=LOCAL_Q[i];
+  return {done:false,understanding:genState.understanding||'',coverage:cov,question:q.question,placeholder:q.placeholder};
+}
+function localMake(ctx,transcript){
+  const a=(transcript||[]).map(t=>t.a), clean=s=>(s||'').replace(/\s+/g,' ').trim(), c=clean(ctx);
+  const crit=[a[0]&&('Готово: '+clean(a[0])),a[1]&&('Работает постоянно: '+clean(a[1])),'Результат воспроизводим и не «умирает» после запуска — подтверждён отчётами исполнителей.'].filter(Boolean).join('\n');
+  const tasks=[
+    {text:'Описать, что именно делаем, и стандарт результата.',report:'Прислать ответственному описание и стандарт на утверждение.',type:'work',role:''},
+    {text:'Назначить ответственного и еженедельную координацию, задать порядок отчётности.',report:'Прислать расписание координации и правило: кто, кому и когда докладывает.',type:'first',role:''},
+    {text:'Определить угрозы срыва программы и точки контроля.',report:'Прислать список рисков и точек контроля; при угрозе — эскалация ответственному.',type:'vital',role:''},
+    {text:'Подготовить ресурсы и согласовать бюджет/закупку, если нужно.',report:'Прислать варианты с ценами (КП) и получить одобрение закупки.',type:'work',role:''},
+    {text:'Выполнить основные работы программы по шагам со сроками.',report:'По каждому шагу — отчёт исполнителя с доказательством (фото/документ).',type:'work',role:''},
+    {text:'Проверить результат по каждому критерию приёмки.',report:'Прислать сверку результата с каждым критерием.',type:'work',role:''},
+    {text:'Ввести результат в постоянную работу (рутину).',report:'Подтвердить, что процесс повторяется без автора — отчёт за 2-й период.',type:'work',role:''},
+    {text:'Доложить о завершении программы с доказательством.',report:'Отчёт о завершении: результат работает, подтверждено фото/документом.',type:'work',role:''} ];
+  return {understanding:'Черновик собран локально по вашему описанию (без AI-ключа).',title:(c.charAt(0).toUpperCase()+c.slice(1)).slice(0,60),goal:'Запустить в постоянную работу: '+c+'.'+(a[2]?(' Срок/ответственный: '+clean(a[2])+'.'):''),criteria:crit,tasks};
+}
+//--- голосовой ввод (опционально; прячется, если API нет) ---
+let _rec=null, _recBtn=null, _recTa=null;
+function micSupported(){ return (typeof window!=='undefined')&&(window.SpeechRecognition||window.webkitSpeechRecognition); }
+function setupMic(){ const btn=$('genMic'); if(!btn) return;
+  if(!micSupported()){ btn.style.display='none'; const h=$('genMicHint'); if(h) h.textContent=''; return; }
+  btn.style.display=''; const h=$('genMicHint'); if(h) h.textContent='(нужны микрофон и интернет)';
+  btn.onclick=()=>{ _rec?stopMic():startMic('genCtx','genMic'); }; }
+// Универсальный голосовой ввод в любое поле (taId) с любой кнопкой (btnId)
+function startMic(taId,btnId){ const SR=micSupported(); if(!SR) return; const ta=$(taId), btn=$(btnId); if(!ta||!btn) return;
+  if(_rec) stopMic();
+  _rec=new SR(); _rec.lang='ru-RU'; _rec.interimResults=false; _rec.continuous=true; _recBtn=btn; _recTa=ta;
+  btn.classList.add('micrec'); btn.textContent='⏹ Стоп';
+  _rec.onresult=e=>{ let s=''; for(let i=e.resultIndex;i<e.results.length;i++) if(e.results[i].isFinal) s+=e.results[i][0].transcript; if(s&&_recTa) _recTa.value=(_recTa.value?_recTa.value+' ':'')+s.trim(); };
+  _rec.onerror=()=>stopMic(); _rec.onend=()=>{ if(_rec) stopMic(); };
+  try{ _rec.start(); }catch(e){ stopMic(); } }
+function stopMic(){ if(_recBtn){ _recBtn.classList.remove('micrec'); _recBtn.textContent='🎤 Наговорить'; } if(_rec){ try{_rec.stop();}catch(e){} } _rec=null; _recBtn=null; _recTa=null; }
+
+//====================== settings ======================
+const setBg=document.getElementById('setBg');
+function refreshLogoUI(){ let has=''; try{ has=localStorage.getItem(LS_LOGO); }catch(e){} const d=document.getElementById('setLogoDel'); if(d) d.hidden=!has; const h=document.getElementById('setLogoHint'); if(h) h.textContent=has?'Свой логотип установлен. Заменить — выберите файл; «Убрать» — вернуть логотип LK по умолчанию.':'Сейчас стоит логотип LK Bau Service (по умолчанию). Выберите файл, чтобы заменить на свой.'; }
+document.getElementById('btnSettings').onclick=()=>{ document.getElementById('setKey').value=localStorage.getItem(LS_GROQ)||''; document.getElementById('setModel').value=localStorage.getItem(LS_MODEL)||'llama-3.3-70b-versatile'; refreshLogoUI(); setBg.classList.add('on'); };
+document.getElementById('setCancel').onclick=()=>setBg.classList.remove('on');
+document.getElementById('setSave').onclick=()=>{ const k=document.getElementById('setKey').value.trim(); const md=document.getElementById('setModel').value.trim(); k?localStorage.setItem(LS_GROQ,k):localStorage.removeItem(LS_GROQ); localStorage.setItem(LS_MODEL,md||'llama-3.3-70b-versatile'); if(isAdmin()) cloudSetMeta('groq',{key:k,model:md||'llama-3.3-70b-versatile'}); setBg.classList.remove('on'); toast(k?(isAdmin()?'Ключ сохранён для всей команды':'Ключ сохранён'):'Ключ убран'); };
+document.getElementById('setLogo').onchange=function(){ const inp=this; const f=inp.files&&inp.files[0]; if(!f) return; if(f.size>600000 && !confirm('Файл крупный ('+Math.round(f.size/1024)+' КБ) — может переполнить локальное хранилище. Всё равно использовать? Лучше сжать до ~100 КБ.')){ inp.value=''; return; } const fr=new FileReader(); fr.onload=()=>{ if(lsSet(LS_LOGO,fr.result)){ applyBrandLogo(); renderMain(); refreshLogoUI(); toast('Логотип обновлён'); } inp.value=''; }; fr.readAsDataURL(f); };
+document.getElementById('setLogoDel').onclick=()=>{ try{ localStorage.removeItem(LS_LOGO); }catch(e){} applyBrandLogo(); renderMain(); refreshLogoUI(); toast('Логотип убран'); };
+
+//====================== team modal (люди + доступ, одно место) ======================
+const empBg=document.getElementById('empBg');
+document.getElementById('btnEmp').onclick=()=>{ renderEmp(); empBg.classList.add('on'); refreshMembers().then(renderEmp); };
+document.getElementById('empClose').onclick=()=>empBg.classList.remove('on');
+// кэш логинов (pp_members) для бейджей доступа; читать может любой вошедший
+window.__members=null;
+async function refreshMembers(){
+  if(!(supa&&window.__supaReady&&window.__meId)){ window.__members=null; return; }
+  try{ const {data,error}=await supa.from('pp_members').select('*').order('created_at',{ascending:true}); if(error) throw error; window.__members=data||[]; }
+  catch(e){ window.__members=null; }
+}
+function memberByEmail(email){ if(!window.__members||!email) return null; const em=String(email).toLowerCase(); return window.__members.find(m=>m.email&&String(m.email).toLowerCase()===em)||null; }
+let empArchOpen=false;
+function fmtDFull(d){ if(!d)return '—'; const a=(''+d).split('-'); return a.length===3?(a[2]+'.'+a[1]+'.'+a[0]):(''+d); }
+function empHistTitle(e){ const L={add:'добавлен',del:'в архив',back:'возвращён'}; return (e.hist||[]).map(h=>(L[h.a]||h.a)+' '+fmtDFull(h.at)).join(' → ')||'история не записана (заведён до обновления от 26.08.2026)'; }
+// бейдж доступа по совпадению почты справочника и логина (pp_members)
+function accessBadge(e){
+  if(!window.__members) return null;                       // офлайн / нет облака — без бейджей
+  const b=el('span','empdate');
+  if(!e.email){ b.textContent='без почты'; b.title='Впишите почту, чтобы дать вход и кнопки «про себя»'; return b; }
+  const m=memberByEmail(e.email);
+  if(!m){ b.textContent='без входа'; b.title='В CRM не приглашён'; return b; }
+  if(m.status==='revoked'){ b.textContent='🚫 отозван'; }
+  else if(m.status==='invited'){ b.textContent='⏳ приглашён'; }
+  else { b.textContent=m.role==='admin'?'🔑 админ':'✓ вход есть'; }
+  return b;
+}
+function renderEmp(){
+  const wrap=document.getElementById('empList'); if(!wrap) return; wrap.innerHTML='';
+  const canManage=isAdmin()||soloMode();
+  const inv=document.getElementById('teamInvite'); if(inv) inv.hidden=!canManage;
+  const rf=document.getElementById('teamRoleField'); if(rf) rf.style.display=(canManage&&supa&&window.__supaReady)?'':'none';
+  const ih=document.getElementById('teamInviteHint'); if(ih) ih.textContent=(supa&&window.__supaReady)?'С почтой — сразу получит доступ и пароль для входа. Без почты — попадёт в список «без входа».':'Почта нужна, чтобы человек входил в CRM и брал задачи «на себя».';
+  const act=employees.filter(e=>!e.archived), arch=employees.filter(e=>e.archived);
+  if(!act.length) wrap.appendChild(el('div','minihint',canManage?'Пока пусто. Добавьте первого человека формой выше.':'Пока пусто.'));
+  act.forEach(e=>{
+    const row=el('div','emprow'); row.title=empHistTitle(e);
+    row.append(empInput(e,'name','Фамилия Имя',!canManage), empInput(e,'role','должность',!canManage), empInput(e,'email','email',!canManage), empInput(e,'tg','Telegram @/тел',!canManage));
+    const right=el('span','empdate'); right.style.display='flex'; right.style.flexDirection='column'; right.style.gap='2px'; right.style.alignItems='flex-end';
+    right.appendChild(el('span','empdate','с '+fmtDFull(e.createdAt)));
+    const ab=accessBadge(e); if(ab) right.appendChild(ab);
+    row.appendChild(right);
+    const acts=el('span'); acts.style.display='flex'; acts.style.gap='3px';
+    if(canManage && window.__members){
+      const m=memberByEmail(e.email);
+      if(m && m.user_id!==window.__meId && m.status!=='revoked' && isAdmin()){
+        const rv=el('button','ghost tiny','⛔'); rv.title='Отозвать доступ (войти больше не сможет)'; rv.onclick=()=>revokeMember(m); acts.appendChild(rv);
+      } else if(!m && e.email && isAdmin()){
+        const iv=el('button','ghost tiny','🔑'); iv.title='Дать доступ (пригласить в CRM)';
+        iv.onclick=()=>{ document.getElementById('teamName').value=e.name||''; document.getElementById('teamPost').value=e.role||''; document.getElementById('teamEmail').value=e.email; teamInvite(); };
+        acts.appendChild(iv);
+      }
+    }
+    if(canManage){
+      const del=el('button','ghost tiny','✕'); del.title='В архив'; del.onclick=()=>{ if(confirm('Убрать «'+(e.name||'')+'» в архив? В старых программах он останется.'+(memberByEmail(e.email)?' Доступ в CRM отозвите отдельно (⛔).':''))){ e.archived=true; e.archivedAt=today(); empHist(e,'del'); saveEmployees(); renderEmp(); renderMain(); } };
+      acts.appendChild(del);
+    }
+    row.appendChild(acts); wrap.appendChild(row);
+  });
+  if(arch.length){
+    const tg=el('button','linkbtn','📦 Архив ('+arch.length+') '+(empArchOpen?'▴':'▾')); tg.style.marginTop='8px';
+    tg.onclick=()=>{ empArchOpen=!empArchOpen; renderEmp(); }; wrap.appendChild(tg);
+    if(empArchOpen) arch.forEach(e=>{
+      const row=el('div','emprow archived'); row.title=empHistTitle(e);
+      const nm=el('span','emppicklab',(e.name||'(без имени)')+(e.role?(' · '+e.role):''));
+      row.appendChild(nm);
+      const dt=el('span','empdate','добавлен '+fmtDFull(e.createdAt)+' · в архив '+fmtDFull(e.archivedAt)); row.appendChild(dt);
+      if(canManage){ const back=el('button','ghost tiny','↩'); back.title='Вернуть из архива';
+        back.onclick=()=>{ e.archived=false; e.archivedAt=''; empHist(e,'back'); saveEmployees(); renderEmp(); renderMain(); };
+        row.appendChild(back); }
+      wrap.appendChild(row);
+    });
+  }
+}
+function empInput(e,key,ph,ro){ const i=el('input'); i.value=e[key]||''; i.placeholder=ph; if(ro){ i.readOnly=true; i.title='Данные меняет администратор'; } i.oninput=()=>{ e[key]=i.value; saveEmployees(); if(key==='name') renderMain(); }; return i; }
+
+//====================== роли и доступ ======================
+function isAdmin(){ return window.__meRole==='admin'; }
+// Файл открыт без входа (локальная одиночная работа) — ролевые ограничения не действуют
+function soloMode(){ return !window.__meId; }
+// «Я как сотрудник» — по совпадению почты входа и почты в справочнике
+function myEmp(){ const em=(window.__meEmail||'').toLowerCase(); if(!em) return null; return employees.find(e=>e.email && String(e.email).toLowerCase()===em && !e.archived)||null; }
+function myEmpId(){ const me=myEmp(); return me?me.id:null; }
+// Полные права на программу: без входа / владелец CRM (админ) / создатель программы / её руководитель.
+// Это они: правят шапку и критерии, меняют руководителя, набирают участников, назначают исполнителей.
+function canLead(p){
+  if(soloMode()||isAdmin()) return true; if(!p) return false;
+  const em=(window.__meEmail||'').toLowerCase();
+  if(p.createdBy && em && String(p.createdBy).toLowerCase()===em) return true;
+  const me=myEmp(); return !!(me && p.ownerId && me.id===p.ownerId);
+}
+async function captureRole(session){
+  window.__meId=(session&&session.user)?session.user.id:null;
+  window.__meEmail=(session&&session.user)?session.user.email:'';
+  window.__meRole='member';
+  try{
+    if(supa&&window.__meId){
+      const {data}=await supa.from('pp_members').select('role,status').eq('user_id',window.__meId).maybeSingle();
+      if(data&&data.role==='admin'&&data.status!=='revoked') window.__meRole='admin';
+    }
+  }catch(e){ console.warn('role',e); }
+}
+(function(){
+  const ib=document.getElementById('teamInviteBtn'); if(ib) ib.onclick=teamSubmit;
+})();
+// Одна кнопка на всё: с почтой (и облаком) — приглашение с доступом; иначе — запись «без входа»
+async function teamSubmit(){
+  const name=(document.getElementById('teamName').value||'').trim();
+  const post=(document.getElementById('teamPost').value||'').trim();
+  const email=(document.getElementById('teamEmail').value||'').trim();
+  if(!name && !email){ toast('Укажите хотя бы имя'); return; }
+  if(email && isAdmin() && supa && window.__supaReady) return teamInvite();
+  let ex=email?employees.find(x=>!x.archived && x.email && String(x.email).toLowerCase()===email.toLowerCase()):null;
+  if(!ex) ex=addEmployee();
+  if(name) ex.name=name; if(post) ex.role=post; if(email) ex.email=email;
+  saveEmployees();
+  document.getElementById('teamName').value=''; document.getElementById('teamPost').value=''; document.getElementById('teamEmail').value='';
+  renderEmp(); renderMain(); toast(email?'Добавлен в команду':'Добавлен (без входа в CRM)');
+}
+async function teamInvite(){
+  const emailEl=document.getElementById('teamEmail'), email=(emailEl.value||'').trim();
+  const nameEl=document.getElementById('teamName'), pname=(nameEl?(nameEl.value||''):'').trim();
+  const role=document.getElementById('teamRole').value;
+  if(!email){ toast('Укажите почту'); return; }
+  const btn=document.getElementById('teamInviteBtn'); btn.disabled=true; const ot=btn.textContent; btn.textContent='Приглашаю…';
+  try{
+    const {data,error}=await supa.functions.invoke('invite-user',{body:{email,role}});
+    if(error){ let msg=error.message; try{ const b=await error.context.json(); if(b&&b.error) msg=b.error; }catch(_){}; toast('Ошибка: '+msg); return; }
+    if(!data||!data.ok){ toast('Ошибка: '+((data&&data.error)||'не удалось')); return; }
+    const box=document.getElementById('teamInviteResult'); box.hidden=false; box.innerHTML='';
+    const h=el('div',null, data.alreadyExisted?'Пользователь уже был — данные для входа/смены пароля:':'Готово! Отправьте человеку эти данные:'); h.style.fontWeight='700'; h.style.marginBottom='6px'; box.appendChild(h);
+    const l1=el('div'); l1.append(el('span','minihint','Логин (почта): '), el('b',null,email)); box.appendChild(l1);
+    if(data.tempPassword){ const l2=el('div'); l2.append(el('span','minihint','Пароль: '), el('b',null,data.tempPassword)); box.appendChild(l2); }
+    if(data.actionLink){ const l3=el('div'); l3.style.marginTop='2px'; l3.appendChild(el('span','minihint','Ссылка: ')); const a=el('input'); a.value=data.actionLink; a.readOnly=true; a.style.cssText='width:100%;font-size:12px'; a.onclick=()=>{ a.select(); try{document.execCommand('copy'); toast('Ссылка скопирована');}catch(_){} }; l3.appendChild(a); box.appendChild(l3); }
+    // готовый текст для отправки — одна кнопка «Скопировать всё»
+    const siteUrl=location.origin+location.pathname;
+    let shareText='Доступ в CRM «Проекты-Программы»\nСайт: '+siteUrl+'\nЛогин (почта): '+email+'\n';
+    if(data.tempPassword) shareText+='Пароль: '+data.tempPassword+'\n';
+    if(data.actionLink) shareText+='Ссылка для входа: '+data.actionLink+'\n';
+    shareText+='\n'+(data.tempPassword?'Войдите по логину и паролю — пароль потом можно сменить.':'Откройте ссылку, чтобы задать пароль и войти.');
+    const cp=el('button','primary','📋 Скопировать всё для отправки'); cp.style.marginTop='10px';
+    cp.onclick=async()=>{ try{ if(navigator.clipboard&&navigator.clipboard.writeText){ await navigator.clipboard.writeText(shareText); } else { const ta=document.createElement('textarea'); ta.value=shareText; ta.style.cssText='position:fixed;opacity:0'; document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); } toast('Скопировано — вставьте в Telegram или почту'); }catch(e){ toast('Не удалось скопировать — выделите текст вручную'); } };
+    box.appendChild(cp);
+    box.appendChild(el('div','minihint', data.emailSent?'Письмо тоже отправлено — пусть проверит «Спам».':'Нажмите кнопку выше и вставьте текст человеку в Telegram/почту.'));
+    // автоматически заводим человека в команде (без дублей по почте)
+    const postEl=document.getElementById('teamPost'), post=(postEl?(postEl.value||''):'').trim();
+    if(!employees.some(e=>e.email && String(e.email).toLowerCase()===email.toLowerCase())){
+      const ne=addEmployee(); ne.email=email; ne.name=pname||email.split('@')[0].replace(/[._+-]+/g,' ').trim(); if(post) ne.role=post;
+      saveEmployees();
+    } else { const ex=employees.find(e=>e.email && String(e.email).toLowerCase()===email.toLowerCase()); if(ex){ if(pname && !ex.name) ex.name=pname; if(post && !ex.role) ex.role=post; if(ex.archived){ ex.archived=false; ex.archivedAt=''; empHist(ex,'back'); } saveEmployees(); } }
+    emailEl.value=''; if(nameEl) nameEl.value=''; if(postEl) postEl.value='';
+    toast('Приглашение создано — человек в команде'); refreshMembers().then(()=>{ renderEmp(); renderMain(); });
+  }catch(e){ toast('Ошибка: '+e.message); }
+  finally{ btn.disabled=false; btn.textContent=ot; }
+}
+
+//====================== инструкция / помощь ======================
+const HELP_VERSION=3;   // при обновлении инструкции увеличить — у всех появится пометка «обновлено» и автопоказ
+const HELP_HTML=`<p>Привет! Это приложение помогает вести <b>программы</b> — наборы задач, чтобы навести порядок и внедрить изменения в компании. Одна программа — это одна цель, понятные признаки «победы» и список задач с исполнителями и сроками. Ниже всё по шагам.</p>
+
+<h4>С чего начать: вход</h4>
+<ol>
+  <li>Открой сайт — появится экран <b>«Вход в CRM»</b>.</li>
+  <li>Введи <b>почту</b> и <b>пароль</b> — их выдаёт владелец или администратор, когда приглашает тебя.</li>
+</ol>
+<div class="hint">Нет доступа или забыл пароль? Просто напиши владельцу — он пришлёт новый.</div>
+<p>После входа ты на главном экране: слева — <b>список программ</b>, справа — открытая программа. Кликни программу слева, и она откроется справа.</p>
+
+<h4>Создать программу</h4>
+<p>Нажми <b>«✨ Новая программа»</b> — появится пустая программа. Дальше можно заполнить всё руками, а можно позвать помощника.</p>
+<p>Нажми <b>«✨ Сгенерировать шапку»</b> — включится AI-помощник:</p>
+<ol>
+  <li>Опиши своими словами, что нужно сделать. Можно печатать, а можно наговорить голосом — кнопка <b>«🎤 Наговорить»</b>.</li>
+  <li>Помощник задаст пару уточняющих вопросов (на них тоже можно ответить голосом 🎤).</li>
+  <li>В ответ он предложит <b>Название</b>, <b>Цель</b>, <b>Критерии приёмки</b> и список задач-подсказок. Отметь галочками те задачи, которые берёшь в работу.</li>
+</ol>
+<div class="hint">Помощник только предлагает — всё можно поправить под себя.</div>
+
+<h4>Заполнить шапку (и кто что может менять)</h4>
+<p>Шапка — это «лицо» программы. В ней три главных поля:</p>
+<ul>
+  <li><b>Название</b> — коротко, о чём программа.</li>
+  <li><b>Цель программы</b> — чего хотим добиться.</li>
+  <li><b>Критерии приёмки</b> — по каким признакам поймём, что всё готово (это «победы»).</li>
+</ul>
+<p>Чтобы поправить эти поля, нажми <b>«✏ Редактировать шапку»</b>, внеси правки и нажми <b>«💾 Сохранить»</b>.</p>
+<div class="hint"><b>Важно про права:</b> программой управляют <b>руководитель</b> (ответственный), <b>создатель программы</b> и <b>владелец</b>. Только они: правят название, цель и критерии, меняют руководителя, набирают и исключают участников, назначают исполнителей на задачи, меняют статус и сроки, удаляют программу.<br>
+<b>Участник</b> может сам: нажать <b>«🙋 Я участвую»</b> (вступить в команду программы), <b>взять свободную задачу себе</b> и снять себя с неё, отмечать выполнение своих задач. Назначать других людей участник не может.<br>
+Чтобы кнопки «про себя» работали, ваша <b>почта входа должна быть вписана</b> в «👥 Команда». Каждое изменение сохраняется в журнал программы — видно, кто, что и когда.</div>
+<p>Внизу шапки настраивается остальное:</p>
+<ul>
+  <li><b>Участники</b> — руководитель отмечает галочками, кто в команде; сотрудник может присоединиться сам.</li>
+  <li><b>Ответственный</b> — руководитель проекта, выбирается из участников.</li>
+  <li><b>Статус</b> — черновик / утверждена / в работе / завершена.</li>
+  <li><b>Срок</b> и <b>Дата завершения</b>.</li>
+</ul>
+
+<h4>Задачи</h4>
+<p>Задачи — это конкретные шаги к цели. У каждой задачи есть:</p>
+<ul>
+  <li>описание и то, <b>что считается выполненным</b> (отчёт или критерий);</li>
+  <li><b>исполнитель</b>, <b>срок</b> и оценка времени;</li>
+  <li><b>тип</b>: первоочередная, жизненно важная или рабочая;</li>
+  <li>галочка <b>«выполнено»</b>;</li>
+  <li>можно прикрепить файл или фото — кнопка <b>«📎 файл»</b>.</li>
+</ul>
+<p>Сверху есть <b>фильтры</b> (по исполнителю, просроченные, стопоры, невыполненные) и <b>лидерборд</b> — кто сколько задач закрыл. Просроченные задачи и «стопоры» подсвечиваются, чтобы сразу бросались в глаза.</p>
+
+<h4>Критерии — это «победы»</h4>
+<p>Критерии приёмки показывают, что программа реально выполнена. Когда признак достигнут, его отмечают галочкой, а общий прогресс виден полоской.</p>
+<div class="hint">Отметить критерий выполненным может <b>только руководитель проекта</b> — так «победа» не засчитается случайно.</div>
+
+<h4>Координация (совещание по программе)</h4>
+<p>Нажми <b>«+ Координация»</b> (🗓) наверху программы, чтобы провести совещание:</p>
+<ol>
+  <li>Отметь, <b>кто был</b>, а кого не было.</li>
+  <li>Пройди по задачам — готовое можно отметить прямо на совещании.</li>
+  <li>Напиши <b>итог</b> встречи.</li>
+</ol>
+<p>Получится <b>документ координации</b>. Все такие документы показываются наверху программы под сводкой. Нажми <b>«▸ показать документ»</b>, чтобы раскрыть его на месте, или <b>«⤢ на весь экран»</b> — для удобного чтения.</p>
+
+<h4>👥 Команда — люди и доступ в одном месте</h4>
+<p>Кнопка <b>«👥 Команда»</b> слева — здесь ВСЯ команда: имя, должность, почта, Telegram, дата добавления и статус доступа (✓ вход есть / ⏳ приглашён / без входа).</p>
+<p>Администратор добавляет человека одной формой:</p>
+<ol>
+  <li>Введи <b>Имя</b>, <b>Должность</b> и <b>Почту</b>. С почтой человек сразу получит доступ: появятся логин, временный пароль и ссылка — нажми <b>«📋 Скопировать всё для отправки»</b> и вышли ему в Telegram.</li>
+  <li>Без почты человек попадёт в список «без входа» (например, рабочий без компьютера) — его всё равно можно назначать исполнителем. Дать доступ позже — кнопка <b>🔑</b> в его строке.</li>
+  <li>Забрать доступ — кнопка <b>⛔</b>; убрать из команды — <b>✕</b> (уходит в архив с датой, можно вернуть ↩).</li>
+</ol>
+<div class="hint"><b>Сотрудник</b> — ведёт программы. <b>Администратор</b> — ещё и управляет людьми: добавляет, даёт и отзывает доступ.</div>
+
+<h4>📎 Файлы и фото к задачам</h4>
+<p>К любой задаче можно прикрепить <b>фото или документ</b> (кнопка «📎 файл» в колонке отчёта). Клик по файлу: <b>фото открывается сразу в окне</b>, PDF — в соседней вкладке; скачивать ничего не нужно (для прочих форматов — скачивание). Файлы уходят в общее облако — их видит вся команда, с любого устройства.</p>
+
+<h4>Полезное: настройки, история</h4>
+<p><b>«⚙ Настройки»</b> — здесь администратор задаёт AI-ключ (Groq) для умной генерации; ключ общий для всей команды. Тут же меняется логотип компании.</p>
+<div class="hint"><b>Важно:</b> почта человека в «👥 Команда» должна <b>совпадать с почтой, которой он входит</b> в приложение. Иначе система его не узнает: не будет кнопок «Я участвую», «Взять себе» и прав руководителя.</div>
+<p><b>Журнал программы</b> внизу — это история всех событий: отметки задач, переносы сроков, координации, изменения шапки, стопоры. Загляни туда, если нужно вспомнить, что и когда происходило.</p>
+
+<h4>Что нового (26.08.2026)</h4>
+<ul>
+  <li>Кнопки «Сотрудники», «+ Добавить сотрудников» и «🔑 Команда» объединены в одну — <b>«👥 Команда»</b>: люди, должности, даты и доступ в одном окне.</li>
+  <li>Фото открываются <b>прямо в приложении</b>, PDF — в соседней вкладке; файлы теперь в общем облаке и видны всей команде.</li>
+  <li>У каждого человека видна <b>дата добавления</b>; удалённые уходят в архив с датой, их можно вернуть.</li>
+  <li>Новые права: участник может сам вступить в программу («🙋 Я участвую») и взять свободную задачу («Взять себе»); назначать других может только руководитель.</li>
+</ul>`;
+const helpBg=document.getElementById('helpBg');
+function helpSeen(){ let s=0; try{ s=parseInt(localStorage.getItem('crm_help_seen')||'0'); }catch(e){} return s||0; }
+function openHelp(){ const b=document.getElementById('helpBody'); if(b && b.dataset.filled!=='1'){ b.innerHTML=HELP_HTML; b.dataset.filled='1'; } if(helpBg) helpBg.classList.add('on'); try{ localStorage.setItem('crm_help_seen',String(HELP_VERSION)); }catch(e){} const bt=document.getElementById('btnHelp'); if(bt) bt.classList.remove('hasnew'); }
+function closeHelp(){ if(helpBg) helpBg.classList.remove('on'); }
+function helpBadge(){ const bt=document.getElementById('btnHelp'); if(bt && helpSeen()<HELP_VERSION) bt.classList.add('hasnew'); }
+function maybeAutoHelp(){ if(helpSeen()<HELP_VERSION) setTimeout(openHelp,500); }
+function printHelp(){ const w=window.open('','_blank'); if(!w){ toast('Разрешите всплывающие окна, чтобы сохранить в PDF'); return; } w.document.write('<!doctype html><html lang="ru"><head><meta charset="utf-8"><title>Инструкция — CRM «Проекты-Программы»</title><style>body{font-family:system-ui,Segoe UI,sans-serif;max-width:720px;margin:24px auto;padding:0 16px;line-height:1.55;color:#222}h3{color:#1e5fd8}h4{color:#1e5fd8;margin:16px 0 6px}.hint{background:#f1f5fb;border-left:3px solid #2f6df6;padding:6px 10px;margin:8px 0;font-size:13px;color:#555}ol,ul{padding-left:22px}li{margin:3px 0}</style></head><body><h3>📖 CRM «Проекты-Программы» — инструкция</h3>'+HELP_HTML+'<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},250);};</scr'+'ipt></body></html>'); w.document.close(); }
+(function(){ const b=document.getElementById('btnHelp'); if(b) b.onclick=openHelp; const c=document.getElementById('helpClose'); if(c) c.onclick=closeHelp; const c2=document.getElementById('helpClose2'); if(c2) c2.onclick=closeHelp; const pp=document.getElementById('helpPrint'); if(pp) pp.onclick=printHelp; helpBadge(); })();
+
+async function revokeMember(m){
+  if(!confirm('Отозвать доступ у «'+(m.email||m.user_id)+'»? Войти он больше не сможет.')) return;
+  try{
+    const {data,error}=await supa.functions.invoke('revoke-user',{body:{user_id:m.user_id}});
+    if(error){ let msg=error.message; try{ const b=await error.context.json(); if(b&&b.error) msg=b.error; }catch(_){}; toast('Ошибка: '+msg); return; }
+    if(!data||!data.ok){ toast('Ошибка: '+((data&&data.error)||'не удалось')); return; }
+    toast('Доступ отозван'); refreshMembers().then(renderEmp);
+  }catch(e){ toast('Ошибка: '+e.message); }
+}
+
+//====================== coordination modal ======================
+const coordBg=document.getElementById('coordBg');
+let _coordP=null;
+function openCoord(p){ _coordP=p; document.getElementById('coordDate').value=today(); renderCoordRoster(); renderCoordTasks(); document.getElementById('coordNote').value=''; coordBg.classList.add('on'); }
+function renderCoordRoster(){
+  const p=_coordP, wrap=document.getElementById('coordRoster'); wrap.innerHTML='';
+  const parts=(p.participants||[]);
+  if(!parts.length){ wrap.appendChild(el('div','minihint','У программы нет участников — добавьте их в «Участники».')); return; }
+  parts.forEach(pt=>{ const row=el('label','emppick'); const cb=el('input'); cb.type='checkbox'; cb.className='chk'; cb.checked=true; cb.dataset.emp=pt.empId; row.append(cb, el('span','emppicklab', empLabel(pt.empId))); wrap.appendChild(row); });
+}
+function setTaskDone(p,t,val){
+  if(val===!!t.done) return;
+  t.done=val;
+  if(val){ t.doneDate=t.doneDate||today(); pushEvent(p,'task_done','На координации отмечено «выполнено»: №'+t.n+(t.text?(' — '+t.text.slice(0,50)):'')); }
+  else { t.doneDate=''; pushEvent(p,'task_reopened','На координации снята отметка: №'+t.n); }
+  save();
+}
+function renderCoordTasks(){
+  const p=_coordP, wrap=document.getElementById('coordTasks'); wrap.innerHTML='';
+  if(!p.tasks.length){ wrap.appendChild(el('div','minihint','В программе пока нет задач.')); return; }
+  p.tasks.forEach(t=>{
+    const row=el('label','emppick'); const cb=el('input'); cb.type='checkbox'; cb.className='chk'; cb.checked=!!t.done; cb.dataset.task=t.id;
+    cb.onchange=()=>{ setTaskDone(p,t,cb.checked); renderCoordTasks(); };
+    const lab=el('span','emppicklab','№'+t.n+' · '+(t.text||'(без описания)').slice(0,70)); if(t.done) lab.style.textDecoration='line-through';
+    row.append(cb,lab); wrap.appendChild(row);
+  });
+}
+document.getElementById('coordCancel').onclick=()=>coordBg.classList.remove('on');
+document.getElementById('coordSave').onclick=()=>{
+  const p=_coordP; if(!p) return;
+  const boxes=[...document.querySelectorAll('#coordRoster input')];
+  const absentIds=boxes.filter(b=>!b.checked).map(b=>b.dataset.emp);
+  const absent=absentIds.map(id=>empName(id)).join(', ');
+  const roster=(p.participants||[]).map(x=>x.empId);
+  const reviewed=p.tasks.map(t=>({n:t.n,text:t.text||'',done:!!t.done}));
+  const note=document.getElementById('coordNote').value.trim();
+  const date=document.getElementById('coordDate').value||today();
+  pushEvent(p,'coordination','Координация'+(note?(': '+note):' (без заметки)'),{attendance:absentIds.length?'partial':'all',absent,absentIds,date,note,roster,reviewed,status:'done',source:'manual'});
+  coordBg.classList.remove('on'); save(); renderMain(); toast('Координация записана');
+};
+//--- coordination document (read-only) ---
+const coordDocBg=document.getElementById('coordDocBg');
+document.getElementById('coordDocClose').onclick=()=>coordDocBg.classList.remove('on');
+// Построитель тела документа координации (переиспользуется инлайн в журнале и в модалке)
+function buildCoordDoc(ev){
+  const b=el('div');
+  const sec=title=>{ const d=el('div'); d.style.margin='10px 0 4px'; d.appendChild(el('div','partslab',title)); b.appendChild(d); };
+  const roster=ev.roster||[], absent=ev.absentIds||[], were=roster.filter(id=>!absent.includes(id));
+  sec('Кто был');
+  if(!roster.length && !absent.length){ b.appendChild(el('div','minihint','Данных о явке нет (старая запись).')); }
+  else { const wl=el('div'); wl.style.fontSize='13px';
+    wl.appendChild(el('div',null,'✅ Были: '+(were.length?were.map(id=>empName(id)).join(', '):'—')));
+    wl.appendChild(el('div',null,'⬜ Не были: '+(absent.length?absent.map(id=>empName(id)).join(', '):'—')));
+    b.appendChild(wl); }
+  sec('Задачи на эту дату');
+  const rv=ev.reviewed||[];
+  if(!rv.length){ b.appendChild(el('div','minihint','Снимок задач не сохранён (старая запись).')); }
+  else { const list=el('div','rosterlist'); rv.forEach(t=>{ const r=el('div','srow'); const s=el('span',null,(t.done?'✓ ':'○ ')+'№'+t.n+' '+(t.text||'')); if(t.done) s.style.color='var(--ok-ink)'; r.appendChild(s); list.appendChild(r); }); b.appendChild(list); }
+  if(ev.note){ sec('Итог'); const n=el('div',null,ev.note); n.style.fontSize='13px'; b.appendChild(n); }
+  return b;
+}
+function openCoordDoc(ev){
+  document.getElementById('coordDocTitle').textContent='🗓 Координация — '+(ev.date||fmtDateTime(ev.at));
+  const b=document.getElementById('coordDocBody'); b.innerHTML='';
+  b.appendChild(buildCoordDoc(ev));
+  b.appendChild(el('div','minihint','Это закрытый документ прошедшей координации — только для чтения.'));
+  coordDocBg.classList.add('on');
+}
+//--- participants picker ---
+const partBg=document.getElementById('partBg');
+let _partP=null;
+function openPartPicker(p){ _partP=p; renderPartList(); partBg.classList.add('on'); }
+function renderPartList(){
+  const p=_partP, wrap=document.getElementById('partList'); wrap.innerHTML='';
+  const act=employees.filter(e=>!e.archived);
+  if(!act.length){ wrap.appendChild(el('div','minihint','Команда пуста. Нажмите «👥 Команда» слева и добавьте людей.')); return; }
+  act.forEach(e=>{
+    const row=el('label','emppick'); const cb=el('input'); cb.type='checkbox'; cb.className='chk'; cb.checked=(p.participants||[]).some(z=>z.empId===e.id);
+    cb.onchange=()=>{
+      if(cb.checked){ if(!(p.participants||[]).some(z=>z.empId===e.id)){ p.participants=[...(p.participants||[]),{empId:e.id,since:today()}]; pushEvent(p,'participant_added','Добавлен участник: '+empName(e.id)); } save(); }
+      else { if(!removeParticipant(p,e.id)){ cb.checked=true; return; } save(); }
+    };
+    row.append(cb, el('span','emppicklab', (e.name||'(без имени)')+(e.role?(' · '+e.role):''))); wrap.appendChild(row);
+  });
+}
+document.getElementById('partClose').onclick=()=>{ partBg.classList.remove('on'); renderMain(); };
+
+//====================== export / import / seed ======================
+document.getElementById('btnExport').onclick=()=>{
+  const env={_type:'crm_programs_export',version:2,exportedAt:today(),employees,programs:state};
+  const blob=new Blob([JSON.stringify(env,null,2)],{type:'application/json'});
+  const u=URL.createObjectURL(blob), a=el('a'); a.href=u; a.download='crm-programmy-'+today()+'.json'; a.click(); URL.revokeObjectURL(u); toast('Экспортировано');
+};
+const blobToDataURL=b=>new Promise((res,rej)=>{ const fr=new FileReader(); fr.onload=()=>res(fr.result); fr.onerror=()=>rej(fr.error); fr.readAsDataURL(b); });
+const dataURLToBlob=async durl=>await (await fetch(durl)).blob();
+document.getElementById('btnExportFull').onclick=async()=>{
+  toast('Собираю бэкап со вложениями…');
+  const attachmentsData={};
+  for(const p of state) for(const t of (p.tasks||[])) for(const a of (t.attachments||[])){ try{ const b=await getBlob(a.id); if(b) attachmentsData[a.id]=await blobToDataURL(b); }catch(e){} }
+  const env={_type:'crm_programs_export',version:2,exportedAt:today(),employees,programs:state,attachmentsData};
+  const blob=new Blob([JSON.stringify(env)],{type:'application/json'});
+  const u=URL.createObjectURL(blob), a=el('a'); a.href=u; a.download='crm-backup-'+today()+'.json'; a.click(); URL.revokeObjectURL(u); toast('Бэкап готов');
+};
+document.getElementById('btnImport').onclick=()=>document.getElementById('fileImport').click();
+document.getElementById('fileImport').onchange=e=>{
+  const f=e.target.files[0]; if(!f)return; const rd=new FileReader();
+  rd.onload=()=>{ try{ const data=JSON.parse(rd.result);
+    const programs=Array.isArray(data)?data:(data.programs||[]);
+    const emps=Array.isArray(data)?null:data.employees;
+    if(confirm('Импортировать '+programs.length+' программ'+(emps?(' и '+emps.length+' сотрудников'):'')+'? Текущие данные будут заменены.')){
+      state=programs.map(normalize);
+      if(emps){ employees=emps.map(x=>Object.assign(newEmployee(),x)); saveEmployees(); }
+      const ad=(!Array.isArray(data))&&data.attachmentsData;
+      if(ad){ Object.keys(ad).forEach(id=>{ dataURLToBlob(ad[id]).then(b=>putBlob(id,b)).catch(()=>{}); }); }
+      selected=state[0]?state[0].id:null; save(); renderMain(); toast('Импортировано'+(ad?' (со вложениями)':''));
+    }
+  }catch(err){ alert('Не удалось прочитать файл JSON.'); } e.target.value=''; };
+  rd.readAsText(f);
+};
+document.getElementById('btnSeed').onclick=()=>{ if(confirm('Добавить две программы-образца из шаблонов Высоцкого?')){ seedData().map(migrate).forEach(p=>state.push(p)); selected=state[state.length-1].id; save(); renderMain(); toast('Образцы добавлены'); } };
+function normalize(p){ p.id=p.id||uid(); p.tasks=(p.tasks||[]).map((t,i)=>Object.assign(newTask(i+1),t)); return migrate(Object.assign(newProgram(),p)); }
+
+/* ==== TODO (итерация 2): Telegram-бот ====
+   Точка подключения: на сохранении задачи/программы отправлять в бот;
+   исполнителю приходит список задач на день/неделю, кнопка «Сдать отчёт» -> t.done=true, t.reportText=...
+   Нужны: bot token, chat_id исполнителя (поле в задаче), бэкенд-прокси для Telegram Bot API. */
+
+//====================== seed (образцы из references/) ======================
+function seedData(){
+  const P1={id:uid(),number:'1',title:'Запуск статистики «Баллы по проверочному списку отдела коммуникации»',
+    goal:'Запустить в работу статистику «Баллы по проверочному списку отдела коммуникации».',
+    criteria:'Проверочный список отдела коммуникации ведётся; стандарты работы отдела описаны так, что список можно вести без автора; статистика за первую неделю посчитана и подан отчёт.',
+    owner:'',status:'draft',dueDate:'',doneDate:'',approvedDate:'',tasks:[
+      t(1,`Описать стандарты того, как принимать звонки на рабочий телефон компании.`,`Отправить на эл. почту описание стандарта.`),
+      t(2,`Описать стандарт приёма посетителей в офисе.`,`Отправить на эл. почту описание стандарта.`),
+      t(3,`Завести журнал регистрации входящих звонков.`,`Отправить на эл. почту фотографию открытого на первой странице журнала.`),
+      t(4,`Составить проверочный список, где перечисляются показатели порядка в помещениях офиса.`,`Отправить на эл. почту проверочный список.`),
+      t(5,`Составить инструктивное письмо о канцтоварах.`,`Отправить на эл. почту инструктивное письмо.`),
+      t(6,`Составить стандартный бланк заказа канцтоваров: на какой период заказывать, за сколько дней обрабатывается заказ, когда доставка; перечень стандартных канцтоваров + строка для дополнительных.`,`Отправить на эл. почту бланк.`),
+      t(7,`Составить список стандартных бланков, которые необходимо поддерживать в наличии.`,`Отправить на эл. почту список бланков.`),
+      t(8,`Завести журнал регистрации входящей и исходящей корреспонденции.`,`Отправить на эл. почту фотографию открытого на первой странице журнала.`),
+      t(9,`Завести журнал регистрации сбоев в работе Интернета, WiFi, компьютеров и телефонов.`,`Отправить на эл. почту фотографию открытого на первой странице журнала.`),
+      t(10,`Пункты проверочного списка о коммуникационном центре, корзинах сотрудников и вовремя обработанных посланиях временно вычеркнуть до введения положения о системе письменной коммуникации.`,``),
+      t(11,`Посчитать статистику за первую неделю, подать отчёт по статистике за первую неделю.`,``)
+    ]};
+  const P2={id:uid(),number:'2',title:'Запуск статистики «Стоимость предоставленного продукта безупречного качества»',
+    goal:'Вывести точку рентабельности.',
+    criteria:'Выведена точка рентабельности всех технических отделений, отделов, администраторов секций и техников; неделя закрывается в цифрах; есть еженедельный разбор выгоды по всем видам работ.',
+    owner:'Анна Боковець',status:'draft',dueDate:'',doneDate:'',approvedDate:'',tasks:[
+      ta(1,`Сформировать оргсхему технического отдела 4-А, 4-Б.`,`Отправить на эл. почту проверочный список с критериями качества.`,'А.Б'),
+      ta(2,`Сформировать оргсхему технического отдела 4-С.`,`Отправить на эл. почту описание всех пунктов в виде инструктивного письма.`,'Л.К'),
+      ta(3,`Составить план расстановки сотрудников на посты — всех внешних и внутренних.`,``,'А.Б'),
+      ta(4,`Описать функции администраторов секции (см. таблицу функций) 4-А, 4-Б.`,`Отправить на эл. почту описание функций должности менеджера секции контроля качества по установленной форме.`,'А.Б'),
+      ta(5,`Описать функции администраторов секции (см. таблицу функций) 4-С.`,`Отправить на эл. почту описание функций должности менеджера секции контроля качества по установленной форме.`,'В.Д'),
+      ta(6,`Актуализировать оргсхему на портале Платрум, распечатать и повесить.`,``,'Л.К'),
+      ta(7,`Сделать прояснение продукта и функций сотрудникам секции.`,`Отправить на эл. почту отзыв сотрудника после прояснения продукта и функций.`,'А.Б, Л.К, Е.Д'),
+      ta(8,`Оформить новые приказы соответственно с оргсхемой.`,``,'А.Б')
+    ]};
+  return [P1,P2];
+  function t(n,text,report){ return {id:uid(),n,text,report,assignee:'',due:'',estimate:'',type:'work',done:false,doneDate:''}; }
+  function ta(n,text,report,assignee){ const x=t(n,text,report); x.assignee=assignee; return x; }
+}
+
+//====================== Supabase: общий доступ команды ======================
+const SUPA_URL='https://canlnlobmalsrmnormnz.supabase.co';
+const SUPA_KEY='sb_publishable_hZxYD2-HbLEusMXIQviHqw_nOioD8hU';
+let supa=null, cloudProgIds=new Set(), cloudEmpIds=new Set(), pushT=null;
+window.__supaReady=false;
+
+function cloudPushPrograms(){
+  if(!window.__supaReady||!supa) return;
+  clearTimeout(pushT);
+  pushT=setTimeout(async()=>{
+    try{
+      if(state.length) await supa.from('pp_programs').upsert(state.map(p=>({id:p.id,data:p,number:parseInt(p.number)||null,updated_at:new Date().toISOString()})));
+      const ids=new Set(state.map(p=>p.id));
+      const del=[...cloudProgIds].filter(id=>!ids.has(id));
+      if(del.length) await supa.from('pp_programs').delete().in('id',del);
+      cloudProgIds=ids;
+    }catch(e){ console.warn('push programs',e); }
+  },800);
+}
+function cloudPushEmployees(){
+  if(!window.__supaReady||!supa) return;
+  (async()=>{ try{
+    if(employees.length) await supa.from('pp_employees').upsert(employees.map(e=>({id:e.id,data:e,updated_at:new Date().toISOString()})));
+    const ids=new Set(employees.map(e=>e.id));
+    const del=[...cloudEmpIds].filter(id=>!ids.has(id));
+    if(del.length) await supa.from('pp_employees').delete().in('id',del);
+    cloudEmpIds=ids;
+  }catch(e){ console.warn('push emp',e); } })();
+}
+async function cloudLoad(){
+  const [pr,em]=await Promise.all([supa.from('pp_programs').select('id,data'),supa.from('pp_employees').select('id,data')]);
+  if(pr.error) throw pr.error;
+  const progs=(pr.data||[]).map(r=>migrate(Object.assign({},r.data,{id:r.id})));
+  const emps=(em.data||[]).map(r=>Object.assign({},r.data,{id:r.id}));
+  cloudProgIds=new Set(progs.map(p=>p.id)); cloudEmpIds=new Set(emps.map(e=>e.id));
+  return {progs,emps};
+}
+function hideLogin(){ const o=document.getElementById('authOverlay'); if(o) o.style.display='none'; }
+function showLogin(msg){
+  let o=document.getElementById('authOverlay');
+  if(!o){
+    o=document.createElement('div'); o.id='authOverlay';
+    o.style.cssText='position:fixed;inset:0;z-index:99999;background:#eef0f3;display:flex;align-items:center;justify-content:center;font-family:system-ui,Segoe UI,sans-serif';
+    o.innerHTML='<form id="authForm" style="background:#fff;padding:30px;border-radius:14px;box-shadow:0 10px 44px rgba(0,0,0,.14);width:320px;display:flex;flex-direction:column;gap:12px">'
+      +'<div style="font-size:20px;font-weight:700;color:#2b2b2b">Вход в CRM</div>'
+      +'<div style="font-size:13px;color:#8a8f98;margin-top:-8px">Проекты-Программы</div>'
+      +'<input id="authEmail" type="email" placeholder="Почта" autocomplete="username" style="padding:11px;border:1px solid #dcdfe4;border-radius:9px;font-size:14px">'
+      +'<input id="authPass" type="password" placeholder="Пароль" autocomplete="current-password" style="padding:11px;border:1px solid #dcdfe4;border-radius:9px;font-size:14px">'
+      +'<button type="submit" style="padding:11px;border:0;border-radius:9px;background:#3ecf8e;color:#04361f;font-weight:700;font-size:14px;cursor:pointer">Войти</button>'
+      +'<div id="authMsg" style="font-size:12px;color:#8a8f98;min-height:15px"></div>'
+      +'<div style="font-size:11px;color:#b0b4bb">Нет доступа — обратитесь к владельцу.</div>'
+      +'</form>';
+    document.body.appendChild(o);
+    o.querySelector('#authForm').addEventListener('submit',async ev=>{
+      ev.preventDefault();
+      const email=o.querySelector('#authEmail').value.trim(), pass=o.querySelector('#authPass').value;
+      const m=o.querySelector('#authMsg'); m.style.color='#8a8f98'; m.textContent='Проверяю…';
+      const {data,error}=await supa.auth.signInWithPassword({email,password:pass});
+      if(error){ m.style.color='#c0392b'; m.textContent='Не удалось войти: '+error.message; }
+      else { m.style.color='#2e7d32'; m.textContent='Готово'; await afterLogin(data.session); }
+    });
+  }
+  o.style.display='flex';
+  if(msg){ const m=o.querySelector('#authMsg'); if(m){ m.style.color='#c0392b'; m.textContent=msg; } }
+}
+function addLogoutBtn(email){
+  let b=document.getElementById('logoutBtn');
+  if(!b){ b=document.createElement('button'); b.id='logoutBtn';
+    b.style.cssText='position:fixed;right:10px;bottom:10px;z-index:9998;font-size:12px;padding:6px 10px;border:1px solid #dcdfe4;border-radius:8px;background:#fff;color:#666;cursor:pointer;opacity:.9';
+    b.onclick=async()=>{ try{ await supa.auth.signOut(); }catch(_){} location.reload(); };
+    document.body.appendChild(b);
+  }
+  b.textContent='⎋ Выйти'; b.title=email||'';
+}
+async function afterLogin(session){
+  hideLogin(); window.__supaReady=false;
+  try{
+    const {progs,emps}=await cloudLoad();
+    if(progs.length||emps.length){
+      state=progs; if(emps.length) employees=emps.map(empMigrate);
+      lsSet(LS_KEY,JSON.stringify(state)); lsSet(LS_EMP,JSON.stringify(employees));
+    } else if(state.length||employees.length){
+      // первый пользователь — заливаем локальные данные в общую базу
+      if(state.length) await supa.from('pp_programs').upsert(state.map(p=>({id:p.id,data:p,number:parseInt(p.number)||null})));
+      if(employees.length) await supa.from('pp_employees').upsert(employees.map(e=>({id:e.id,data:e})));
+      cloudProgIds=new Set(state.map(p=>p.id)); cloudEmpIds=new Set(employees.map(e=>e.id));
+    }
+  }catch(e){ console.warn('cloudLoad',e); if(typeof toast==='function') toast('⚠ База недоступна — работаю локально'); }
+  window.__supaReady=true;
+  if(!state.length && !localStorage.getItem('crm_seeded')){ state=seedData().map(migrate); save(); }
+  try{ localStorage.setItem('crm_seeded','1'); }catch(e){}
+  if(!selected || !state.find(p=>p.id===selected)) selected=state[0]?state[0].id:null;
+  await loadSharedKey();
+  await captureRole(session);          // роль и почта — ДО отрисовки, иначе права в UI видны неверно
+  renderMain(); applyBrandLogo();
+  addLogoutBtn(session&&session.user&&session.user.email);
+  maybeAutoHelp();
+}
+function localBoot(){
+  window.__supaReady=false;
+  if(!state.length && !localStorage.getItem('crm_seeded')){ state=seedData().map(migrate); save(); }
+  try{ localStorage.setItem('crm_seeded','1'); }catch(e){}
+  if(!selected || !state.find(p=>p.id===selected)) selected=state[0]?state[0].id:null;
+  renderMain(); applyBrandLogo();
+  maybeAutoHelp();
+}
+async function bootAuth(){
+  applyBrandLogo();
+  if(!window.supabase){ localBoot(); return; }
+  supa=window.supabase.createClient(SUPA_URL,SUPA_KEY);
+  try{
+    const {data:{session}}=await supa.auth.getSession();
+    if(session) await afterLogin(session); else showLogin();
+  }catch(e){ console.warn('auth init',e); showLogin('Не удалось подключиться к базе'); }
+}
+bootAuth();
+</script>
+</body>
+</html>
