@@ -204,6 +204,55 @@
   .dbar .bar{height:8px}
   .dbar .dnum{font-size:12px;color:var(--faint,#8a8f98);white-space:nowrap;min-width:56px;text-align:right}
   @media(max-width:640px){.dtiles{grid-template-columns:repeat(2,1fr)}}
+  /* ── доска прогресса: программа × задача ─────────────────────────────── */
+  .board{display:flex;flex-direction:column;gap:14px}
+  .bwrap{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .btools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px 13px;border-bottom:1px solid var(--line)}
+  .btools select{max-width:230px}
+  .bseg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+  .bseg button{border:0;border-radius:0;background:#fff;color:var(--muted);padding:6px 12px}
+  .bseg button+button{border-left:1px solid var(--line)}
+  .bseg button.on{background:var(--accent-soft);color:var(--accent-ink);font-weight:600}
+  .bnote{margin-left:auto;font-size:12.5px;color:var(--faint)}
+  .bscroll{overflow-x:auto}
+  table.bmx{border-collapse:separate;border-spacing:0;min-width:100%}
+  table.bmx th,table.bmx td{padding:0;text-align:center;vertical-align:middle}
+  .bcol{font-size:11px;font-weight:600;color:var(--faint);padding:9px 0 7px;min-width:62px;white-space:nowrap}
+  table.bmx th.brow{text-align:left}
+  .brow{position:sticky;left:0;z-index:2;background:#fff;text-align:left;padding:7px 13px 7px 14px;
+    border-right:1px solid var(--line);min-width:280px;max-width:280px;cursor:pointer}
+  table.bmx thead .brow{border-bottom:1px solid var(--line)}
+  table.bmx tbody td,table.bmx tbody th{border-top:1px solid #eef1f4}
+  table.bmx tbody tr:hover .brow{background:var(--accent-soft)}
+  .brt{display:block;font-weight:600;font-size:13.5px;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .brs{display:flex;align-items:center;gap:6px;color:var(--faint);font-size:11.5px;margin-top:2px;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .brn{display:inline-block;min-width:18px;color:var(--faint);font-weight:600;font-size:12px}
+  .bcell{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;height:42px;margin:3px 4px;
+    border-radius:8px;border:1px solid transparent;font-size:11.5px;cursor:pointer}
+  .bcell b{font-weight:600;font-size:11.5px}
+  .bcell .bic{font-size:12px;line-height:1}
+  .bcell:hover{box-shadow:0 0 0 2px var(--accent) inset}
+  .k-done{background:var(--ok-soft);border-color:rgba(31,157,87,.28);color:var(--ok-ink)}
+  .k-plan{background:#fff;border-color:var(--line);color:var(--muted)}
+  .k-soon{background:var(--accent-soft);border-color:rgba(47,109,246,.3);color:var(--accent-ink)}
+  .k-late{background:var(--danger-soft);border-color:rgba(214,69,69,.35);color:#a83232;font-weight:600}
+  .k-stop{background:var(--warn-soft);border-color:rgba(201,130,26,.4);color:var(--warn-ink);font-weight:600}
+  .k-noda{background:repeating-linear-gradient(135deg,transparent 0 5px,rgba(107,119,135,.09) 5px 10px);
+    border:1px dashed var(--line);color:var(--faint);cursor:pointer}
+  .k-none{background:#eef0f3;border-color:#e2e6ea;cursor:default}
+  .k-none:hover{box-shadow:none}
+  .btot{padding:0 13px 0 8px;white-space:nowrap;text-align:right}
+  .btot .bar{width:60px;height:6px;display:inline-block;vertical-align:middle}
+  .btot .bn{font-size:12px;color:var(--faint);margin-left:7px}
+  .bleg{display:flex;flex-wrap:wrap;gap:7px 16px;padding:10px 13px;border-top:1px solid var(--line);color:var(--muted);font-size:12.5px}
+  .bleg span.l{display:inline-flex;align-items:center;gap:6px}
+  .bsw{width:15px;height:15px;border-radius:5px;border:1px solid transparent;flex:none}
+  .brs .avat{width:18px;height:18px;font-size:9px}
+  .bstripe{display:inline-block;width:3px;height:25px;border-radius:2px;margin-right:8px;flex:none;background:#b9c0cc}
+  .bstripe.s-approved{background:#2f6df6} .bstripe.s-in_progress{background:#e0821a} .bstripe.s-done{background:var(--ok)}
+  .trow.flash{box-shadow:0 0 0 2px var(--accent);border-radius:10px}
+  @media(max-width:820px){ .brow{min-width:200px;max-width:200px} .bcol{min-width:54px} }
   /* телефон: подписи полей в задачах и крупные кнопки под палец */
   .cellcol .lab{display:none}
   @media(max-width:820px){
@@ -375,6 +424,7 @@
     <div class="actions">
       <button class="primary" id="btnNew">+ Программа</button>
       <button class="ghost" id="btnDash" title="Сводка по всем программам: что просрочено, где стопоры, кто тормозит">📊 Сводка</button>
+      <button class="ghost" id="btnBoard" title="Доска прогресса: все программы и задачи одной таблицей — где выполнено, где горит">📋 Доска</button>
       <button class="ghost" id="btnEmp" title="Команда: люди, должности и доступ в CRM — всё в одном месте">👥 Команда</button>
       <input type="file" id="fileImport" accept="application/json" hidden>
     </div>
@@ -714,6 +764,7 @@ function renderMain(){
   renderList();
   const m=document.getElementById('main'); m.innerHTML='';
   if(view==='dash'){ leaveRoom(); m.appendChild(renderDashboard()); return; }
+  if(view==='board'){ leaveRoom(); m.appendChild(renderBoard()); return; }
   const p=cur();
   if(!p){ const e=el('div','empty'); e.innerHTML='<div class="emptybox"><div class="emptyic">📋</div><h2>Пока не выбрана программа</h2><p>Выберите программу в списке слева или создайте новую — помощник поможет сформулировать цель, критерии и первые шаги.</p><button class="primary" id="emptyNew">✨ Новая программа</button></div>'; m.appendChild(e); const en=document.getElementById('emptyNew'); if(en) en.onclick=()=>document.getElementById('btnNew').click(); return; }
 
@@ -1083,6 +1134,178 @@ function renderDashboard(){
     pl.appendChild(r);
   });
   box.appendChild(pl);
+  return box;
+}
+
+// Разовая настройка (решение владельца от 07.09.2026): Дмитрий Краменчук —
+// главный менеджер проектов, видит все программы. Отмечаем флаг «★ Менеджер»
+// один раз, как только он появится в справочнике; дальше роль меняется руками.
+function seedChiefPM(){
+  try{
+    if(localStorage.getItem('pp_seed_chief_pm')==='1') return;
+    if(!(soloMode()||isAdmin())) return;                 // писать в справочник может владелец
+    const d=employees.find(e=>!e.archived && /краменчук/i.test(e.name||''));
+    if(!d) return;                                       // ещё не заведён — попробуем в следующий раз
+    if(!d.pm){ d.pm=true; (d.hist||(d.hist=[])).push({a:'pm',at:today()}); saveEmployees(); }
+    localStorage.setItem('pp_seed_chief_pm','1');
+  }catch(e){ console.warn('seedChiefPM',e); }
+}
+
+//====================== доска прогресса (программа × задача) ======================
+// Экран для владельца и менеджера проектов: одна таблица, где строка — программа,
+// столбец — задача №N, а клетка показывает СОСТОЯНИЕ задачи (а не просто дату).
+// Дата в клетке — та самая, что стоит в задаче: срок готовности, а у выполненных —
+// день, когда отметили выполнение.
+let boardFilter={owner:'',scope:'active'};
+// Кто какие программы видит на доске: владелец и менеджер проектов — все,
+// остальные — только те, где они руководят, участвуют или отвечают за задачу.
+function boardPrograms(){
+  const all=livePrograms();
+  if(soloMode()||isAdmin()||isPM()) return all;
+  const me=myEmpId(), em=(window.__meEmail||'').toLowerCase();
+  return all.filter(p=>{
+    if(p.createdBy && em && String(p.createdBy).toLowerCase()===em) return true;
+    if(!me) return false;
+    if(p.ownerId===me || p.pmId===me) return true;
+    if((p.participants||[]).some(x=>x.empId===me)) return true;
+    return (p.tasks||[]).some(t=>t.assigneeId===me);
+  });
+}
+const fmtDShort=d=>{ const a=(''+(d||'')).split('-'); return a.length===3?(a[2]+'.'+a[1]):''; };
+const plusDays=n=>{ const d=new Date(); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); };
+// Состояние одной задачи для клетки доски
+function taskState(t){
+  if(t.done) return {k:'done', d:t.doneDate||t.due||''};
+  if(t.stopper) return {k:'stop', d:t.due||''};
+  if(!t.due) return {k:'noda', d:''};
+  if(t.due<today()) return {k:'late', d:t.due};
+  if(t.due<=plusDays(7)) return {k:'soon', d:t.due};
+  return {k:'plan', d:t.due};
+}
+const BOARD_WORD={done:'Выполнено',late:'Просрочено',soon:'Срок на этой неделе',plan:'В работе',stop:'Стопор — работа встала',noda:'Срок не назначен'};
+function renderBoard(){
+  const box=el('div','board');
+  const head=el('div','dashhead');
+  head.appendChild(el('h2',null,'📋 Доска прогресса'));
+  const back=el('button','tiny','← К программам'); back.onclick=()=>{ view='program'; renderMain(); }; head.appendChild(back);
+  box.appendChild(head);
+
+  const mine=boardPrograms();
+  const wrap=el('div','bwrap');
+
+  //--- панель: что показывать и по какому руководителю ---
+  const tools=el('div','btools');
+  const seg=el('div','bseg');
+  [['active','В работе'],['all','Все'],['problem','С отклонениями']].forEach(([k,lab])=>{
+    const b=el('button',boardFilter.scope===k?'on':'',lab);
+    b.onclick=()=>{ boardFilter.scope=k; renderMain(); }; seg.appendChild(b);
+  });
+  tools.appendChild(seg);
+
+  const owners=[...new Set(mine.map(p=>p.ownerId).filter(Boolean))]
+    .sort((a,b)=>empName(a).localeCompare(empName(b),'ru'));
+  const sel=el('select'); sel.title='Показать программы одного руководителя';
+  const o0=el('option',null,'Все руководители'); o0.value=''; if(!boardFilter.owner)o0.selected=true; sel.appendChild(o0);
+  owners.forEach(id=>{ const o=el('option',null,empName(id)); o.value=id; if(boardFilter.owner===id)o.selected=true; sel.appendChild(o); });
+  if(mine.some(p=>!p.ownerId)){ const on=el('option',null,'Без руководителя'); on.value='__none__'; if(boardFilter.owner==='__none__')on.selected=true; sel.appendChild(on); }
+  // читаем выбранный вариант напрямую: надёжнее, чем sel.value
+  sel.onchange=()=>{ const o=[...sel.querySelectorAll('option')].find(x=>x.selected);
+    boardFilter.owner=o?o.value:''; renderMain(); };
+  tools.appendChild(sel);
+
+  //--- отбор строк ---
+  let progs=mine.slice();
+  if(boardFilter.owner==='__none__') progs=progs.filter(p=>!p.ownerId);
+  else if(boardFilter.owner) progs=progs.filter(p=>p.ownerId===boardFilter.owner);
+  if(boardFilter.scope==='active') progs=progs.filter(p=>p.status==='approved'||p.status==='in_progress');
+  else if(boardFilter.scope==='problem') progs=progs.filter(p=>(p.tasks||[]).some(t=>isOverdue(t)||(t.stopper&&!t.done)||(!t.due&&!t.done)));
+
+  const allTasks=progs.reduce((a,p)=>a+(p.tasks||[]).length,0);
+  const lateN=progs.reduce((a,p)=>a+(p.tasks||[]).filter(isOverdue).length,0);
+  tools.appendChild(el('span','bnote','показано '+progs.length+' из '+mine.length+' · '+allTasks+' задач'+(lateN?(' · '+lateN+' просрочено'):'')));
+  wrap.appendChild(tools);
+
+  if(!progs.length){
+    wrap.appendChild(el('div','minihint',mine.length
+      ? 'При таком отборе программ нет — смените фильтр сверху.'
+      : 'Вам пока не видно ни одной программы: доска показывает те, где вы руководитель, менеджер или участник.'));
+    box.appendChild(wrap); return box;
+  }
+
+  //--- таблица ---
+  const maxT=Math.max(1,...progs.map(p=>(p.tasks||[]).length));
+  const scroll=el('div','bscroll'); const tb=el('table','bmx');
+  const thead=el('thead'); const hr=el('tr');
+  const h0=el('th','brow'); h0.appendChild(el('span','brt','Программа')); hr.appendChild(h0);
+  for(let i=1;i<=maxT;i++) hr.appendChild(el('th','bcol','№'+i));
+  const hz=el('th','bcol','Готово'); hz.style.paddingRight='13px'; hr.appendChild(hz);
+  thead.appendChild(hr); tb.appendChild(thead);
+
+  const openProg=(p,idx)=>{
+    view='program'; selected=p.id; resetTaskFilter(); save(); renderMain();
+    if(idx==null) return;
+    const rows=document.querySelectorAll('#main .trow'); const r=rows[idx];
+    if(r){ if(r.scrollIntoView) try{ r.scrollIntoView({block:'center'}); }catch(e){ r.scrollIntoView(); }
+      r.classList.add('flash'); setTimeout(()=>r.classList.remove('flash'),1800); }
+  };
+
+  const tbody=el('tbody');
+  progs.forEach(p=>{
+    const tasks=p.tasks||[]; const doneN=tasks.filter(t=>t.done).length;
+    const pct=tasks.length?Math.round(doneN/tasks.length*100):0;
+    const tr=el('tr');
+
+    const th=el('th','brow'); const flex=el('div'); flex.style.cssText='display:flex;align-items:center';
+    flex.appendChild(el('span','bstripe s-'+p.status));
+    const col=el('span'); col.style.minWidth='0';
+    const t1=el('span','brt'); t1.appendChild(el('span','brn',p.number?String(p.number):'—'));
+    t1.appendChild(document.createTextNode(' '+(p.title||'без названия')));
+    col.appendChild(t1);
+    const t2=el('span','brs');
+    if(p.ownerId){ const a=el('span','avat',initials(empName(p.ownerId))); t2.appendChild(a); t2.appendChild(el('span',null,empName(p.ownerId))); }
+    else t2.appendChild(el('span',null,'руководитель не назначен'));
+    const dc=daysSinceCoord(p);
+    if((p.status==='approved'||p.status==='in_progress')){
+      if(dc===null) t2.appendChild(el('span',null,'· координации не было'));
+      else if(dc>=7) t2.appendChild(el('span',null,'· координация '+dc+' дн. назад'));
+    }
+    col.appendChild(t2); flex.appendChild(col); th.appendChild(flex);
+    th.title='Открыть программу';
+    th.onclick=()=>openProg(p,null);
+    tr.appendChild(th);
+
+    for(let i=0;i<maxT;i++){
+      const td=el('td'); const t=tasks[i];
+      if(!t){ td.appendChild(el('div','bcell k-none')); tr.appendChild(td); continue; }
+      const s=taskState(t);
+      const c=el('div','bcell k-'+s.k);
+      const ic=s.k==='done'?'✓':s.k==='stop'?'⛔':s.k==='late'?'⚠':'';
+      if(ic) c.appendChild(el('span','bic',ic));
+      c.appendChild(el('b',null,s.k==='noda'?'задать':fmtDShort(s.d)));
+      c.title='Задача №'+t.n+(t.text?(': '+String(t.text).slice(0,70)):'')
+        +'\n'+BOARD_WORD[s.k]+(s.d?(s.k==='done'?(' '+fmtDFull(s.d)):(' · срок '+fmtDFull(s.d))):'')
+        +(t.assigneeId?('\nИсполнитель: '+empName(t.assigneeId)):'')
+        +(t.stopper&&!t.done?('\nСтопор: '+String(t.stopper).slice(0,70)):'')
+        +'\nНажмите, чтобы открыть';
+      c.onclick=()=>openProg(p,i);
+      td.appendChild(c); tr.appendChild(td);
+    }
+
+    const tt=el('td','btot');
+    const bar=el('span','bar'); const bi=el('i'); bi.style.width=pct+'%'; if(pct===100)bi.style.background='var(--ok)';
+    bar.appendChild(bi); tt.appendChild(bar); tt.appendChild(el('span','bn',doneN+'/'+tasks.length));
+    tr.appendChild(tt);
+    tbody.appendChild(tr);
+  });
+  tb.appendChild(tbody); scroll.appendChild(tb); wrap.appendChild(scroll);
+
+  const leg=el('div','bleg');
+  [['k-done','Выполнено — дата доклада'],['k-soon','Срок на этой неделе'],['k-plan','В работе, срок впереди'],
+   ['k-late','Просрочено'],['k-stop','Стопор'],['k-noda','Срок не назначен'],['k-none','Задачи нет']].forEach(([k,lab])=>{
+    const s=el('span','l'); s.appendChild(el('span','bsw '+k)); s.appendChild(el('span',null,lab)); leg.appendChild(s);
+  });
+  wrap.appendChild(leg);
+  box.appendChild(wrap);
   return box;
 }
 
@@ -1511,6 +1734,7 @@ function newTask(n){ return {id:uid(),n,text:'',report:'',doneReport:'',assignee
 function newProgram(){ return {id:uid(),number:'',title:'',goal:'',criteria:[],owner:'',ownerId:'',pmId:(typeof myEmpId==='function'?(myEmpId()||''):''),createdBy:(window.__meEmail||''),status:'draft',dueDate:'',doneDate:'',approvedDate:'',participants:[],timeline:[],suggestions:[],tasks:[newTask(1)]}; }
 document.getElementById('btnNew').onclick=()=>openTemplatePicker();
 document.getElementById('btnDash').onclick=()=>{ view=(view==='dash'?'program':'dash'); renderMain(); };
+document.getElementById('btnBoard').onclick=()=>{ view=(view==='board'?'program':'board'); renderMain(); };
 function createBlankProgram(){ const p=newProgram(); p.number=String(nextProgramNumber()); state.unshift(p); selected=p.id; markDirty(p); save(); renderMain(); openGen(); }
 // Создание по образцу: берём задачи, отчёты-критерии и типы, но НЕ переносим
 // исполнителей, сроки, отметки и историю — это новая программа, а не копия старой.
@@ -2014,7 +2238,7 @@ async function teamInvite(preset){
 }
 
 //====================== инструкция / помощь ======================
-const HELP_VERSION=7;   // при обновлении инструкции увеличить — у всех появится пометка «обновлено» и автопоказ
+const HELP_VERSION=8;   // при обновлении инструкции увеличить — у всех появится пометка «обновлено» и автопоказ
 const HELP_HTML=`<p>Привет! Это приложение помогает вести <b>программы</b> — наборы задач, чтобы навести порядок и внедрить изменения в компании. Одна программа — это одна цель, понятные признаки «победы» и список задач с исполнителями и сроками. Ниже всё по шагам.</p>
 
 <h4>С чего начать: вход</h4>
@@ -2122,6 +2346,20 @@ const HELP_HTML=`<p>Привет! Это приложение помогает �
 <h4>📊 Сводка — пульт владельца</h4>
 <p>Кнопка <b>«📊 Сводка»</b> слева — один экран по всем программам: сколько просрочено, где стопоры, какая программа давно без координации, кто из людей чем загружен. Клик по строке открывает программу, клик по человеку — фильтр его задач.</p>
 
+<h4>📋 Доска прогресса — все программы одной таблицей</h4>
+<p>Кнопка <b>«📋 Доска»</b> слева. Строка — программа, столбец — задача №1, №2, №3…, а клетка показывает <b>состояние</b> задачи и её дату (ту самую, что стоит в задаче; у выполненных — день выполнения):</p>
+<ul>
+  <li><b>зелёная</b> — выполнено;</li>
+  <li><b>синяя</b> — срок на этой неделе, сюда смотреть в первую очередь;</li>
+  <li><b>белая</b> — в работе, срок впереди;</li>
+  <li><b>красная</b> — просрочено;</li>
+  <li><b>оранжевая ⛔</b> — стопор, работа встала;</li>
+  <li><b>штриховка «задать»</b> — срок никто не поставил;</li>
+  <li><b>серая</b> — задачи с таким номером в программе нет.</li>
+</ul>
+<p>Сверху — отбор «В работе / Все / С отклонениями» и выбор <b>руководителя</b>: можно смотреть только его программы. Клик по клетке открывает программу прямо на этой задаче, клик по названию — программу целиком.</p>
+<div class="hint">Владелец и менеджер проектов видят на доске <b>все</b> программы. Руководители и участники — только те, где они руководят, участвуют или отвечают за задачу.</div>
+
 <h4>💬 Обсуждение в задаче</h4>
 <p>В колонке отчёта у каждой задачи — <b>«💬 Обсуждение»</b>. Исполнитель задаёт вопрос, руководитель отвечает, и переписка остаётся в задаче (а не в мессенджере). Отправка — кнопкой или Enter. Каждое сообщение попадает и в журнал программы.</p>
 
@@ -2139,6 +2377,7 @@ const HELP_HTML=`<p>Привет! Это приложение помогает �
 
 <h4>Что нового (07.09.2026)</h4>
 <ul>
+  <li><b>Доска прогресса</b> — кнопка «📋 Доска»: все программы и задачи одной таблицей.</li>
   <li><b>Новая шапка:</b> лента состояния, кольцо прогресса, роли людьми, «⋯ ещё», сворачиваемые критерии.</li>
   <li><b>Сводка по всем программам</b> — кнопка «📊 Сводка».</li>
   <li><b>Обсуждение в задаче</b>, <b>подпункты</b>, <b>образцы программ</b>.</li>
@@ -2574,6 +2813,7 @@ async function afterLogin(session){
   try{ localStorage.setItem('crm_seeded','1'); }catch(e){}
   if(!selected || !state.find(p=>p.id===selected)) selected=state[0]?state[0].id:null;
   await loadSharedKey();
+  seedChiefPM();                       // разовая отметка главного менеджера проектов
   renderMain(); applyBrandLogo();      // роль уже определена выше (captureRole до загрузки данных)
   startRealtime();                     // правки коллег приезжают сами
   addLogoutBtn(session&&session.user&&session.user.email);
