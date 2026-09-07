@@ -28,7 +28,7 @@
   button:focus-visible,select:focus-visible,.chk:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   textarea{resize:vertical;min-height:38px}
   a{color:var(--accent)}
-  .app{display:grid;grid-template-columns:340px 1fr;min-height:100vh}
+  .app{display:grid;grid-template-columns:340px minmax(0,1fr);min-height:100vh}
   /* Sidebar */
   .side{background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
   .brand{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
@@ -65,7 +65,8 @@
   .b-in_progress{background:var(--accent-soft);color:var(--accent-ink)}
   .b-done{background:var(--ok-soft);color:var(--ok-ink)}
   /* Main */
-  .main{padding:24px 28px;max-width:1100px;width:100%}
+  .main{padding:24px 28px;max-width:1100px;width:100%;min-width:0}   /* min-width:0 — иначе широкая таблица растягивает всю страницу */
+  .main.wide{max-width:none}   /* доска и сводка — во всю ширину экрана */
   .empty{display:grid;place-items:center;height:74vh;color:var(--muted);text-align:center}
   .emptybox{max-width:380px;padding:0 20px}
   .emptyic{width:78px;height:78px;border-radius:50%;background:radial-gradient(circle at 50% 40%,var(--accent-soft),#eef4ff);display:grid;place-items:center;font-size:36px;margin:0 auto 18px;box-shadow:inset 0 0 0 1px #dbe7ff}
@@ -220,13 +221,19 @@
   .bcol{font-size:11px;font-weight:600;color:var(--faint);padding:9px 0 7px;min-width:62px;white-space:nowrap}
   table.bmx th.brow{text-align:left}
   .brow{position:sticky;left:0;z-index:2;background:#fff;text-align:left;padding:7px 13px 7px 14px;
-    border-right:1px solid var(--line);min-width:280px;max-width:280px;cursor:pointer}
+    border-right:1px solid var(--line);min-width:320px;max-width:320px;cursor:pointer}
+  table.bmx tbody .brow{height:46px}
   table.bmx thead .brow{border-bottom:1px solid var(--line)}
   table.bmx tbody td,table.bmx tbody th{border-top:1px solid #eef1f4}
   table.bmx tbody tr:hover .brow{background:var(--accent-soft)}
   .brt{display:block;font-weight:600;font-size:13.5px;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .brs{display:flex;align-items:center;gap:6px;color:var(--faint);font-size:11.5px;margin-top:2px;
-    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .brs{display:flex;align-items:center;gap:8px;color:var(--faint);font-size:11.5px;margin-top:3px;white-space:nowrap}
+  .brwho{display:flex;align-items:center;gap:6px;min-width:0;overflow:hidden;text-overflow:ellipsis}
+  .brwho>span:not(.avat){overflow:hidden;text-overflow:ellipsis}
+  .warnink{color:var(--warn-ink);flex:none}
+  .brprog{display:flex;align-items:center;gap:7px;margin-left:auto;flex:none}
+  .brprog .bar{width:54px;height:5px}
+  .brprog .bn{font-size:11.5px;color:var(--faint);font-variant-numeric:tabular-nums}
   .brn{display:inline-block;min-width:18px;color:var(--faint);font-weight:600;font-size:12px}
   .bcell{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;height:42px;margin:3px 4px;
     border-radius:8px;border:1px solid transparent;font-size:11.5px;cursor:pointer}
@@ -242,6 +249,12 @@
     border:1px dashed var(--line);color:var(--faint);cursor:pointer}
   .k-none{background:#eef0f3;border-color:#e2e6ea;cursor:default}
   .k-none:hover{box-shadow:none}
+  /* компактный режим: только цвет состояния — влезает программа на 50+ задач */
+  table.bmx.compact .bcol{min-width:26px;font-size:9.5px;padding:8px 0 6px}
+  table.bmx.compact .bcell{height:26px;margin:2px;border-radius:5px;gap:0}
+  table.bmx.compact .bcol{white-space:nowrap}
+  table.bmx.compact .bcell b{display:none}
+  table.bmx.compact .bcell .bic{font-size:10px}
   .btot{padding:0 13px 0 8px;white-space:nowrap;text-align:right}
   .btot .bar{width:60px;height:6px;display:inline-block;vertical-align:middle}
   .btot .bn{font-size:12px;color:var(--faint);margin-left:7px}
@@ -252,7 +265,8 @@
   .bstripe{display:inline-block;width:3px;height:25px;border-radius:2px;margin-right:8px;flex:none;background:#b9c0cc}
   .bstripe.s-approved{background:#2f6df6} .bstripe.s-in_progress{background:#e0821a} .bstripe.s-done{background:var(--ok)}
   .trow.flash{box-shadow:0 0 0 2px var(--accent);border-radius:10px}
-  @media(max-width:820px){ .brow{min-width:200px;max-width:200px} .bcol{min-width:54px} }
+  @media(max-width:1080px){ .brow{min-width:240px;max-width:240px} }
+  @media(max-width:820px){ .brow{min-width:190px;max-width:190px} .bcol{min-width:52px} .brprog{display:none} }
   /* телефон: подписи полей в задачах и крупные кнопки под палец */
   .cellcol .lab{display:none}
   @media(max-width:820px){
@@ -400,6 +414,8 @@
     .headlogo.has-img{display:block}
     .trow{break-inside:avoid}
   }
+  @media(max-width:1280px){ .app{grid-template-columns:290px minmax(0,1fr)} .main{padding:18px 18px} }
+  @media(max-width:1080px){ .app{grid-template-columns:250px minmax(0,1fr)} .side .brand h1{font-size:15px} }
   @media(max-width:820px){.app{grid-template-columns:1fr}.side{position:static;height:auto}.grid3,.metarow{grid-template-columns:1fr 1fr}.tasks .thead{display:none}.trow{grid-template-columns:1fr 1fr}.trow>div{border-right:none}}
   /* телефон: поля команды в одну колонку, иначе четыре поля сжимаются в нечитаемые полоски */
   @media(max-width:640px){
@@ -763,6 +779,8 @@ function renderList(){
 function renderMain(){
   renderList();
   const m=document.getElementById('main'); m.innerHTML='';
+  // доска и сводка — таблицы: им отдаём всю ширину экрана, форме программы оставляем колонку
+  m.className='main'+((view==='dash'||view==='board')?' wide':'');
   if(view==='dash'){ leaveRoom(); m.appendChild(renderDashboard()); return; }
   if(view==='board'){ leaveRoom(); m.appendChild(renderBoard()); return; }
   const p=cur();
@@ -1156,7 +1174,7 @@ function seedChiefPM(){
 // столбец — задача №N, а клетка показывает СОСТОЯНИЕ задачи (а не просто дату).
 // Дата в клетке — та самая, что стоит в задаче: срок готовности, а у выполненных —
 // день, когда отметили выполнение.
-let boardFilter={owner:'',scope:'active'};
+let boardFilter={owner:'',scope:'active',dense:''};   // dense: ''=авто, 'dates', 'compact'
 // Кто какие программы видит на доске: владелец и менеджер проектов — все,
 // остальные — только те, где они руководят, участвуют или отвечают за задачу.
 function boardPrograms(){
@@ -1222,6 +1240,16 @@ function renderBoard(){
 
   const allTasks=progs.reduce((a,p)=>a+(p.tasks||[]).length,0);
   const lateN=progs.reduce((a,p)=>a+(p.tasks||[]).filter(isOverdue).length,0);
+  const maxT=Math.max(1,...progs.map(p=>(p.tasks||[]).length));
+  // длинные программы (20+ задач) по умолчанию показываем клетками без дат — иначе таблица уезжает за экран
+  const dense=boardFilter.dense||(maxT>18?'compact':'dates');
+  const dseg=el('div','bseg');
+  [['dates','С датами'],['compact','Компактно']].forEach(([k,lab])=>{
+    const b=el('button',dense===k?'on':'',lab);
+    b.title=k==='compact'?'Только цвет состояния — влезает даже программа на 50 задач':'В клетке видна дата из задачи';
+    b.onclick=()=>{ boardFilter.dense=k; renderMain(); }; dseg.appendChild(b);
+  });
+  tools.appendChild(dseg);
   tools.appendChild(el('span','bnote','показано '+progs.length+' из '+mine.length+' · '+allTasks+' задач'+(lateN?(' · '+lateN+' просрочено'):'')));
   wrap.appendChild(tools);
 
@@ -1233,12 +1261,10 @@ function renderBoard(){
   }
 
   //--- таблица ---
-  const maxT=Math.max(1,...progs.map(p=>(p.tasks||[]).length));
-  const scroll=el('div','bscroll'); const tb=el('table','bmx');
+  const scroll=el('div','bscroll'); const tb=el('table','bmx'+(dense==='compact'?' compact':''));
   const thead=el('thead'); const hr=el('tr');
   const h0=el('th','brow'); h0.appendChild(el('span','brt','Программа')); hr.appendChild(h0);
   for(let i=1;i<=maxT;i++) hr.appendChild(el('th','bcol','№'+i));
-  const hz=el('th','bcol','Готово'); hz.style.paddingRight='13px'; hr.appendChild(hz);
   thead.appendChild(hr); tb.appendChild(thead);
 
   const openProg=(p,idx)=>{
@@ -1262,13 +1288,20 @@ function renderBoard(){
     t1.appendChild(document.createTextNode(' '+(p.title||'без названия')));
     col.appendChild(t1);
     const t2=el('span','brs');
-    if(p.ownerId){ const a=el('span','avat',initials(empName(p.ownerId))); t2.appendChild(a); t2.appendChild(el('span',null,empName(p.ownerId))); }
-    else t2.appendChild(el('span',null,'руководитель не назначен'));
+    const who=el('span','brwho');
+    if(p.ownerId){ who.appendChild(el('span','avat',initials(empName(p.ownerId)))); who.appendChild(el('span',null,empName(p.ownerId))); }
+    else who.appendChild(el('span',null,'руководитель не назначен'));
     const dc=daysSinceCoord(p);
     if((p.status==='approved'||p.status==='in_progress')){
-      if(dc===null) t2.appendChild(el('span',null,'· координации не было'));
-      else if(dc>=7) t2.appendChild(el('span',null,'· координация '+dc+' дн. назад'));
+      if(dc===null) who.appendChild(el('span','warnink',' · без координации'));
+      else if(dc>=7) who.appendChild(el('span','warnink',' · координация '+dc+' дн. назад'));
     }
+    t2.appendChild(who);
+    // прогресс держим слева: у программы на 50 задач правая колонка уезжала за экран
+    const pr=el('span','brprog');
+    const bar=el('span','bar'); const bi=el('i'); bi.style.width=pct+'%'; if(pct===100)bi.style.background='var(--ok)';
+    bar.appendChild(bi); pr.appendChild(bar); pr.appendChild(el('span','bn',doneN+'/'+tasks.length));
+    t2.appendChild(pr);
     col.appendChild(t2); flex.appendChild(col); th.appendChild(flex);
     th.title='Открыть программу';
     th.onclick=()=>openProg(p,null);
@@ -1291,10 +1324,6 @@ function renderBoard(){
       td.appendChild(c); tr.appendChild(td);
     }
 
-    const tt=el('td','btot');
-    const bar=el('span','bar'); const bi=el('i'); bi.style.width=pct+'%'; if(pct===100)bi.style.background='var(--ok)';
-    bar.appendChild(bi); tt.appendChild(bar); tt.appendChild(el('span','bn',doneN+'/'+tasks.length));
-    tr.appendChild(tt);
     tbody.appendChild(tr);
   });
   tb.appendChild(tbody); scroll.appendChild(tb); wrap.appendChild(scroll);
