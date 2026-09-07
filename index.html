@@ -217,6 +217,54 @@
     .att{font-size:13px;padding:6px 10px}
     .chk{width:20px;height:20px}
   }
+  /* ——— новая шапка программы ——— */
+  .nh-top{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
+  .nh-id{flex:1;min-width:230px}
+  .nh-num{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint,#8a8f98)}
+  .nh-title{font-size:24px;font-weight:800;line-height:1.15;margin-top:2px;color:var(--ink,#2b2b2b)}
+  .statestrip{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-top:9px}
+  .schip{display:inline-flex;gap:6px;align-items:center;padding:4px 10px;border-radius:8px;background:#f6f8fc;border:1px solid var(--line,#dcdfe4);font-size:12px;color:#69748a;white-space:nowrap}
+  .schip b{font-weight:700;color:var(--ink,#2b2b2b)}
+  .schip.due{border-color:#e0821a;background:#fcf0df;color:#cf7a12}
+  .schip.due b{color:#cf7a12}
+  .schip.crit{border-color:var(--ok,#2e9e5b);background:#e6f6ec;color:#2c7a4b}
+  .schip.crit b{color:#2c7a4b}
+  .schip.alert{border-color:#d64541;background:#fcebea;color:#c23a35}
+  .schip.alert b{color:#c23a35}
+  .cflip{opacity:.6}
+  .ring{display:flex;align-items:center;gap:10px;padding:8px 13px;border:1px solid var(--line,#dcdfe4);border-radius:11px;background:#f6f8fc}
+  .ringc{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;flex:none}
+  .ringc span{width:35px;height:35px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:11.5px;font-weight:800}
+  .ringt{font-size:11.5px;color:var(--faint,#8a8f98);line-height:1.3}
+  .ringt b{display:block;font-size:14px;color:var(--ink,#2b2b2b)}
+  .rolestrip{display:flex;gap:14px;flex-wrap:wrap;align-items:center;padding:9px 13px;border:1px solid var(--line,#dcdfe4);border-radius:11px;background:#f6f8fc;margin-top:12px}
+  .ritem{display:flex;gap:7px;align-items:center;font-size:13px}
+  .ritem .lb{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--faint,#8a8f98)}
+  .ritem .rname{font-weight:600}
+  .ritem .rnone{color:var(--faint,#8a8f98);font-style:italic}
+  .ritem .rpen{opacity:.55;font-size:12px}
+  .ritem .rpen:hover{opacity:1}
+  .avat{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:700;color:#fff;flex:none;background:var(--accent,#2f6df6)}
+  .avat.v{background:#6d4bd8}
+  .avat.g{background:var(--ok,#2e9e5b)}
+  .stack{display:flex}
+  .stack .avat{border:2px solid #f6f8fc;margin-left:-8px}
+  .stack .avat:first-child{margin-left:0}
+  .vsep{width:1px;align-self:stretch;background:var(--line,#dcdfe4)}
+  .goalbox{margin-top:12px;padding:10px 13px;border-left:3px solid var(--accent,#2f6df6);background:#eef4ff;border-radius:0 9px 9px 0;font-size:14px;line-height:1.5}
+  .hbar{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;align-items:center}
+  .morebar{display:inline-flex;gap:6px;flex-wrap:wrap;padding-left:8px;border-left:1px solid var(--line,#dcdfe4)}
+  .lastcoord{margin-top:9px;font-size:12.5px;color:var(--faint,#8a8f98)}
+  @media(max-width:640px){ .nh-title{font-size:20px} .rolestrip{gap:10px} .vsep{display:none} .ring{padding:6px 10px} }
+  .pcard{position:relative}
+  .pcard::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:10px 0 0 10px;background:transparent}
+  .pcard.st-draft::before{background:#b9c0cc}
+  .pcard.st-approved::before{background:#2f6df6}
+  .pcard.st-in_progress::before{background:#e0821a}
+  .pcard.st-done::before{background:var(--ok,#2e9e5b)}
+  .pcard .powner{display:flex;align-items:center;gap:5px;margin-bottom:3px}
+  .pcard .powner .avat{width:20px;height:20px;font-size:9px}
+  .pcard .pwho{font-size:11px;color:var(--faint,#8a8f98);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .livebar{display:flex;align-items:center;gap:8px;padding:7px 11px;margin-bottom:10px;background:var(--accent-soft,#e9f0ff);border-radius:9px;font-size:12.5px;color:var(--accent-ink,#1c4fc4)}
   .livedot{width:7px;height:7px;border-radius:50%;background:var(--ok,#2e9e5b);box-shadow:0 0 0 3px rgba(46,158,91,.18);flex:none}
   .livetxt{flex:1;min-width:0}
@@ -555,6 +603,7 @@ function migrate(p){
 let state=load();
 let selected=localStorage.getItem(LS_SEL)||null;
 let journalExpanded=false;
+let critOpen=false, moreOpen=false;
 let openCoordIds=new Set();   // какие документы координации раскрыты (наверху)
 let coordListExpanded=false;  // показать все координации наверху, а не последние 3
 let lbExpanded=true;
@@ -637,14 +686,14 @@ function renderList(){
   shown.forEach(p=>{
     const {n,d,pct}=progress(p);
     const c=el('div','pcard'+(p.id===selected&&view!=='dash'?' active':'')); c.onclick=()=>{view='program'; selected=p.id; journalExpanded=false; resetTaskFilter(); save(); renderMain();};
+    c.classList.add('st-'+p.status);                       // цветная полоса слева по статусу
     const ownerNm=p.ownerId?empName(p.ownerId):(p.owner||'');
     const pmNm=p.pmId?empName(p.pmId):'';
-    if(pmNm||ownerNm){ const who=el('div','powner');
-      if(pmNm) who.appendChild(el('span',null,'★ '+pmNm));
-      if(pmNm&&ownerNm) who.appendChild(el('span','psep',' · '));
-      if(ownerNm) who.appendChild(el('span',null,'👤 '+ownerNm));
-      who.title=(pmNm?('Менеджер проекта: '+pmNm):'')+(pmNm&&ownerNm?'\n':'')+(ownerNm?('Руководитель: '+ownerNm):'');
-      c.appendChild(who); }
+    if(pmNm||ownerNm){ const who=el('div','powner');        // роли — кружками, а не мелкой строкой
+      if(pmNm){ const a=el('span','avat v',initials(pmNm)); a.title='Менеджер проекта: '+pmNm; who.appendChild(a); }
+      if(ownerNm){ const a=el('span','avat',initials(ownerNm)); a.title='Руководитель: '+ownerNm; who.appendChild(a); }
+      const nm=el('span','pwho',[pmNm&&('★ '+pmNm),ownerNm&&('👤 '+ownerNm)].filter(Boolean).join(' · '));
+      who.appendChild(nm); c.appendChild(who); }
     const ttl=el('div','ttl'); ttl.appendChild(el('span','num',p.number?('№'+p.number):'—'));
     ttl.appendChild(el('span',null,p.title||'Без названия')); c.appendChild(ttl);
     const meta=el('div','meta');
@@ -670,83 +719,133 @@ function renderMain(){
 
   joinRoom(p.id);                               // присутствие: кто ещё открыл эту программу
   const live=el('div','livebar'); live.id='liveBar'; live.hidden=true; m.appendChild(live);
-  //--- header card ---
-  const lead=canLead(p);                        // руководитель проекта или владелец
-  const editing=lead && editHeaderFor===p.id;   // открыт ли режим редактирования шапки
+  //--- ШАПКА: три слоя — что за программа / кто отвечает / в каком состоянии ---
+  const lead=canLead(p);                        // менеджер, руководитель или владелец
+  const editing=lead && editHeaderFor===p.id;   // открыт ли режим правки
   const head=el('div','head');
-  const row1=el('div','row1');
-  const num=el('input','num-in'); num.value=p.number||''; num.readOnly=true; num.title='Номер присваивается автоматически';
-  const title=inputFor(p,'title'); title.classList.add('title-in'); title.placeholder='Название программы'; if(!editing) title.readOnly=true;
-  const hlogo=el('div','headlogo'); const _ld=getLogo(); if(_ld){ hlogo.style.backgroundImage='url('+_ld+')'; hlogo.classList.add('has-img'); } hlogo.title='Логотип (меняется в ⚙ Настройки)';
-  const delBtn=el('button','ghost tiny','🗑'); delBtn.title='Удалить программу'; delBtn.onclick=()=>{ if(confirm('Удалить программу «'+(p.title||'')+'»?')){ state=state.filter(x=>x.id!==p.id); selected=state[0]?state[0].id:null; save(); renderMain(); } };
-  if(!lead) delBtn.style.display='none';
-  row1.append(wrapField(num,'№'), wrapField(title,'Название программы'), hlogo, delBtn);
-  head.appendChild(row1);
-
-  //--- goal / criteria ---
-  const goalTa=textFor(p,'goal'); if(!editing) goalTa.readOnly=true;
-  const g=el('div','grid2');
-  g.append(
-    wrapField(goalTa,'Цель программы'),
-    wrapField(criteriaBlock(p,editing),'Критерии приёмки — отметьте выполненные (отмечает руководитель)')
-  );
-  head.appendChild(g);
-  //--- редактирование шапки: только руководитель проекта / владелец ---
-  const hbar=el('div'); hbar.style.cssText='display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center';
-  if(editing){
-    const sBtn=el('button','primary tiny','💾 Сохранить'); sBtn.onclick=()=>saveHeaderEdit(p); hbar.appendChild(sBtn);
-    const cBtn=el('button','ghost tiny','Отмена'); cBtn.onclick=()=>{ if(_editSnap){ p.title=_editSnap.title; p.goal=_editSnap.goal; if(_editSnap.critArr) p.criteria=_editSnap.critArr; } editHeaderFor=null; _editSnap=null; save(); renderMain(); }; hbar.appendChild(cBtn);
-    const genBtn=el('button','tiny','✨ Сгенерировать'); genBtn.onclick=openGen; hbar.appendChild(genBtn);
-  } else if(lead){
-    const eBtn=el('button','tiny','✏ Редактировать шапку'); eBtn.onclick=()=>{ editHeaderFor=p.id; _editSnap=headerSnap(p); renderMain(); }; hbar.appendChild(eBtn);
-    const genBtn=el('button','tiny','✨ Сгенерировать шапку'); genBtn.onclick=openGen; hbar.appendChild(genBtn);
-  } else {
-    hbar.appendChild(el('span','minihint',p.ownerId?('Название, цель и критерии редактирует руководитель программы — '+empName(p.ownerId)+'.'):'Руководитель программы не назначен — попросите владельца назначить его в поле «Ответственный».'));
-  }
-  const prBtn=el('button','ghost tiny','🖨 Печать'); prBtn.title='Печать бланком к координации'; prBtn.onclick=()=>printProgram(p); hbar.appendChild(prBtn);
-  const xlBtn=el('button','ghost tiny','⬇ Excel'); xlBtn.title='Выгрузить задачи в таблицу (открывается в Excel)'; xlBtn.onclick=()=>exportExcel(p); hbar.appendChild(xlBtn);
-  if(lead){ const tplBtn=el('button','ghost tiny','📋 В образцы'); tplBtn.title='Сохранить как образец для будущих программ'; tplBtn.onclick=()=>saveAsTemplate(p); hbar.appendChild(tplBtn); }
-  head.appendChild(hbar);
-
-  //--- owner / status / dates ---
-  const mr=el('div','metarow');
-  const sel=el('select'); STATUS.forEach(([v,l])=>{const o=el('option',null,l); o.value=v; if(p.status===v)o.selected=true; sel.appendChild(o);});
-  sel.onchange=()=>{ const nv=sel.value, prev=p.status;
-    if((nv==='approved'||nv==='in_progress') && !p.ownerId){ toast('Сначала назначьте ответственного за программу'); sel.value=prev; return; }
-    const openN=p.tasks.filter(x=>!x.done).length;
-    if(nv==='done' && openN>0 && !confirm('Есть невыполненные задачи ('+openN+'). Всё равно завершить программу?')){ sel.value=prev; return; }
-    const critOpen=(p.criteria||[]).filter(c=>!c.done).length;
-    if(nv==='done' && critOpen>0 && !confirm('Отмечены не все критерии приёмки ('+(p.criteria.length-critOpen)+'/'+p.criteria.length+'). Программа рабочая, когда все критерии — победы. Всё равно завершить?')){ sel.value=prev; return; }
-    p.status=nv;
-    if(nv==='approved' && !p.approvedDate) p.approvedDate=today();
-    if(nv==='done' && !p.doneDate) p.doneDate=today();
-    pushEvent(p,'status_changed','Статус программы: '+statusLabel(nv)); save(); renderMain(); };
-  const due=dateFor(p,'dueDate'); const done=dateFor(p,'doneDate');
-  if(!lead){ sel.disabled=true; due.disabled=true; done.disabled=true; }
-  mr.append(wrapField(pmCell(p),'★ Менеджер проекта'), wrapField(ownerCell(p),'Руководитель (из участников)'), wrapField(sel,'Статус'), wrapField(due,'Срок завершения'), wrapField(done,'Дата завершения'));
-  head.appendChild(mr);
-
-  //--- progress ---
   const {n,d,pct}=progress(p);
-  const pw=el('div','progresswrap');
-  const bigEl=el('span','big',pct+'%'); if(pct===100) bigEl.style.color='var(--ok-ink)'; pw.appendChild(bigEl);
-  const bar=el('div','bar'); const bi=el('i'); bi.style.width=pct+'%'; bar.appendChild(bi); pw.appendChild(bar);
-  pw.appendChild(el('span','hint',d+' из '+n+' задач выполнено'));
-  const ovc=p.tasks.filter(isOverdue).length; if(ovc) pw.appendChild(el('span','pill pill-over','⚠ просрочено: '+ovc));
-  head.appendChild(pw);
-  //--- пульс программы (сводка + вход к координации) ---
+  const ovc=p.tasks.filter(isOverdue).length;
+  const stopN=p.tasks.filter(x=>x.stopper && !x.done).length;
   const coords=(p.timeline||[]).filter(e=>e.type==='coordination');
   const lastC=coords.length?coords[coords.length-1]:null;
   const daysSince=lastC?Math.floor((Date.now()-new Date(lastC.at).getTime())/86400000):null;
-  const stopN=p.tasks.filter(x=>x.stopper && !x.done).length;
-  const pulse=el('div','pulse');
-  const pstat=el('div','grow');
-  pstat.textContent='🗓 Координаций: '+coords.length+(lastC?(' · последняя '+daysSince+' дн. назад'):' · ещё не было')+(ovc?(' · ⚠ просрочено: '+ovc):'')+(stopN?(' · ⛔ стопор: '+stopN):'');
-  if(lastC && lastC.text){ const lc=el('div','hint'); lc.style.marginTop='2px'; lc.textContent='Последнее: '+lastC.text.replace(/^Координация:?\s*/,'').slice(0,90); pstat.appendChild(lc); }
-  pulse.appendChild(pstat);
-  if(lead){ const bCo=el('button','tiny primary','+ Координация'); bCo.onclick=()=>openCoord(p); pulse.appendChild(bCo); }
-  if((p.status==='approved'||p.status==='in_progress') && (coords.length===0 || (daysSince!==null && daysSince>=7))) pulse.classList.add('bad');
-  head.appendChild(pulse);
+
+  //--- слой 1: что за программа + прогресс ---
+  const top=el('div','nh-top');
+  const idb=el('div','nh-id');
+  idb.appendChild(el('div','nh-num','Программа №'+(p.number||'—')+(p.approvedDate?(' · утверждена '+fmtDFull(p.approvedDate)):'')));
+  if(editing){ const title=inputFor(p,'title'); title.classList.add('title-in'); title.placeholder='Название программы'; idb.appendChild(title); }
+  else { const h=el('div','nh-title',p.title||'Без названия'); idb.appendChild(h); }
+  // лента состояния: статус, срок, критерии, координация
+  const strip=el('div','statestrip');
+  const stPill=el('span','pill b-'+p.status,statusLabel(p.status)); strip.appendChild(stPill);
+  if(p.dueDate){ const overdueProg=!p.doneDate && p.dueDate<today();
+    const c=el('span','schip'+(overdueProg?' due':'')); c.append(el('span',null,'Срок'),el('b',null,fmtDFull(p.dueDate))); strip.appendChild(c); }
+  if(p.doneDate){ const c=el('span','schip crit'); c.append(el('span',null,'Завершена'),el('b',null,fmtDFull(p.doneDate))); strip.appendChild(c); }
+  const critN=(p.criteria||[]).length, critD=(p.criteria||[]).filter(c=>c.done).length;
+  if(critN){ const c=el('span','schip'+(critD===critN?' crit':'')); c.style.cursor='pointer';
+    c.append(el('span',null,'Критерии'),el('b',null,critD+'/'+critN),el('span','cflip',critOpen?'▴':'▾'));
+    c.onclick=()=>{ critOpen=!critOpen; renderMain(); }; c.title='Показать список критериев'; strip.appendChild(c); }
+  const cc=el('span','schip'+((coords.length===0||(daysSince!==null&&daysSince>=7))&&(p.status==='approved'||p.status==='in_progress')?' due':''));
+  cc.append(el('span',null,'Координация'),el('b',null,lastC?(daysSince+' дн. назад'):'не было')); strip.appendChild(cc);
+  if(ovc){ const c=el('span','schip alert'); c.append(el('b',null,'⚠ '+ovc),el('span',null,'просрочено')); strip.appendChild(c); }
+  if(stopN){ const c=el('span','schip alert'); c.append(el('b',null,'⛔ '+stopN),el('span',null,'стопор')); strip.appendChild(c); }
+  idb.appendChild(strip);
+  top.appendChild(idb);
+  // кольцо прогресса
+  const ring=el('div','ring');
+  const rc=el('div','ringc'); rc.style.background='conic-gradient('+(pct===100?'var(--ok)':'var(--accent)')+' 0 '+pct+'%, var(--line) '+pct+'% 100%)';
+  rc.appendChild(el('span',null,pct+'%')); ring.appendChild(rc);
+  const rt=el('div','ringt'); rt.appendChild(el('b',null,d+' из '+n)); rt.appendChild(el('span',null,'задач выполнено')); ring.appendChild(rt);
+  const hlogo=el('div','headlogo'); const _ld=getLogo(); if(_ld){ hlogo.style.backgroundImage='url('+_ld+')'; hlogo.classList.add('has-img'); }
+  hlogo.title='Логотип (меняется в ⚙ Настройки)';
+  top.append(ring,hlogo);
+  head.appendChild(top);
+
+  //--- слой 2: кто отвечает — одна лента с людьми ---
+  const rs=el('div','rolestrip');
+  const roleItem=(label,empId,cls,canEdit,onEdit)=>{
+    const it=el('span','ritem');
+    it.appendChild(el('span','lb',label));
+    if(empId){ it.appendChild(el('span','avat '+cls,initials(empName(empId)))); it.appendChild(el('span','rname',empName(empId))); }
+    else it.appendChild(el('span','rnone','не назначен'));
+    if(canEdit){ const e2=el('button','linkbtn rpen','✎'); e2.title='Изменить'; e2.onclick=onEdit; it.appendChild(e2); }
+    return it;
+  };
+  const openEdit=()=>{ editHeaderFor=p.id; _editSnap=headerSnap(p); renderMain(); };
+  rs.appendChild(roleItem('★ Менеджер',p.pmId,'v',canSetPM(p)&&!editing,openEdit));
+  rs.appendChild(el('span','vsep'));
+  rs.appendChild(roleItem('Руководитель',p.ownerId,'',lead&&!editing,openEdit));
+  rs.appendChild(el('span','vsep'));
+  // исполнители — стопка аватаров
+  const pit=el('span','ritem'); pit.appendChild(el('span','lb','Исполнители'));
+  const parts=(p.participants||[]);
+  if(parts.length){ const st=el('span','stack');
+    parts.slice(0,5).forEach(x=>{ const a=el('span','avat g',initials(empName(x.empId))); a.title=empName(x.empId)+' · в программе с '+(x.since||'—'); st.appendChild(a); });
+    pit.appendChild(st); pit.appendChild(el('span','rname',parts.length+(parts.length>4?' человек':(parts.length===1?' человек':' человека'))));
+  } else pit.appendChild(el('span','rnone','никого'));
+  const meId2=myEmpId();
+  if(lead){ const b=el('button','linkbtn rpen','✎'); b.title='Изменить состав'; b.onclick=()=>openPartPicker(p); pit.appendChild(b); }
+  else if(meId2 && !parts.some(z=>z.empId===meId2)){ const b=el('button','linkbtn','🙋 Я участвую');
+    b.onclick=()=>{ p.participants=[...(p.participants||[]),{empId:meId2,since:today()}]; pushEvent(p,'participant_added','Вступил(а) в участники сам(а): '+empName(meId2)); save(); renderMain(); toast('Вы теперь участник программы'); }; pit.appendChild(b); }
+  rs.appendChild(pit);
+  head.appendChild(rs);
+
+  //--- слой 3: цель и критерии ---
+  const goalTa=textFor(p,'goal'); if(!editing) goalTa.readOnly=true;
+  if(editing) head.appendChild(wrapField(goalTa,'Цель программы'));
+  else if((p.goal||'').trim()){ const gb=el('div','goalbox'); gb.appendChild(el('b',null,'Цель: ')); gb.appendChild(el('span',null,p.goal)); head.appendChild(gb); }
+  if(editing || critOpen) head.appendChild(wrapField(criteriaBlock(p,editing),'Критерии приёмки — отметьте выполненные'));
+
+  //--- поля, которые видны только в режиме правки ---
+  if(editing){
+    const mr=el('div','metarow');
+    const sel=el('select'); STATUS.forEach(([v,l])=>{const o=el('option',null,l); o.value=v; if(p.status===v)o.selected=true; sel.appendChild(o);});
+    sel.onchange=()=>{ const nv=sel.value, prev=p.status;
+      if((nv==='approved'||nv==='in_progress') && !p.ownerId){ toast('Сначала назначьте руководителя программы'); sel.value=prev; return; }
+      const openN=p.tasks.filter(x=>!x.done).length;
+      if(nv==='done' && openN>0 && !confirm('Есть невыполненные задачи ('+openN+'). Всё равно завершить программу?')){ sel.value=prev; return; }
+      const critLeft=(p.criteria||[]).filter(c=>!c.done).length;
+      if(nv==='done' && critLeft>0 && !confirm('Отмечены не все критерии приёмки ('+(p.criteria.length-critLeft)+'/'+p.criteria.length+'). Программа рабочая, когда все критерии — победы. Всё равно завершить?')){ sel.value=prev; return; }
+      p.status=nv;
+      if(nv==='approved' && !p.approvedDate) p.approvedDate=today();
+      if(nv==='done' && !p.doneDate) p.doneDate=today();
+      pushEvent(p,'status_changed','Статус программы: '+statusLabel(nv)); save(); renderMain(); };
+    const due=dateFor(p,'dueDate'); const done=dateFor(p,'doneDate');
+    mr.append(wrapField(pmCell(p),'★ Менеджер проекта'), wrapField(ownerCell(p),'Руководитель (из участников)'), wrapField(sel,'Статус'), wrapField(due,'Срок завершения'), wrapField(done,'Дата завершения'));
+    head.appendChild(mr);
+  }
+
+  //--- действия: на виду только главное, остальное в «⋯ ещё» ---
+  const hbar=el('div','hbar');
+  if(editing){
+    const sBtn=el('button','primary tiny','💾 Сохранить'); sBtn.onclick=()=>saveHeaderEdit(p); hbar.appendChild(sBtn);
+    const cBtn=el('button','ghost tiny','Отмена'); cBtn.onclick=()=>{ if(_editSnap) restoreHeaderSnap(p,_editSnap); editHeaderFor=null; _editSnap=null; save(); renderMain(); }; hbar.appendChild(cBtn);
+    const genBtn=el('button','tiny','✨ Сгенерировать'); genBtn.onclick=openGen; hbar.appendChild(genBtn);
+  } else {
+    if(lead){ const bCo=el('button','tiny primary','+ Координация'); bCo.onclick=()=>openCoord(p); hbar.appendChild(bCo); }
+    if(lead){ const eBtn=el('button','tiny','✏ Редактировать'); eBtn.onclick=openEdit; hbar.appendChild(eBtn); }
+    const more=el('button','ghost tiny','⋯ ещё'); more.title='Печать, Excel, образцы';
+    more.onclick=()=>{ moreOpen=!moreOpen; renderMain(); }; hbar.appendChild(more);
+    if(moreOpen){
+      const mBar=el('span','morebar');
+      const prBtn=el('button','ghost tiny','🖨 Печать'); prBtn.onclick=()=>printProgram(p); mBar.appendChild(prBtn);
+      const xlBtn=el('button','ghost tiny','⬇ Excel'); xlBtn.onclick=()=>exportExcel(p); mBar.appendChild(xlBtn);
+      if(lead){ const genBtn=el('button','ghost tiny','✨ Сгенерировать'); genBtn.onclick=openGen; mBar.appendChild(genBtn); }
+      if(lead){ const tplBtn=el('button','ghost tiny','📋 В образцы'); tplBtn.onclick=()=>saveAsTemplate(p); mBar.appendChild(tplBtn); }
+      if(lead){ const delBtn=el('button','ghost tiny','🗑 Удалить'); delBtn.onclick=()=>{ if(confirm('Удалить программу «'+(p.title||'')+'»?')){ state=state.filter(x=>x.id!==p.id); selected=state[0]?state[0].id:null; save(); renderMain(); } }; mBar.appendChild(delBtn); }
+      hbar.appendChild(mBar);
+    }
+    if(!lead) hbar.appendChild(el('span','minihint',p.ownerId?('Ведёт программу: '+empName(p.ownerId)):'Руководитель не назначен.'));
+  }
+  head.appendChild(hbar);
+
+  //--- последняя координация одной строкой (сама сводка теперь в ленте состояния) ---
+  if(lastC && lastC.text){
+    const lc=el('div','lastcoord');
+    lc.textContent='🗓 Последняя координация: '+lastC.text.replace(/^Координация:?\s*/,'').slice(0,110);
+    head.appendChild(lc);
+  }
   //--- документы координаций — прямо здесь, наверху (раскрываются на месте) ---
   if(coords.length){
     const cwrap=el('div'); cwrap.style.marginTop='6px';
@@ -766,31 +865,8 @@ function renderMain(){
   }
   m.appendChild(head);
 
-  //--- участники программы ---
-  // Набирает команду руководитель/создатель/владелец; любой сотрудник может присоединиться сам.
-  const ps=el('div','parts');
-  ps.appendChild(el('span','partslab','Участники:'));
-  const meId=myEmpId();
-  (p.participants||[]).forEach(pt=>{
-    const chip=el('span','chip',empName(pt.empId));
-    chip.title='в программе с '+(pt.since||'—');
-    if(lead){ const x=el('span','chipx','✕'); x.onclick=()=>{ if(removeParticipant(p,pt.empId)){ pushEvent(p,'edit','Исключён участник: '+empName(pt.empId)); save(); renderMain(); } }; chip.appendChild(x); }
-    ps.appendChild(chip);
-  });
-  const actEmp=employees.filter(e=>!e.archived);
-  if(lead){
-    if(!actEmp.length){ ps.appendChild(el('span','minihint','сначала добавьте людей в «👥 Команда» (кнопка слева)')); }
-    else { const bp=el('button','tiny','+ участники'); bp.title='Отметить галочками, кто участвует'; bp.onclick=()=>openPartPicker(p); ps.appendChild(bp); }
-  } else if(meId && !(p.participants||[]).some(z=>z.empId===meId)){
-    const bj=el('button','tiny','🙋 Я участвую'); bj.title='Добавить себя в участники этой программы';
-    bj.onclick=()=>{ p.participants=[...(p.participants||[]),{empId:meId,since:today()}]; pushEvent(p,'participant_added','Вступил(а) в участники сам(а): '+empName(meId)); save(); renderMain(); toast('Вы теперь участник программы'); };
-    ps.appendChild(bj);
-  } else if(!meId){
-    const em=(window.__meEmail||'').toLowerCase();
-    const arch=em?employees.find(e=>e.email&&String(e.email).toLowerCase()===em&&e.archived):null;
-    ps.appendChild(el('span','minihint',arch?'вы в архиве команды — попросите администратора вернуть вас (кнопка ↩ в «👥 Команда»)':'вашей почты нет в «👥 Команда» — попросите администратора вписать её, чтобы участвовать'));
-  }
-  m.appendChild(ps);
+  //--- участники теперь в ленте ролей наверху (блок-дубликат убран) ---
+  if(!employees.filter(e=>!e.archived).length && lead) m.appendChild(el('div','minihint','Сначала добавьте людей в «👥 Команда» (кнопка слева).'));
 
   //--- прогресс участников (лидерборд) — сразу под участниками ---
   if(p.tasks.length) m.appendChild(renderLeaderboard(p));
@@ -1410,7 +1486,11 @@ const fmtD=d=>{ if(!d)return''; const a=(''+d).split('-'); return a.length===3?(
 const fmtDateTime=iso=>{ try{ return new Date(iso).toLocaleString('ru-RU',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}); }catch(e){ return (''+iso).slice(0,16); } };
 function pushEvent(p,type,text,extra){ if(!p) return; (p.timeline||(p.timeline=[])).push(Object.assign({id:uid(),at:nowISO(),type,text},extra||{})); }
 function parseCriteria(s){ return (''+s).split(/\r?\n/).flatMap(l=>l.split('; ')).map(t=>t.trim()).filter(Boolean).map(t=>({id:uid(),text:t,done:false,doneAt:'',doneBy:''})); }
-function headerSnap(p){ return {title:p.title||'', goal:p.goal||'', crit:(p.criteria||[]).map(c=>c.text||'').join(' | '), critArr:JSON.parse(JSON.stringify(p.criteria||[]))}; }
+function headerSnap(p){ return {title:p.title||'', goal:p.goal||'', crit:(p.criteria||[]).map(c=>c.text||'').join(' | '), critArr:JSON.parse(JSON.stringify(p.criteria||[])),
+  pmId:p.pmId||'', ownerId:p.ownerId||'', status:p.status, dueDate:p.dueDate||'', doneDate:p.doneDate||''}; }
+// «Отмена» возвращает всё, что можно править в шапке, включая роли, статус и даты
+function restoreHeaderSnap(p,sn){ p.title=sn.title; p.goal=sn.goal; if(sn.critArr) p.criteria=sn.critArr;
+  p.pmId=sn.pmId; p.ownerId=sn.ownerId; p.status=sn.status; p.dueDate=sn.dueDate; p.doneDate=sn.doneDate; }
 function saveHeaderEdit(p){
   const before=_editSnap||headerSnap(p), after=headerSnap(p);
   const who=(myEmp()&&myEmp().name)||window.__meEmail||'—';
@@ -1934,7 +2014,7 @@ async function teamInvite(preset){
 }
 
 //====================== инструкция / помощь ======================
-const HELP_VERSION=6;   // при обновлении инструкции увеличить — у всех появится пометка «обновлено» и автопоказ
+const HELP_VERSION=7;   // при обновлении инструкции увеличить — у всех появится пометка «обновлено» и автопоказ
 const HELP_HTML=`<p>Привет! Это приложение помогает вести <b>программы</b> — наборы задач, чтобы навести порядок и внедрить изменения в компании. Одна программа — это одна цель, понятные признаки «победы» и список задач с исполнителями и сроками. Ниже всё по шагам.</p>
 
 <h4>С чего начать: вход</h4>
@@ -2022,6 +2102,13 @@ const HELP_HTML=`<p>Привет! Это приложение помогает �
 <p><b>Менеджер проектов</b> — в «👥 Команда» кнопкой <b>★ PM</b>. Такой человек ведёт <b>все</b> программы: правит шапки и критерии, назначает исполнителей, меняет руководителей, переставляет задачи. Раздавать доступы в CRM по-прежнему может только владелец-администратор.</p>
 <div class="hint">Порядок прав: <b>владелец</b> → <b>менеджер проектов</b> → <b>руководитель программы</b> (в своей программе) → <b>участник</b> (свои задачи).</div>
 
+<h4>Как теперь устроена шапка программы</h4>
+<p>Сверху — <b>название и лента состояния</b>: статус, срок, критерии («1/3»), когда была координация. Просроченный срок и застой подсвечиваются. Справа — <b>кольцо прогресса</b>: «12 из 19 · 63%».</p>
+<p>Под ними — <b>лента людей</b>: ★ менеджер проекта, руководитель и исполнители кружками. Карандаш ✎ виден только тому, кому можно менять.</p>
+<p>Цель — плашкой. <b>Критерии свёрнуты</b>: нажми чип «Критерии 1/3», чтобы раскрыть список. Кнопки: на виду «+ Координация» и «✏ Редактировать», остальное (печать, Excel, образцы, удаление) — под «⋯ ещё».</p>
+<div class="hint">Поля ввода (статус, сроки, менеджер, руководитель) появляются, когда нажали <b>«✏ Редактировать»</b>, и прячутся после «Сохранить». Так шапка читается как документ, а не как анкета.</div>
+<p>В списке слева у программ теперь <b>цветная полоса по статусу</b> (серый — черновик, синий — утверждена, оранжевый — в работе, зелёный — завершена) и кружки ролей.</p>
+
 <h4>Кто есть в программе: менеджер, руководитель, исполнители</h4>
 <p>В шапке программы два поля рядом:</p>
 <ul>
@@ -2052,6 +2139,7 @@ const HELP_HTML=`<p>Привет! Это приложение помогает �
 
 <h4>Что нового (07.09.2026)</h4>
 <ul>
+  <li><b>Новая шапка:</b> лента состояния, кольцо прогресса, роли людьми, «⋯ ещё», сворачиваемые критерии.</li>
   <li><b>Сводка по всем программам</b> — кнопка «📊 Сводка».</li>
   <li><b>Обсуждение в задаче</b>, <b>подпункты</b>, <b>образцы программ</b>.</li>
   <li><b>Печать бланком</b> и <b>выгрузка в Excel</b>.</li>
