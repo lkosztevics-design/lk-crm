@@ -164,6 +164,12 @@
   .emprow{display:grid;grid-template-columns:1.4fr 1fr 1.2fr 1fr auto auto;gap:6px;margin-bottom:6px;align-items:center}
   .emprow input{padding:5px 7px;font-size:12.5px}
   .empdate{font-size:11px;color:#8a8f98;white-space:nowrap}
+  .donerep{margin-top:5px;padding:5px 8px;background:#f0f9f3;border-left:3px solid var(--ok,#2e9e5b);border-radius:0 6px 6px 0;font-size:12px;display:flex;flex-wrap:wrap;gap:5px;align-items:baseline}
+  .donerep .dlab{color:#2e7d4f;font-weight:700;white-space:nowrap}
+  .donerep .dtxt{flex:1;min-width:120px;color:#2b2b2b;white-space:pre-wrap;word-break:break-word}
+  .movebtns{display:flex;flex-direction:column;gap:2px;margin-top:3px}
+  .movebtns button{padding:0 4px;font-size:11px;line-height:1.4;border:1px solid var(--line,#dcdfe4);border-radius:4px;background:#fff;cursor:pointer;color:#666}
+  .movebtns button:disabled{opacity:.3;cursor:default}
   .emprow.archived{display:flex;justify-content:space-between;gap:8px;opacity:.75;padding:3px 0}
   .atts{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin-top:3px}
   .att{display:inline-flex;align-items:center;gap:5px;background:#eef1f5;border-radius:7px;padding:2px 7px;font-size:11px;cursor:pointer;max-width:100%;overflow:hidden;white-space:nowrap}
@@ -343,6 +349,10 @@
       <div class="genrow"><input id="setLogo" type="file" accept="image/*" style="border:none;padding:0;background:transparent;width:auto"><button class="ghost tiny" id="setLogoDel" hidden>Убрать</button></div>
       <div class="hint" id="setLogoHint"></div>
     </div>
+    <div class="field" id="setFilesField" hidden>
+      <label>Общее облако файлов (фото и документы задач)</label>
+      <div class="genrow"><button class="ghost tiny" id="setFilesCheck">Проверить</button><span class="hint" id="setFilesHint">Нажмите «Проверить» — покажу, видят ли коллеги ваши вложения.</span></div>
+    </div>
     <div class="field" id="setPassField" hidden>
       <label>Сменить свой пароль для входа (минимум 8 символов)</label>
       <div class="genrow"><input id="setPass" type="password" placeholder="новый пароль" autocomplete="new-password"><button class="ghost tiny" id="setPassBtn">Сменить</button></div>
@@ -366,7 +376,7 @@
         <div class="field"><label>Имя и фамилия</label><input id="teamName" placeholder="Иван Петров"></div>
         <div class="field"><label>Должность</label><input id="teamPost" placeholder="прораб / логист / офис"></div>
         <div class="field"><label>Почта (для входа в CRM)</label><input id="teamEmail" type="email" placeholder="ivan@example.com"></div>
-        <div class="field" id="teamRoleField"><label>Права</label><select id="teamRole"><option value="member">Сотрудник (работает в программах: берёт задачи, отмечает выполнение)</option><option value="admin">Администратор (управляет людьми)</option></select></div>
+        <div class="field" id="teamRoleField"><label>Права</label><select id="teamRole"><option value="member">Сотрудник (работает в программах: берёт задачи, отмечает выполнение)</option><option value="pm">Менеджер проектов (ведёт все программы)</option><option value="admin">Администратор (управляет людьми и программами)</option></select></div>
       </div>
       <div class="btns" style="justify-content:flex-start;margin-top:2px"><button class="primary" id="teamInviteBtn">➕ Добавить в команду</button><span class="minihint" id="teamInviteHint">С почтой — сразу получит доступ и пароль для входа. Без почты — попадёт в список «без входа».</span></div>
       <div id="teamInviteResult" hidden style="margin-top:8px;padding:10px;border:1px solid #dcdfe4;border-radius:8px;background:#f8fafc"></div>
@@ -480,6 +490,15 @@ let editHeaderFor=null;   // id программы, у которой сейча
 let _editSnap=null;       // снимок шапки до редактирования (для записи изменений в историю)
 let taskFilter={who:'',overdue:false,stopper:false,undone:false};
 function resetTaskFilter(){ taskFilter={who:'',overdue:false,stopper:false,undone:false}; }
+// Перестановка задач: важное — наверх. Номера пересчитываются, порядок общий для всей команды.
+function moveTask(p,pos,dir){
+  const to=pos+dir; if(to<0||to>=p.tasks.length) return;
+  const t=p.tasks[pos];
+  p.tasks.splice(pos,1); p.tasks.splice(to,0,t);
+  p.tasks.forEach((x,i)=>x.n=i+1);
+  pushEvent(p,'edit','Задача перемещена: «'+((t.text||'').slice(0,40)||'без названия')+'» → позиция '+(to+1));
+  save(); renderMain();
+}
 function taskFilterActive(){ return !!(taskFilter.who||taskFilter.overdue||taskFilter.stopper||taskFilter.undone); }
 function matchTaskFilter(t){
   const f=taskFilter;
@@ -498,11 +517,11 @@ function cur(){ return state.find(p=>p.id===selected)||null; }
 //====================== employees (справочник) ======================
 const LS_EMP='crm_employees_v1';
 // у старых записей дат нет — empMigrate дописывает пустые поля, в UI показываем «—»
-function empMigrate(e){ if(e.createdAt==null)e.createdAt=''; if(e.archivedAt==null)e.archivedAt=''; if(!Array.isArray(e.hist))e.hist=[]; return e; }
+function empMigrate(e){ if(e.createdAt==null)e.createdAt=''; if(e.archivedAt==null)e.archivedAt=''; if(e.pm==null)e.pm=false; if(!Array.isArray(e.hist))e.hist=[]; return e; }
 function empHist(e,action){ (e.hist||(e.hist=[])).push({a:action,at:today()}); }
 function loadEmployees(){ try{return (JSON.parse(localStorage.getItem(LS_EMP))||[]).map(empMigrate)}catch(e){return[]} }
 function saveEmployees(){ lsSet(LS_EMP,JSON.stringify(employees)); cloudPushEmployees(); }
-function newEmployee(){ return {id:uid(),name:'',role:'',email:'',tg:'',archived:false,createdAt:'',archivedAt:'',hist:[]}; }
+function newEmployee(){ return {id:uid(),name:'',role:'',email:'',tg:'',pm:false,archived:false,createdAt:'',archivedAt:'',hist:[]}; }
 function addEmployee(){ const e=newEmployee(); e.createdAt=today(); empHist(e,'add'); employees.push(e); return e; }
 function emp(id){ return employees.find(e=>e.id===id)||null; }
 function empName(id){ const e=emp(id); return e?(e.name||'(без имени)'):'(удалён)'; }
@@ -835,7 +854,19 @@ function taskRow(p,t,idx){
   // стопор и галочку «выполнено» (по своей задаче).
   const lead=canLead(p), mine=!!myEmpId()&&t.assigneeId===myEmpId(), owns=lead||mine;
   const r=el('div','trow'+(t.done?' done':'')+(isOverdue(t)?' overdue':''));
-  r.appendChild(el('div','n',String(t.n||idx+1)));
+  // номер + перемещение задачи вверх/вниз (важное — наверх). Кнопки, а не перетаскивание:
+  // работают и пальцем на телефоне. При включённом фильтре порядок менять нельзя — запутает.
+  const cN=el('div','n'); cN.appendChild(el('div',null,String(t.n||idx+1)));
+  if(lead){
+    const pos=p.tasks.indexOf(t), filtered=taskFilterActive();
+    const mv=el('div','movebtns');
+    const up=el('button',null,'▲'); up.title=filtered?'Сначала сбросьте фильтр':'Поднять выше';
+    up.disabled=filtered||pos<=0; up.onclick=()=>moveTask(p,pos,-1);
+    const dn=el('button',null,'▼'); dn.title=filtered?'Сначала сбросьте фильтр':'Опустить ниже';
+    dn.disabled=filtered||pos>=p.tasks.length-1; dn.onclick=()=>moveTask(p,pos,1);
+    mv.append(up,dn); cN.appendChild(mv);
+  }
+  r.appendChild(cN);
   // task text + report
   const c1=el('div','cellcol');
   const tp=el('select','ttype'); TASK_TYPES.forEach(([v,l])=>{const o=el('option',null,l); o.value=v; if((t.type||'work')===v)o.selected=true; tp.appendChild(o);}); tp.title=lead?'Тип задачи':'Тип задачи меняет руководитель'; tp.onchange=()=>{t.type=tp.value; save(); renderMain();};
@@ -850,7 +881,19 @@ function taskRow(p,t,idx){
   const c2=el('div','cellcol');
   const rep=el('textarea'); rep.className='rep'; rep.value=t.report||''; rep.placeholder='Отчёт: как считается выполненной'; autserve(rep); rep.oninput=()=>{t.report=rep.value; debSave();};
   if(!owns){ rep.readOnly=true; rep.title='Отчёт заполняет исполнитель задачи или руководитель'; }
-  c2.appendChild(rep); c2.appendChild(attachmentsUI(t)); r.appendChild(c2);
+  c2.appendChild(rep);
+  // ДОКЛАД О ВЫПОЛНЕНИИ: то, что человек написал при постановке галочки — виден прямо здесь,
+  // а не только в журнале (раньше текст «проваливался» и его негде было прочитать)
+  if(t.done){
+    const dr=el('div','donerep');
+    dr.appendChild(el('span','dlab','✓ Доклад'+(t.doneDate?(' · '+fmtDFull(t.doneDate)):'')+(t.assigneeId?(' · '+empName(t.assigneeId)):'')+':'));
+    dr.appendChild(el('span','dtxt',t.doneReport||'— не описано —'));
+    if(owns){ const ed=el('button','linkbtn',t.doneReport?'изменить':'дописать');
+      ed.onclick=()=>{ const v=prompt('Что сделано? (уйдёт в журнал как доклад)', t.doneReport||''); if(v==null) return; t.doneReport=v.trim(); pushEvent(p,'task_done','Доклад по задаче №'+t.n+' уточнён: '+(t.doneReport||'(пусто)').slice(0,100),{taskId:t.id}); save(); renderMain(); };
+      dr.appendChild(ed); }
+    c2.appendChild(dr);
+  }
+  c2.appendChild(attachmentsUI(t)); r.appendChild(c2);
   // assignee
   const c3=el('div','cellcol'); c3.appendChild(assigneeCell(p,t)); r.appendChild(c3);
   // due
@@ -972,9 +1015,35 @@ function attachmentsUI(t){
   const add=el('button','tiny','📎 файл'); add.title='Прикрепить фото/файл/документ к отчёту'; add.onclick=()=>attachToTask(t); box.appendChild(add);
   return box;
 }
+// Фото с телефона весят 3-8 МБ — ужимаем до 1600px/JPEG, чтобы быстро уходили
+// в облако и открывались у коллег. Документы (PDF/Word/Excel) не трогаем.
+function shrinkImage(file){
+  return new Promise(res=>{
+    if(!/^image\/(jpe?g|png|webp)$/i.test(file.type||'') || file.size<400000) return res(file);
+    const url=URL.createObjectURL(file), img=new Image();
+    img.onload=()=>{
+      try{
+        const max=1600, sc=Math.min(1,max/Math.max(img.width,img.height));
+        if(sc>=1){ URL.revokeObjectURL(url); return res(file); }
+        const cv=document.createElement('canvas'); cv.width=Math.round(img.width*sc); cv.height=Math.round(img.height*sc);
+        cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);
+        cv.toBlob(b=>{ URL.revokeObjectURL(url); res(b&&b.size<file.size?new File([b],file.name.replace(/\.(png|webp)$/i,'.jpg'),{type:'image/jpeg'}):file); },'image/jpeg',0.85);
+      }catch(e){ URL.revokeObjectURL(url); res(file); }
+    };
+    img.onerror=()=>{ URL.revokeObjectURL(url); res(file); };
+    img.src=url;
+  });
+}
 function attachToTask(t){
   const inp=el('input'); inp.type='file'; inp.multiple=true; inp.accept='image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt';
-  inp.onchange=async()=>{ for(const f of inp.files){ const meta={id:uid(),name:f.name,mime:f.type||'application/octet-stream',size:f.size,addedAt:today()}; try{ await putBlob(meta.id,f); (t.attachments||(t.attachments=[])).push(meta); attCloudUpload(meta,f); }catch(e){ toast('Не удалось сохранить файл (мало места?)'); } } save(); renderMain(); toast('Вложение добавлено'); };
+  inp.onchange=async()=>{
+    for(const raw of inp.files){
+      const f=await shrinkImage(raw);
+      const meta={id:uid(),name:f.name,mime:f.type||'application/octet-stream',size:f.size,addedAt:today()};
+      try{ await putBlob(meta.id,f); (t.attachments||(t.attachments=[])).push(meta); attCloudUpload(meta,f); }catch(e){ toast('Не удалось сохранить файл (мало места?)'); }
+    }
+    save(); renderMain(); toast('Вложение добавлено');
+  };
   inp.click();
 }
 //--- облако файлов: общий доступ команды через Supabase Storage (bucket pp-files) ---
@@ -1043,7 +1112,15 @@ function showAttPreview(url,a){
 function wrapField(node,label){ const f=el('div','field'); if(label)f.appendChild(el('label',null,label)); f.appendChild(node); return f; }
 function inputFor(o,key,ph){ const i=el('input'); i.value=o[key]||''; if(ph)i.placeholder=ph; i.oninput=()=>{o[key]=i.value; debSave();}; return i; }
 function textFor(o,key){ const t=el('textarea'); t.value=o[key]||''; autserve(t); t.oninput=()=>{o[key]=t.value; debSave();}; return t; }
-function dateFor(o,key){ const i=el('input'); i.type='date'; i.value=o[key]||''; i.oninput=()=>{o[key]=i.value; debSave();}; return i; }
+// Даты: пишем и на input, и на change (в части браузеров при выборе из календаря
+// приходит только change), а на change сохраняем СРАЗУ — иначе дата «слетала»,
+// если человек тут же обновлял страницу.
+function dateFor(o,key){
+  const i=el('input'); i.type='date'; i.value=o[key]||'';
+  i.oninput=()=>{o[key]=i.value; debSave();};
+  i.onchange=()=>{o[key]=i.value; save();};
+  return i;
+}
 function autserve(ta){ const fit=()=>{ta.style.height='auto'; ta.style.height=Math.max(26,ta.scrollHeight)+'px';}; setTimeout(fit,0); ta.addEventListener('input',fit); }
 let _t; function debSave(){ clearTimeout(_t); _t=setTimeout(()=>{ lsSet(LS_KEY,JSON.stringify(state)); renderList(); cloudPushPrograms(); },300); }
 const today=()=>new Date().toISOString().slice(0,10);
@@ -1289,7 +1366,27 @@ function stopMic(){ if(_recBtn){ _recBtn.classList.remove('micrec'); _recBtn.tex
 //====================== settings ======================
 const setBg=document.getElementById('setBg');
 function refreshLogoUI(){ let has=''; try{ has=localStorage.getItem(LS_LOGO); }catch(e){} const d=document.getElementById('setLogoDel'); if(d) d.hidden=!has; const h=document.getElementById('setLogoHint'); if(h) h.textContent=has?'Свой логотип установлен. Заменить — выберите файл; «Убрать» — вернуть логотип LK по умолчанию.':'Сейчас стоит логотип LK Bau Service (по умолчанию). Выберите файл, чтобы заменить на свой.'; }
-document.getElementById('btnSettings').onclick=()=>{ document.getElementById('setKey').value=localStorage.getItem(LS_GROQ)||''; document.getElementById('setModel').value=localStorage.getItem(LS_MODEL)||'llama-3.3-70b-versatile'; refreshLogoUI(); const pf=document.getElementById('setPassField'); if(pf) pf.hidden=!(supa&&window.__meId); setBg.classList.add('on'); };
+document.getElementById('btnSettings').onclick=()=>{ document.getElementById('setKey').value=localStorage.getItem(LS_GROQ)||''; document.getElementById('setModel').value=localStorage.getItem(LS_MODEL)||'llama-3.3-70b-versatile'; refreshLogoUI(); const pf=document.getElementById('setPassField'); if(pf) pf.hidden=!(supa&&window.__meId); const ff=document.getElementById('setFilesField'); if(ff) ff.hidden=!(supa&&window.__meId); const fh=document.getElementById('setFilesHint'); if(fh) fh.textContent='Нажмите «Проверить» — покажу, видят ли коллеги ваши вложения.'; setBg.classList.add('on'); };
+// Самопроверка облака файлов: пишем крошечный тестовый файл и удаляем — сразу понятно,
+// работает ли общий доступ и что именно нужно донастроить.
+document.getElementById('setFilesCheck').onclick=async function(){
+  const h=document.getElementById('setFilesHint');
+  if(!attCloudReady()){ h.textContent='Нет связи с базой или вы не вошли — облако файлов недоступно.'; return; }
+  this.disabled=true; h.textContent='Проверяю…';
+  try{
+    const id='selftest-'+uid(), blob=new Blob(['ok'],{type:'text/plain'});
+    const up=await supa.storage.from('pp-files').upload(id,blob,{contentType:'text/plain',upsert:true});
+    if(up.error) throw up.error;
+    const dl=await supa.storage.from('pp-files').download(id);
+    try{ await supa.storage.from('pp-files').remove([id]); }catch(_){}
+    h.textContent=dl.error?('Загрузка работает, чтение — нет: '+(dl.error.message||'ошибка')):'✅ Всё в порядке: файлы видит вся команда.';
+  }catch(e){
+    const m=(e&&e.message)||'';
+    h.textContent=/not found|does not exist|Bucket/i.test(m)
+      ? '❌ Хранилище не настроено: выполните storage.sql (Шаг Е-2 инструкции) или создайте корзину pp-files в Supabase → Storage. Пока файлы видны только тому, кто их загрузил.'
+      : ('❌ Не удалось: '+m);
+  } finally{ this.disabled=false; }
+};
 document.getElementById('setPassBtn').onclick=async function(){
   const inp=document.getElementById('setPass'), v=(inp.value||'').trim();
   if(v.length<8){ toast('Пароль слишком короткий — минимум 8 символов'); return; }
@@ -1349,8 +1446,15 @@ function renderEmp(){
     const right=el('span','empdate'); right.style.display='flex'; right.style.flexDirection='column'; right.style.gap='2px'; right.style.alignItems='flex-end';
     right.appendChild(el('span','empdate','с '+fmtDFull(e.createdAt)));
     const ab=accessBadge(e); if(ab) right.appendChild(ab);
+    if(e.pm){ const pb=el('span','empdate','★ менеджер проектов'); pb.style.color='#1e5fd8'; pb.title='Ведёт все программы: правит шапки, назначает исполнителей, меняет руководителей'; right.appendChild(pb); }
     row.appendChild(right);
     const acts=el('span'); acts.style.display='flex'; acts.style.gap='3px';
+    if(canManage){
+      const pmb=el('button','ghost tiny',e.pm?'★ PM':'☆ PM');
+      pmb.title=e.pm?'Снять роль менеджера проектов':'Сделать менеджером проектов (управляет всеми программами)';
+      pmb.onclick=()=>{ e.pm=!e.pm; saveEmployees(); renderEmp(); renderMain(); toast(e.pm?('«'+(e.name||'')+'» — менеджер проектов'):'Роль менеджера снята'); };
+      acts.appendChild(pmb);
+    }
     if(canManage && window.__members){
       const m=memberByEmail(e.email);
       if(m && m.user_id!==window.__meId && m.status!=='revoked' && isAdmin()){
@@ -1398,10 +1502,13 @@ function soloMode(){ return !window.__meId; }
 // «Я как сотрудник» — по совпадению почты входа и почты в справочнике
 function myEmp(){ const em=(window.__meEmail||'').toLowerCase(); if(!em) return null; return employees.find(e=>e.email && String(e.email).toLowerCase()===em && !e.archived)||null; }
 function myEmpId(){ const me=myEmp(); return me?me.id:null; }
+// Менеджер проектов — управляет ВСЕМИ программами (выше руководителя программы,
+// но не раздаёт доступы в CRM — это остаётся за владельцем-администратором)
+function isPM(){ const me=myEmp(); return !!(me&&me.pm); }
 // Полные права на программу: без входа / владелец CRM (админ) / создатель программы / её руководитель.
 // Это они: правят шапку и критерии, меняют руководителя, набирают участников, назначают исполнителей.
 function canLead(p){
-  if(soloMode()||isAdmin()) return true; if(!p) return false;
+  if(soloMode()||isAdmin()||isPM()) return true; if(!p) return false;
   const em=(window.__meEmail||'').toLowerCase();
   if(p.createdBy && em && String(p.createdBy).toLowerCase()===em) return true;
   const me=myEmp(); return !!(me && p.ownerId && me.id===p.ownerId);
@@ -1446,6 +1553,7 @@ async function teamSubmit(){
   if(!ex) ex=addEmployee();
   else if(ex.archived){ ex.archived=false; ex.archivedAt=''; empHist(ex,'back'); }
   if(name) ex.name=name; if(post) ex.role=post; if(email) ex.email=email.toLowerCase();
+  const rsel=document.getElementById('teamRole'); ex.pm=!!(rsel&&rsel.value==='pm');
   saveEmployees();
   document.getElementById('teamName').value=''; document.getElementById('teamPost').value=''; document.getElementById('teamEmail').value='';
   const rl=document.getElementById('teamRole'); if(rl) rl.value='member';
@@ -1456,7 +1564,9 @@ async function teamInvite(preset){
   const emailEl=document.getElementById('teamEmail'), nameEl=document.getElementById('teamName');
   const email=preset?String(preset.email||'').trim():(emailEl.value||'').trim();
   const pname=preset?String(preset.name||'').trim():(nameEl?(nameEl.value||''):'').trim();
-  const role=preset?'member':document.getElementById('teamRole').value;   // из строки — всегда обычный сотрудник
+  const uiRole=preset?'member':document.getElementById('teamRole').value;
+  const role=(uiRole==='admin')?'admin':'member';   // на сервере ролей две; PM — признак в карточке человека
+  const wantPM=(uiRole==='pm');
   if(!email){ toast('Укажите почту'); return; }
   const btn=document.getElementById('teamInviteBtn'); btn.disabled=true; const ot=btn.textContent; btn.textContent='Приглашаю…';
   try{
@@ -1481,9 +1591,9 @@ async function teamInvite(preset){
     // автоматически заводим человека в команде (без дублей по почте)
     const postEl=document.getElementById('teamPost'), post=preset?String(preset.post||'').trim():(postEl?(postEl.value||''):'').trim();
     if(!employees.some(e=>e.email && String(e.email).toLowerCase()===email.toLowerCase())){
-      const ne=addEmployee(); ne.email=email; ne.name=pname||email.split('@')[0].replace(/[._+-]+/g,' ').trim(); if(post) ne.role=post;
+      const ne=addEmployee(); ne.email=email; ne.name=pname||email.split('@')[0].replace(/[._+-]+/g,' ').trim(); if(post) ne.role=post; ne.pm=wantPM;
       saveEmployees();
-    } else { const ex=employees.find(e=>e.email && String(e.email).toLowerCase()===email.toLowerCase()); if(ex){ if(pname && !ex.name) ex.name=pname; if(post && !ex.role) ex.role=post; if(ex.archived){ ex.archived=false; ex.archivedAt=''; empHist(ex,'back'); } saveEmployees(); } }
+    } else { const ex=employees.find(e=>e.email && String(e.email).toLowerCase()===email.toLowerCase()); if(ex){ if(pname && !ex.name) ex.name=pname; if(post && !ex.role) ex.role=post; if(wantPM) ex.pm=true; if(ex.archived){ ex.archived=false; ex.archivedAt=''; empHist(ex,'back'); } saveEmployees(); } }
     if(!preset){ emailEl.value=''; if(nameEl) nameEl.value=''; if(postEl) postEl.value=''; const rl=document.getElementById('teamRole'); if(rl) rl.value='member'; }
     toast('Приглашение создано — человек в команде'); refreshMembers().then(()=>{ renderEmp(); renderMain(); });
   }catch(e){ toast('Ошибка: '+e.message); }
@@ -1491,7 +1601,7 @@ async function teamInvite(preset){
 }
 
 //====================== инструкция / помощь ======================
-const HELP_VERSION=3;   // при обновлении инструкции увеличить — у всех появится пометка «обновлено» и автопоказ
+const HELP_VERSION=4;   // при обновлении инструкции увеличить — у всех появится пометка «обновлено» и автопоказ
 const HELP_HTML=`<p>Привет! Это приложение помогает вести <b>программы</b> — наборы задач, чтобы навести порядок и внедрить изменения в компании. Одна программа — это одна цель, понятные признаки «победы» и список задач с исполнителями и сроками. Ниже всё по шагам.</p>
 
 <h4>С чего начать: вход</h4>
@@ -1573,7 +1683,22 @@ const HELP_HTML=`<p>Привет! Это приложение помогает �
 <div class="hint"><b>Важно:</b> почта человека в «👥 Команда» должна <b>совпадать с почтой, которой он входит</b> в приложение. Иначе система его не узнает: не будет кнопок «Я участвую», «Взять себе» и прав руководителя.</div>
 <p><b>Журнал программы</b> внизу — это история всех событий: отметки задач, переносы сроков, координации, изменения шапки, стопоры. Загляни туда, если нужно вспомнить, что и когда происходило.</p>
 
-<h4>Что нового (26.08.2026)</h4>
+<h4>Порядок задач, доклады, роли</h4>
+<p><b>Переставить задачу</b> — кнопки <b>▲ ▼</b> слева от номера (важное поднимаем наверх). Доступны руководителю; при включённом фильтре порядок не меняется — сначала сбросьте фильтр.</p>
+<p><b>Доклад о выполнении.</b> Когда ставишь галочку «выполнено», программа спрашивает «Что сделано?». Этот текст теперь виден <b>прямо в задаче</b> — зелёной плашкой «✓ Доклад» с датой и исполнителем (и, как раньше, попадает в журнал). Дописать или поправить — ссылка «изменить» в той же плашке.</p>
+<p><b>Менеджер проектов</b> — в «👥 Команда» кнопкой <b>★ PM</b>. Такой человек ведёт <b>все</b> программы: правит шапки и критерии, назначает исполнителей, меняет руководителей, переставляет задачи. Раздавать доступы в CRM по-прежнему может только владелец-администратор.</p>
+<div class="hint">Порядок прав: <b>владелец</b> → <b>менеджер проектов</b> → <b>руководитель программы</b> (в своей программе) → <b>участник</b> (свои задачи).</div>
+
+<h4>Что нового (07.09.2026)</h4>
+<ul>
+  <li><b>Доклад «что сделано» виден в задаче</b>, а не только в журнале.</li>
+  <li><b>Перемещение задач</b> кнопками ▲▼.</li>
+  <li><b>Менеджер проектов</b> — роль выше руководителя программы.</li>
+  <li><b>Даты не слетают:</b> дата сохраняется сразу при выборе, а несохранённое дописывается при закрытии вкладки.</li>
+  <li><b>Фото сжимаются</b> при загрузке — быстрее уходят в общее облако; в ⚙ есть кнопка «Проверить» облако файлов.</li>
+</ul>
+
+<h4>Что было в 26.08.2026</h4>
 <ul>
   <li>Кнопки «Сотрудники», «+ Добавить сотрудников» и «🔑 Команда» объединены в одну — <b>«👥 Команда»</b>: люди, должности, даты и доступ в одном окне.</li>
   <li>Фото открываются <b>прямо в приложении</b>, PDF — в соседней вкладке; файлы теперь в общем облаке и видны всей команде.</li>
@@ -1769,6 +1894,38 @@ const SUPA_KEY='sb_publishable_hZxYD2-HbLEusMXIQviHqw_nOioD8hU';
 let supa=null, cloudProgIds=new Set(), cloudEmpIds=new Set(), pushT=null;
 window.__supaReady=false;
 
+// Ничего не должно теряться при закрытии/обновлении вкладки: дописываем локально
+// и отправляем отложенные изменения немедленно.
+function flushSaves(){
+  try{ clearTimeout(_t); lsSet(LS_KEY,JSON.stringify(state)); }catch(e){}
+  try{ clearTimeout(_empT); lsSet(LS_EMP,JSON.stringify(employees)); }catch(e){}
+  try{ if(pushT){ clearTimeout(pushT); pushT=null; cloudPushNow(); } }catch(e){}
+  try{ if(empPushT){ clearTimeout(empPushT); empPushT=null; cloudPushEmployeesNow(); } }catch(e){}
+}
+if(typeof window!=='undefined'){
+  window.addEventListener('beforeunload',flushSaves);
+  window.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='hidden') flushSaves(); });
+}
+async function cloudPushNow(){
+  if(!window.__supaReady||!supa) return;
+  try{
+    if(state.length) await supa.from('pp_programs').upsert(state.map(p=>({id:p.id,data:p,number:parseInt(p.number)||null,updated_at:new Date().toISOString()})));
+    const ids=new Set(state.map(p=>p.id));
+    const del=[...cloudProgIds].filter(id=>!ids.has(id));
+    if(del.length) await supa.from('pp_programs').delete().in('id',del);
+    cloudProgIds=ids;
+  }catch(e){ console.warn('push now',e); }
+}
+async function cloudPushEmployeesNow(){
+  if(!window.__supaReady||!supa) return;
+  try{
+    if(employees.length) await supa.from('pp_employees').upsert(employees.map(e=>({id:e.id,data:e,updated_at:new Date().toISOString()})));
+    const ids=new Set(employees.map(e=>e.id));
+    const del=[...cloudEmpIds].filter(id=>!ids.has(id));
+    if(del.length) await supa.from('pp_employees').delete().in('id',del);
+    cloudEmpIds=ids;
+  }catch(e){ console.warn('push emp now',e); }
+}
 function cloudPushPrograms(){
   if(!window.__supaReady||!supa) return;
   clearTimeout(pushT);
