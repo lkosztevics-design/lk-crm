@@ -164,6 +164,64 @@
   .emprow{display:grid;grid-template-columns:1.4fr 1fr 1.2fr 1fr auto auto;gap:6px;margin-bottom:6px;align-items:center}
   .emprow input{padding:5px 7px;font-size:12.5px}
   .empdate{font-size:11px;color:#8a8f98;white-space:nowrap}
+  .subsbox{display:flex;flex-direction:column;gap:2px;margin-top:5px}
+  .subbar{display:flex;align-items:center;gap:7px}
+  .subbar .bar{flex:1;height:6px}
+  .subrow{display:flex;align-items:flex-start;gap:6px;padding-left:2px}
+  .subrow.sdone .subtext{text-decoration:line-through;color:var(--faint,#8a8f98)}
+  .subtext{flex:1;min-width:0;font-size:12.5px;border:1px solid transparent;background:transparent;padding:2px 4px;border-radius:5px;resize:none;font-family:inherit;color:inherit}
+  .subtext:focus{border-color:var(--line,#dcdfe4);background:#fff}
+  .cmtbox{display:flex;flex-direction:column;gap:4px;margin-top:6px}
+  .cmtlast{font-size:11.5px;color:var(--faint,#8a8f98);font-style:italic}
+  .cmt{display:flex;gap:7px;padding:5px 0;border-top:1px solid var(--line,#eef0f3)}
+  .cmtc{flex:1;min-width:0}
+  .cmtn{font-size:11px;color:var(--faint,#8a8f98)}
+  .cmtm{font-size:12.5px;white-space:pre-wrap;word-break:break-word}
+  .cmtadd{display:flex;gap:6px;align-items:flex-end;margin-top:4px}
+  .cmtadd textarea{flex:1;min-width:0;font-size:12.5px;padding:5px 7px}
+  .tplrow{display:flex;gap:9px;align-items:center;padding:9px 10px;border:1px solid var(--line,#dcdfe4);border-radius:9px;background:#fff}
+  .tplic{width:28px;height:28px;border-radius:7px;background:var(--accent-soft,#e9f0ff);color:var(--accent-ink,#1c4fc4);display:grid;place-items:center;font-size:14px;flex:none}
+  .tplt{flex:1;min-width:0}
+  .tplt b{display:block;font-size:13.5px}
+  .tplt span{font-size:11.5px;color:var(--faint,#8a8f98)}
+  .dash{display:flex;flex-direction:column;gap:16px}
+  .dashhead{display:flex;align-items:center;gap:12px}
+  .dashhead h2{margin:0;font-size:19px}
+  .dtiles{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+  .dtile{padding:11px 13px;border:1px solid var(--line,#dcdfe4);border-radius:11px;background:#fff}
+  .dtile .dv{font-size:26px;font-weight:800;line-height:1}
+  .dtile .dk{font-size:11.5px;color:var(--faint,#8a8f98);margin-top:3px}
+  .dtile.bad .dv{color:#d64541}
+  .dtile.warn .dv{color:#e0821a}
+  .dsect{background:#fff;border:1px solid var(--line,#dcdfe4);border-radius:12px;padding:13px 15px}
+  .dsect h3{margin:0 0 9px;font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--faint,#8a8f98)}
+  .drow{display:flex;align-items:center;gap:9px;padding:7px 10px;margin-bottom:6px;border-radius:8px;background:#fafbfc;border-left:3px solid #d64541}
+  .drow.warn{border-left-color:#e0821a}
+  .drow .dtxt{flex:1;min-width:0;font-size:13px}
+  .dbar{display:grid;grid-template-columns:minmax(120px,1.4fr) 1fr auto;gap:10px;align-items:center;padding:5px 0;cursor:pointer;font-size:13px}
+  .dbar:hover .dname{color:var(--accent,#2f6df6)}
+  .dbar .dname{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .dbar .bar{height:8px}
+  .dbar .dnum{font-size:12px;color:var(--faint,#8a8f98);white-space:nowrap;min-width:56px;text-align:right}
+  @media(max-width:640px){.dtiles{grid-template-columns:repeat(2,1fr)}}
+  /* телефон: подписи полей в задачах и крупные кнопки под палец */
+  .cellcol .lab{display:none}
+  @media(max-width:820px){
+    .cellcol .lab{display:block;margin-bottom:2px}
+    .trow{grid-template-columns:1fr}
+    .trow>div{padding:6px 10px}
+    .tasks .trow .n{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--accent,#2f6df6)}
+    .movebtns{flex-direction:row}
+    .movebtns button{min-width:38px;min-height:34px;font-size:13px}
+    button,.tiny,.linkbtn{min-height:34px}
+    .att{font-size:13px;padding:6px 10px}
+    .chk{width:20px;height:20px}
+  }
+  .livebar{display:flex;align-items:center;gap:8px;padding:7px 11px;margin-bottom:10px;background:var(--accent-soft,#e9f0ff);border-radius:9px;font-size:12.5px;color:var(--accent-ink,#1c4fc4)}
+  .livedot{width:7px;height:7px;border-radius:50%;background:var(--ok,#2e9e5b);box-shadow:0 0 0 3px rgba(46,158,91,.18);flex:none}
+  .livetxt{flex:1;min-width:0}
+  .liveav{display:flex}
+  .av1{width:22px;height:22px;border-radius:50%;background:var(--accent,#2f6df6);color:#fff;font-size:10px;font-weight:700;display:grid;place-items:center;border:2px solid #fff;margin-left:-6px}
   .donerep{margin-top:5px;padding:5px 8px;background:#f0f9f3;border-left:3px solid var(--ok,#2e9e5b);border-radius:0 6px 6px 0;font-size:12px;display:flex;flex-wrap:wrap;gap:5px;align-items:baseline}
   .donerep .dlab{color:#2e7d4f;font-weight:700;white-space:nowrap}
   .donerep .dtxt{flex:1;min-width:120px;color:#2b2b2b;white-space:pre-wrap;word-break:break-word}
@@ -268,6 +326,7 @@
     </div>
     <div class="actions">
       <button class="primary" id="btnNew">+ Программа</button>
+      <button class="ghost" id="btnDash" title="Сводка по всем программам: что просрочено, где стопоры, кто тормозит">📊 Сводка</button>
       <button class="ghost" id="btnEmp" title="Команда: люди, должности и доступ в CRM — всё в одном месте">👥 Команда</button>
       <input type="file" id="fileImport" accept="application/json" hidden>
     </div>
@@ -388,6 +447,16 @@
   </div>
 </div>
 
+<!-- Выбор образца при создании программы -->
+<div class="modal-bg" id="tplBg">
+  <div class="modal" style="max-width:560px">
+    <h3>Новая программа</h3>
+    <p>Возьмите готовый образец — задачи и отчёты-критерии уже внутри, останется поправить сроки и исполнителей. Или начните с нуля с помощником.</p>
+    <div id="tplList" style="display:flex;flex-direction:column;gap:7px;max-height:52vh;overflow:auto"></div>
+    <div class="btns"><button class="ghost" id="tplClose">Отмена</button></div>
+  </div>
+</div>
+
 <!-- Help / instruction modal -->
 <div class="modal-bg" id="helpBg">
   <div class="modal" style="max-width:720px;max-height:88vh;overflow:auto">
@@ -472,6 +541,8 @@ function migrate(p){
     if(t.assigneeId==null) t.assigneeId='';
     if(t.assigneeLegacy==null) t.assigneeLegacy='';
     if(!Array.isArray(t.attachments)) t.attachments=[];
+    if(!Array.isArray(t.subs)) t.subs=[];          // подпункты внутри задачи
+    if(!Array.isArray(t.comments)) t.comments=[];  // обсуждение по задаче
     if(t.origDue==null) t.origDue='';
     if(t.stopper==null) t.stopper='';
     if(t.doneReport==null) t.doneReport='';
@@ -511,7 +582,7 @@ function matchTaskFilter(t){
 
 function load(){ try{return (JSON.parse(localStorage.getItem(LS_KEY))||[]).map(migrate)}catch(e){ try{ const raw=localStorage.getItem(LS_KEY); if(raw) localStorage.setItem('crm_corrupt_backup',raw); }catch(_){} return []; } }
 function lsSet(k,v){ try{ localStorage.setItem(k,v); return true; }catch(e){ if(typeof toast==='function') toast('⚠ Хранилище переполнено — сделайте «⭳+ Бэкап»'); return false; } }
-function save(){ lsSet(LS_KEY,JSON.stringify(state)); lsSet(LS_SEL,selected||''); renderList(); cloudPushPrograms(); }
+function save(){ markDirty(cur()); lsSet(LS_KEY,JSON.stringify(state)); lsSet(LS_SEL,selected||''); renderList(); cloudPushPrograms(); }
 function cur(){ return state.find(p=>p.id===selected)||null; }
 
 //====================== employees (справочник) ======================
@@ -555,12 +626,15 @@ function toast(m){const t=document.getElementById('toast'); t.textContent=m; t.c
 function progress(p){const n=p.tasks.length, d=p.tasks.filter(t=>t.done).length; return {n,d,pct:n?Math.round(d/n*100):0};}
 
 //====================== sidebar list ======================
+function livePrograms(){ return state.filter(p=>!p.isTemplate); }
+function templates(){ return state.filter(p=>p.isTemplate); }
 function renderList(){
   const wrap=document.getElementById('plist'); wrap.innerHTML='';
-  if(!state.length){ wrap.appendChild(el('div','pcard','Пока нет программ. Нажмите «+ Программа».')); }
-  state.forEach(p=>{
+  const shown=livePrograms();
+  if(!shown.length){ wrap.appendChild(el('div','pcard','Пока нет программ. Нажмите «+ Программа».')); }
+  shown.forEach(p=>{
     const {n,d,pct}=progress(p);
-    const c=el('div','pcard'+(p.id===selected?' active':'')); c.onclick=()=>{selected=p.id; journalExpanded=false; resetTaskFilter(); save(); renderMain();};
+    const c=el('div','pcard'+(p.id===selected&&view!=='dash'?' active':'')); c.onclick=()=>{view='program'; selected=p.id; journalExpanded=false; resetTaskFilter(); save(); renderMain();};
     const ownerNm=p.ownerId?empName(p.ownerId):(p.owner||'');
     if(ownerNm) c.appendChild(el('div','powner','👤 '+ownerNm));
     const ttl=el('div','ttl'); ttl.appendChild(el('span','num',p.number?('№'+p.number):'—'));
@@ -574,7 +648,7 @@ function renderList(){
     meta.appendChild(el('span','pct',d+'/'+n)); c.appendChild(meta);
     wrap.appendChild(c);
   });
-  const total=state.length, tasks=state.reduce((a,p)=>a+p.tasks.length,0), done=state.reduce((a,p)=>a+p.tasks.filter(t=>t.done).length,0);
+  const ls=livePrograms(); const total=ls.length, tasks=ls.reduce((a,p)=>a+p.tasks.length,0), done=ls.reduce((a,p)=>a+p.tasks.filter(t=>t.done).length,0);
   document.getElementById('statAll').textContent=`${total} прогр. · ${done}/${tasks} задач`;
 }
 
@@ -582,9 +656,12 @@ function renderList(){
 function renderMain(){
   renderList();
   const m=document.getElementById('main'); m.innerHTML='';
+  if(view==='dash'){ leaveRoom(); m.appendChild(renderDashboard()); return; }
   const p=cur();
   if(!p){ const e=el('div','empty'); e.innerHTML='<div class="emptybox"><div class="emptyic">📋</div><h2>Пока не выбрана программа</h2><p>Выберите программу в списке слева или создайте новую — помощник поможет сформулировать цель, критерии и первые шаги.</p><button class="primary" id="emptyNew">✨ Новая программа</button></div>'; m.appendChild(e); const en=document.getElementById('emptyNew'); if(en) en.onclick=()=>document.getElementById('btnNew').click(); return; }
 
+  joinRoom(p.id);                               // присутствие: кто ещё открыл эту программу
+  const live=el('div','livebar'); live.id='liveBar'; live.hidden=true; m.appendChild(live);
   //--- header card ---
   const lead=canLead(p);                        // руководитель проекта или владелец
   const editing=lead && editHeaderFor===p.id;   // открыт ли режим редактирования шапки
@@ -618,6 +695,9 @@ function renderMain(){
   } else {
     hbar.appendChild(el('span','minihint',p.ownerId?('Название, цель и критерии редактирует руководитель программы — '+empName(p.ownerId)+'.'):'Руководитель программы не назначен — попросите владельца назначить его в поле «Ответственный».'));
   }
+  const prBtn=el('button','ghost tiny','🖨 Печать'); prBtn.title='Печать бланком к координации'; prBtn.onclick=()=>printProgram(p); hbar.appendChild(prBtn);
+  const xlBtn=el('button','ghost tiny','⬇ Excel'); xlBtn.title='Выгрузить задачи в таблицу (открывается в Excel)'; xlBtn.onclick=()=>exportExcel(p); hbar.appendChild(xlBtn);
+  if(lead){ const tplBtn=el('button','ghost tiny','📋 В образцы'); tplBtn.title='Сохранить как образец для будущих программ'; tplBtn.onclick=()=>saveAsTemplate(p); hbar.appendChild(tplBtn); }
   head.appendChild(hbar);
 
   //--- owner / status / dates ---
@@ -849,6 +929,179 @@ function renderLeaderboard(p){
   }
   return wrap;
 }
+//====================== пульт владельца: сводка по всем программам ======================
+// Смысл: утром открыл — сразу видно отклонения, а не «читать все программы подряд».
+let view='program';
+function daysSinceCoord(p){
+  const cds=(p.timeline||[]).filter(e=>e.type==='coordination');
+  if(!cds.length) return null;
+  return Math.floor((Date.now()-new Date(cds[cds.length-1].at).getTime())/86400000);
+}
+function renderDashboard(){
+  const box=el('div','dash');
+  const progs=livePrograms();
+  const active=progs.filter(p=>p.status==='approved'||p.status==='in_progress');
+  const overdue=[], stoppers=[];
+  progs.forEach(p=>{ (p.tasks||[]).forEach(t=>{ if(isOverdue(t)) overdue.push({p,t}); if(t.stopper&&!t.done) stoppers.push({p,t}); }); });
+
+  const head=el('div','dashhead');
+  head.appendChild(el('h2',null,'📊 Сводка по всем программам'));
+  const back=el('button','tiny','← К программам'); back.onclick=()=>{ view='program'; renderMain(); }; head.appendChild(back);
+  box.appendChild(head);
+
+  const tiles=el('div','dtiles');
+  const tile=(v,k,cls)=>{ const d=el('div','dtile'+(cls?(' '+cls):'')); d.appendChild(el('div','dv',String(v))); d.appendChild(el('div','dk',k)); return d; };
+  tiles.append(tile(active.length,'программы в работе'),tile(overdue.length,'просрочено задач',overdue.length?'bad':''),tile(stoppers.length,'стопора',stoppers.length?'warn':''),tile(progs.filter(p=>p.status==='done').length,'завершено'));
+  box.appendChild(tiles);
+
+  // требует внимания
+  const attn=[];
+  active.forEach(p=>{ const d=daysSinceCoord(p);
+    if(d===null) attn.push({lvl:'bad',t:'«'+(p.title||'без названия')+'»: координации ещё не было',p});
+    else if(d>=7) attn.push({lvl:'bad',t:'«'+(p.title||'без названия')+'»: координации не было '+d+' дн.',p}); });
+  stoppers.forEach(x=>attn.push({lvl:'warn',t:'«'+(x.p.title||'')+'» задача №'+x.t.n+': стопор — '+String(x.t.stopper).slice(0,60),p:x.p}));
+  overdue.slice(0,8).forEach(x=>attn.push({lvl:'warn',t:'«'+(x.p.title||'')+'» задача №'+x.t.n+' просрочена (срок '+fmtDFull(x.t.due)+')',p:x.p}));
+  const al=el('div','dsect'); al.appendChild(el('h3',null,'Требует внимания'));
+  if(!attn.length) al.appendChild(el('div','minihint','Отклонений нет — всё в графике.'));
+  attn.slice(0,14).forEach(a=>{
+    const r=el('div','drow '+a.lvl); r.appendChild(el('span','dtxt',a.t));
+    const go=el('button','linkbtn','открыть'); go.onclick=()=>{ view='program'; selected=a.p.id; save(); renderMain(); }; r.appendChild(go);
+    al.appendChild(r);
+  });
+  box.appendChild(al);
+
+  // загрузка людей
+  const byPerson={};
+  progs.forEach(p=>(p.tasks||[]).forEach(t=>{ const k=t.assigneeId||'__none__'; (byPerson[k]||(byPerson[k]={done:0,total:0,over:0})); byPerson[k].total++; if(t.done)byPerson[k].done++; if(isOverdue(t))byPerson[k].over++; }));
+  const ppl=Object.keys(byPerson).map(k=>Object.assign({id:k},byPerson[k])).sort((a,b)=>(b.total-b.done)-(a.total-a.done));
+  const ps=el('div','dsect'); ps.appendChild(el('h3',null,'Люди и загрузка'));
+  if(!ppl.length) ps.appendChild(el('div','minihint','Задачи пока не распределены.'));
+  ppl.forEach(x=>{
+    const r=el('div','dbar');
+    r.appendChild(el('span','dname',x.id==='__none__'?'не распределено':empName(x.id)));
+    const tr=el('div','bar'); const i=el('i'); const pct=x.total?Math.round(x.done/x.total*100):0;
+    i.style.width=pct+'%'; if(pct===100)i.style.background='var(--ok)'; else if(x.over)i.style.background='var(--warn,#e0821a)';
+    tr.appendChild(i); r.appendChild(tr);
+    r.appendChild(el('span','dnum',x.done+'/'+x.total+(x.over?(' ⚠'+x.over):'')));
+    if(x.id!=='__none__') r.onclick=()=>{ view='program'; taskFilter.who=x.id; renderMain(); };
+    ps.appendChild(r);
+  });
+  box.appendChild(ps);
+
+  // программы построчно
+  const pl=el('div','dsect'); pl.appendChild(el('h3',null,'Программы'));
+  progs.forEach(p=>{
+    const {n,d,pct}=progress(p); const r=el('div','dbar');
+    r.appendChild(el('span','dname',(p.number?('№'+p.number+' '):'')+(p.title||'без названия')));
+    const tr=el('div','bar'); const i=el('i'); i.style.width=pct+'%'; if(pct===100)i.style.background='var(--ok)'; tr.appendChild(i); r.appendChild(tr);
+    r.appendChild(el('span','dnum',d+'/'+n));
+    r.onclick=()=>{ view='program'; selected=p.id; save(); renderMain(); };
+    pl.appendChild(r);
+  });
+  box.appendChild(pl);
+  return box;
+}
+
+//====================== печать бланком и выгрузка в Excel ======================
+// Печатаем не экран, а бланк в формате «Программа офиса владельца»: задачи, отчёты,
+// исполнители, сроки и место для подписей — то, что кладут на стол к координации.
+function printProgram(p){
+  const w=window.open('','_blank'); if(!w){ toast('Разрешите всплывающие окна, чтобы печатать'); return; }
+  const esc2=x=>esc(String(x==null?'':x));
+  const rows=(p.tasks||[]).map(t=>'<tr><td class="c">'+t.n+'</td><td>'+esc2(t.text)+(t.subs&&t.subs.length?('<div class="sub">'+t.subs.map(s2=>(s2.done?'☑ ':'☐ ')+esc2(s2.text)).join('<br>')+'</div>'):'')+'</td><td>'+esc2(t.report)+(t.doneReport?('<div class="dr">Доклад: '+esc2(t.doneReport)+'</div>'):'')+'</td><td>'+esc2(t.assigneeId?empName(t.assigneeId):(t.assigneeLegacy||''))+'</td><td class="c">'+esc2(fmtDFull(t.due))+'</td><td class="c">'+(t.done?'✓':'')+'</td></tr>').join('');
+  const crit=(p.criteria||[]).map(c=>'<li>'+(c.done?'☑ ':'☐ ')+esc2(c.text)+'</li>').join('');
+  w.document.write('<!doctype html><html lang="ru"><head><meta charset="utf-8"><title>Программа №'+esc2(p.number)+' — '+esc2(p.title)+'</title><style>'
+    +'body{font-family:Georgia,"Times New Roman",serif;color:#111;margin:26px;font-size:12.5px}'
+    +'h1{font-size:19px;margin:0 0 2px;font-family:Arial,Helvetica,sans-serif}'
+    +'.sub1{color:#555;font-size:11.5px;margin-bottom:12px;font-family:Arial,Helvetica,sans-serif}'
+    +'.goal{border-left:3px solid #333;padding:6px 10px;margin:10px 0;background:#f6f6f6}'
+    +'h2{font-size:12.5px;text-transform:uppercase;letter-spacing:.05em;margin:14px 0 5px;font-family:Arial,Helvetica,sans-serif}'
+    +'table{width:100%;border-collapse:collapse;margin-top:4px}'
+    +'th,td{border:1px solid #999;padding:4px 6px;vertical-align:top;text-align:left}'
+    +'th{background:#eee;font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;font-family:Arial,Helvetica,sans-serif}'
+    +'td.c{text-align:center;white-space:nowrap}'
+    +'.sub{color:#555;font-size:11px;margin-top:3px}.dr{color:#1a6b3c;font-size:11px;margin-top:3px}'
+    +'ul{margin:4px 0 0 18px;padding:0}li{margin:2px 0}'
+    +'.sign{display:flex;gap:26px;margin-top:26px}.sign div{flex:1;border-top:1px solid #111;padding-top:4px;font-size:10.5px;color:#555}'
+    +'@media print{body{margin:12mm}tr{page-break-inside:avoid}}</style></head><body>'
+    +'<h1>Программа №'+esc2(p.number)+' · '+esc2(p.title||'без названия')+'</h1>'
+    +'<div class="sub1">Руководитель: '+esc2(p.ownerId?empName(p.ownerId):(p.owner||'не назначен'))+' · Статус: '+esc2(statusLabel(p.status))+' · Срок: '+esc2(fmtDFull(p.dueDate))+' · Напечатано '+esc2(fmtDFull(today()))+'</div>'
+    +(p.goal?('<h2>Цель</h2><div class="goal">'+esc2(p.goal)+'</div>'):'')
+    +(crit?('<h2>Критерии приёмки</h2><ul>'+crit+'</ul>'):'')
+    +'<h2>Задачи</h2><table><tr><th>№</th><th>Задача</th><th>Отчёт / доклад</th><th>Исполнитель</th><th>Срок</th><th>✓</th></tr>'+rows+'</table>'
+    +'<div class="sign"><div>Руководитель программы</div><div>Владелец</div><div>Дата</div></div>'
+    +'</body></html>');
+  w.document.close(); setTimeout(()=>{ try{ w.print(); }catch(e){} },350);
+}
+// CSV с BOM и «;» — Excel открывает такой файл сразу, без импорта
+function exportExcel(p){
+  const q=x=>'"'+String(x==null?'':x).replace(/"/g,'""')+'"';
+  const head=['№','Задача','Отчёт-критерий','Доклад о выполнении','Исполнитель','Тип','Срок','Оценка','Выполнено','Дата выполнения','Стопор','Подпункты'];
+  const lines=[head.map(q).join(';')];
+  (p.tasks||[]).forEach(t=>lines.push([t.n,t.text,t.report,t.doneReport,t.assigneeId?empName(t.assigneeId):(t.assigneeLegacy||''),typeLabel(t.type||'work'),fmtDFull(t.due),t.estimate,t.done?'да':'нет',fmtDFull(t.doneDate),t.stopper,(t.subs||[]).map(s2=>(s2.done?'[x] ':'[ ] ')+(s2.text||'')).join(' / ')].map(q).join(';')));
+  const blob=new Blob(['﻿'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob), a=el('a');
+  a.href=url; a.download='Программа-'+(p.number||'')+'-'+(p.title||'').replace(/[^\wа-яА-ЯёЁ -]/g,'').trim().slice(0,40)+'.csv';
+  a.click(); setTimeout(()=>URL.revokeObjectURL(url),30000); toast('Файл выгружен — откройте в Excel');
+}
+
+//--- подпункты внутри задачи: крупную задачу видно по шагам, программа остаётся короткой ---
+function subsUI(p,t,lead,owns){
+  const box=el('div','subsbox');
+  const subs=t.subs||[];
+  if(subs.length){
+    const done=subs.filter(x=>x.done).length;
+    const bar=el('div','subbar'); const tr=el('div','bar'); const i=el('i'); i.style.width=Math.round(done/subs.length*100)+'%';
+    if(done===subs.length) i.style.background='var(--ok)';
+    tr.appendChild(i); bar.appendChild(tr); bar.appendChild(el('span','hint',done+' из '+subs.length)); box.appendChild(bar);
+    subs.forEach((sb,i2)=>{
+      const row=el('div','subrow'+(sb.done?' sdone':''));
+      const cb=el('input'); cb.type='checkbox'; cb.className='chk'; cb.checked=!!sb.done;
+      if(!owns) cb.disabled=true; cb.title=owns?'Отметить подпункт':'Отмечает исполнитель задачи или руководитель';
+      cb.onchange=()=>{ sb.done=cb.checked; sb.doneAt=cb.checked?today():''; save(); renderMain(); };
+      row.appendChild(cb);
+      const ta=el('textarea','subtext'); ta.value=sb.text||''; ta.rows=1; ta.placeholder='подпункт'; autserve(ta);
+      if(!lead){ ta.readOnly=true; } ta.oninput=()=>{ sb.text=ta.value; debSave(); };
+      row.appendChild(ta);
+      if(lead){ const x=el('button','linkbtn','✕'); x.title='Убрать подпункт';
+        x.onclick=()=>{ t.subs.splice(i2,1); save(); renderMain(); }; row.appendChild(x); }
+      box.appendChild(row);
+    });
+  }
+  if(lead){ const add=el('button','linkbtn','＋ подпункт');
+    add.onclick=()=>{ (t.subs||(t.subs=[])).push({id:uid(),text:'',done:false,doneAt:''}); save(); renderMain(); }; box.appendChild(add); }
+  return box;
+}
+//--- обсуждение по задаче: вопрос исполнителя и ответ руководителя остаются в программе ---
+let openComments={};
+function commentsUI(p,t){
+  const box=el('div','cmtbox');
+  const list=t.comments||[];
+  const open=!!openComments[t.id];
+  const tog=el('button','linkbtn','💬 Обсуждение'+(list.length?(' ('+list.length+')'):''));
+  tog.onclick=()=>{ openComments[t.id]=!open; renderMain(); }; box.appendChild(tog);
+  if(!open) { if(list.length){ const last=list[list.length-1]; box.appendChild(el('div','cmtlast','«'+(last.text||'').slice(0,60)+(last.text&&last.text.length>60?'…':'')+'» — '+cmtWho(last))); } return box; }
+  list.forEach(c=>{
+    const row=el('div','cmt');
+    row.appendChild(el('span','av1',initials(cmtWho(c))));
+    const cc=el('div','cmtc');
+    cc.appendChild(el('div','cmtn',cmtWho(c)+' · '+fmtDFull((c.at||'').slice(0,10))));
+    cc.appendChild(el('div','cmtm',c.text||''));
+    row.appendChild(cc); box.appendChild(row);
+  });
+  const wrap=el('div','cmtadd');
+  const inp=el('textarea'); inp.rows=1; inp.placeholder='Написать в задачу…'; autserve(inp);
+  const snd=el('button','tiny primary','Отправить');
+  const send=()=>{ const v=(inp.value||'').trim(); if(!v) return;
+    (t.comments||(t.comments=[])).push({id:uid(),at:nowISO(),by:myEmpId()||'',byName:meLabel(),text:v});
+    pushEvent(p,'note','Обсуждение по задаче №'+t.n+': '+v.slice(0,80),{taskId:t.id});
+    inp.value=''; save(); renderMain(); };
+  snd.onclick=send;
+  inp.onkeydown=e=>{ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); send(); } };
+  wrap.append(inp,snd); box.appendChild(wrap);
+  return box;
+}
+function cmtWho(c){ return (c.by&&emp(c.by)&&emp(c.by).name)||c.byName||'кто-то'; }
 function taskRow(p,t,idx){
   // Формулировку задачи, тип, срок и удаление правит руководитель; исполнитель — свой отчёт,
   // стопор и галочку «выполнено» (по своей задаче).
@@ -876,9 +1129,11 @@ function taskRow(p,t,idx){
   if(!lead){ ta.readOnly=true; ta.title='Текст задачи правит руководитель программы'; }
   c1.appendChild(ta);
   const stp=el('div', t.stopper?'stopper on':'stopper', t.stopper?('⚠ стопор: '+t.stopper):'+ стопор'); stp.onclick=()=>{ const v=(prompt('Что мешает выполнить задачу (стопор)? Пусто — убрать.', t.stopper||'')||'').trim(); const had=!!t.stopper; t.stopper=v; if(v && !had) pushEvent(p,'stopper','Стопор по задаче №'+t.n+': '+v,{taskId:t.id}); save(); renderMain(); }; c1.appendChild(stp);
+  c1.appendChild(subsUI(p,t,lead,owns));
   if(t.done && !t.doneReport && !(t.attachments||[]).length) c1.appendChild(el('div','legacy','закрыто без доклада'));
   r.appendChild(c1);
   const c2=el('div','cellcol');
+  c2.appendChild(el('div','lab','Отчёт — критерий готовности'));
   const rep=el('textarea'); rep.className='rep'; rep.value=t.report||''; rep.placeholder='Отчёт: как считается выполненной'; autserve(rep); rep.oninput=()=>{t.report=rep.value; debSave();};
   if(!owns){ rep.readOnly=true; rep.title='Отчёт заполняет исполнитель задачи или руководитель'; }
   c2.appendChild(rep);
@@ -893,18 +1148,19 @@ function taskRow(p,t,idx){
       dr.appendChild(ed); }
     c2.appendChild(dr);
   }
-  c2.appendChild(attachmentsUI(t)); r.appendChild(c2);
+  c2.appendChild(attachmentsUI(t));
+  c2.appendChild(commentsUI(p,t)); r.appendChild(c2);
   // assignee
-  const c3=el('div','cellcol'); c3.appendChild(assigneeCell(p,t)); r.appendChild(c3);
+  const c3=el('div','cellcol'); c3.appendChild(el('div','lab','Исполнитель')); c3.appendChild(assigneeCell(p,t)); r.appendChild(c3);
   // due
-  const c4=el('div','cellcol'); const du=el('input'); du.type='date'; du.value=t.due||'';
+  const c4=el('div','cellcol'); c4.appendChild(el('div','lab','Срок')); const du=el('input'); du.type='date'; du.value=t.due||'';
   du.onchange=()=>{ const old=t.due||'', nv=du.value; if(nv && !t.origDue) t.origDue=nv; if(old && nv && old!==nv){ const reason=(prompt('Причина переноса срока задачи №'+t.n+'? (можно пусто)','')||'').trim(); pushEvent(p,'date_moved','Срок задачи №'+t.n+': '+fmtD(old)+' → '+fmtD(nv)+(reason?(' — '+reason):''),{taskId:t.id,from:old,to:nv,reason}); } t.due=nv; save(); renderMain(); };
   if(!lead){ du.disabled=true; du.title='Срок задачи ставит руководитель программы'; }
   c4.appendChild(du);
   if(t.origDue && t.due && t.origDue!==t.due) c4.appendChild(el('div','legacy','⤳ '+fmtD(t.origDue)+'→'+fmtD(t.due)));
   r.appendChild(c4);
   // estimate
-  const c5=el('div','cellcol'); const es=el('input'); es.value=t.estimate||''; es.placeholder='напр. 2ч / 3 дня'; es.title='Примерная оценка времени на исполнение задачи'; es.oninput=()=>{t.estimate=es.value; debSave();}; if(!owns){ es.readOnly=true; es.title='Оценку ставит исполнитель или руководитель'; } c5.appendChild(es); r.appendChild(c5);
+  const c5=el('div','cellcol'); c5.appendChild(el('div','lab','Оценка времени')); const es=el('input'); es.value=t.estimate||''; es.placeholder='напр. 2ч / 3 дня'; es.title='Примерная оценка времени на исполнение задачи'; es.oninput=()=>{t.estimate=es.value; debSave();}; if(!owns){ es.readOnly=true; es.title='Оценку ставит исполнитель или руководитель'; } c5.appendChild(es); r.appendChild(c5);
   // done checkbox + delete
   const c6=el('div'); c6.style.flexDirection='column'; c6.style.gap='6px'; c6.style.justifyContent='center';
   const chk=el('input'); chk.type='checkbox'; chk.className='chk'; chk.checked=!!t.done; chk.title=owns?'Выполнена':'Отмечает исполнитель задачи или руководитель';
@@ -1122,7 +1378,7 @@ function dateFor(o,key){
   return i;
 }
 function autserve(ta){ const fit=()=>{ta.style.height='auto'; ta.style.height=Math.max(26,ta.scrollHeight)+'px';}; setTimeout(fit,0); ta.addEventListener('input',fit); }
-let _t; function debSave(){ clearTimeout(_t); _t=setTimeout(()=>{ lsSet(LS_KEY,JSON.stringify(state)); renderList(); cloudPushPrograms(); },300); }
+let _t; function debSave(){ markDirty(cur()); notifyTyping(); clearTimeout(_t); _t=setTimeout(()=>{ lsSet(LS_KEY,JSON.stringify(state)); renderList(); cloudPushPrograms(); },300); }
 const today=()=>new Date().toISOString().slice(0,10);
 const nowISO=()=>new Date().toISOString();
 const fmtD=d=>{ if(!d)return''; const a=(''+d).split('-'); return a.length===3?(a[2]+'.'+a[1]):(''+d); };
@@ -1146,9 +1402,49 @@ function saveHeaderEdit(p){
 }
 
 //====================== create / new ======================
-function newTask(n){ return {id:uid(),n,text:'',report:'',doneReport:'',assigneeId:'',assigneeLegacy:'',due:'',estimate:'',type:'work',done:false,doneDate:'',origDue:'',stopper:'',attachments:[]}; }
+function newTask(n){ return {id:uid(),n,text:'',report:'',doneReport:'',assigneeId:'',assigneeLegacy:'',due:'',estimate:'',type:'work',done:false,doneDate:'',origDue:'',stopper:'',attachments:[],subs:[],comments:[]}; }
 function newProgram(){ return {id:uid(),number:'',title:'',goal:'',criteria:[],owner:'',ownerId:'',createdBy:(window.__meEmail||''),status:'draft',dueDate:'',doneDate:'',approvedDate:'',participants:[],timeline:[],suggestions:[],tasks:[newTask(1)]}; }
-document.getElementById('btnNew').onclick=()=>{ const p=newProgram(); p.number=String(nextProgramNumber()); state.unshift(p); selected=p.id; save(); renderMain(); openGen(); };
+document.getElementById('btnNew').onclick=()=>openTemplatePicker();
+document.getElementById('btnDash').onclick=()=>{ view=(view==='dash'?'program':'dash'); renderMain(); };
+function createBlankProgram(){ const p=newProgram(); p.number=String(nextProgramNumber()); state.unshift(p); selected=p.id; markDirty(p); save(); renderMain(); openGen(); }
+// Создание по образцу: берём задачи, отчёты-критерии и типы, но НЕ переносим
+// исполнителей, сроки, отметки и историю — это новая программа, а не копия старой.
+function createFromTemplate(src){
+  const p=newProgram(); p.number=String(nextProgramNumber());
+  p.title=src.title||''; p.goal=src.goal||'';
+  p.criteria=(src.criteria||[]).map(c=>({id:uid(),text:c.text||'',done:false,doneAt:'',doneBy:''}));
+  p.tasks=(src.tasks||[]).map((t,i)=>Object.assign(newTask(i+1),{text:t.text||'',report:t.report||'',type:t.type||'work',estimate:t.estimate||'',subs:(t.subs||[]).map(x=>({id:uid(),text:x.text||'',done:false,doneAt:''}))}));
+  if(!p.tasks.length) p.tasks=[newTask(1)];
+  pushEvent(p,'edit','Программа создана по образцу «'+(src.title||'без названия')+'»');
+  state.unshift(p); selected=p.id; markDirty(p); save(); renderMain(); toast('Создано по образцу — поправьте сроки и исполнителей');
+}
+function saveAsTemplate(src){
+  const nm=(prompt('Название образца:',src.title||'')||'').trim(); if(!nm) return;
+  const t=newProgram(); t.isTemplate=true; t.number=''; t.title=nm; t.goal=src.goal||'';
+  t.criteria=(src.criteria||[]).map(c=>({id:uid(),text:c.text||'',done:false,doneAt:'',doneBy:''}));
+  t.tasks=(src.tasks||[]).map((x,i)=>Object.assign(newTask(i+1),{text:x.text||'',report:x.report||'',type:x.type||'work',estimate:x.estimate||'',subs:(x.subs||[]).map(y=>({id:uid(),text:y.text||'',done:false,doneAt:''}))}));
+  state.push(t); markDirty(t); save(); toast('Образец сохранён — доступен в «+ Программа»');
+}
+function openTemplatePicker(){
+  const bg=document.getElementById('tplBg'), list=document.getElementById('tplList');
+  list.innerHTML='';
+  const own=templates(), seeds=(typeof seedData==='function'?seedData().map(migrate):[]);
+  const row=(icon,title,sub,onTake,onDel)=>{
+    const r=el('div','tplrow');
+    r.appendChild(el('span','tplic',icon));
+    const t=el('div','tplt'); t.appendChild(el('b',null,title)); t.appendChild(el('span',null,sub)); r.appendChild(t);
+    const b=el('button','tiny primary','Взять'); b.onclick=onTake; r.appendChild(b);
+    if(onDel){ const d=el('button','linkbtn','✕'); d.title='Удалить образец'; d.onclick=onDel; r.appendChild(d); }
+    list.appendChild(r);
+  };
+  own.forEach(t=>row('📋',t.title||'без названия',(t.tasks||[]).length+' задач · ваш образец',
+    ()=>{ bg.classList.remove('on'); createFromTemplate(t); },
+    ()=>{ if(confirm('Удалить образец «'+(t.title||'')+'»?')){ state=state.filter(x=>x.id!==t.id); save(); openTemplatePicker(); } }));
+  seeds.forEach(t=>row('📈',t.title||'образец',(t.tasks||[]).length+' задач · шаблон Высоцкого',
+    ()=>{ bg.classList.remove('on'); createFromTemplate(t); }));
+  row('＋','С нуля','пустая программа + помощник',()=>{ bg.classList.remove('on'); createBlankProgram(); });
+  bg.classList.add('on');
+}
 
 //====================== AI generation (контекст → вопросы → результат) ======================
 const genBg=document.getElementById('genBg');
@@ -1541,6 +1837,7 @@ async function wipeLocalAndLogout(){
 }
 (function(){
   const ib=document.getElementById('teamInviteBtn'); if(ib) ib.onclick=teamSubmit;
+  const tc=document.getElementById('tplClose'); if(tc) tc.onclick=()=>document.getElementById('tplBg').classList.remove('on');
 })();
 // Одна кнопка на всё: с почтой (и облаком) — приглашение с доступом; иначе — запись «без входа»
 async function teamSubmit(){
@@ -1601,7 +1898,7 @@ async function teamInvite(preset){
 }
 
 //====================== инструкция / помощь ======================
-const HELP_VERSION=4;   // при обновлении инструкции увеличить — у всех появится пометка «обновлено» и автопоказ
+const HELP_VERSION=5;   // при обновлении инструкции увеличить — у всех появится пометка «обновлено» и автопоказ
 const HELP_HTML=`<p>Привет! Это приложение помогает вести <b>программы</b> — наборы задач, чтобы навести порядок и внедрить изменения в компании. Одна программа — это одна цель, понятные признаки «победы» и список задач с исполнителями и сроками. Ниже всё по шагам.</p>
 
 <h4>С чего начать: вход</h4>
@@ -1689,8 +1986,31 @@ const HELP_HTML=`<p>Привет! Это приложение помогает �
 <p><b>Менеджер проектов</b> — в «👥 Команда» кнопкой <b>★ PM</b>. Такой человек ведёт <b>все</b> программы: правит шапки и критерии, назначает исполнителей, меняет руководителей, переставляет задачи. Раздавать доступы в CRM по-прежнему может только владелец-администратор.</p>
 <div class="hint">Порядок прав: <b>владелец</b> → <b>менеджер проектов</b> → <b>руководитель программы</b> (в своей программе) → <b>участник</b> (свои задачи).</div>
 
+<h4>📊 Сводка — пульт владельца</h4>
+<p>Кнопка <b>«📊 Сводка»</b> слева — один экран по всем программам: сколько просрочено, где стопоры, какая программа давно без координации, кто из людей чем загружен. Клик по строке открывает программу, клик по человеку — фильтр его задач.</p>
+
+<h4>💬 Обсуждение в задаче</h4>
+<p>В колонке отчёта у каждой задачи — <b>«💬 Обсуждение»</b>. Исполнитель задаёт вопрос, руководитель отвечает, и переписка остаётся в задаче (а не в мессенджере). Отправка — кнопкой или Enter. Каждое сообщение попадает и в журнал программы.</p>
+
+<h4>Подпункты внутри задачи</h4>
+<p>Крупную задачу не нужно дробить на десяток строк: под её текстом — <b>«＋ подпункт»</b>. Видно движение («3 из 5»), отмечает исполнитель задачи или руководитель, а сама задача закрывается как раньше — галочкой с докладом.</p>
+
+<h4>Образцы программ</h4>
+<p><b>«+ Программа»</b> теперь спрашивает: взять образец или начать с нуля. Свою готовую программу можно сохранить в образцы кнопкой <b>«📋 В образцы»</b> — переносятся задачи, отчёты-критерии и подпункты, а исполнители, сроки и отметки остаются пустыми.</p>
+
+<h4>Печать и Excel</h4>
+<p><b>«🖨 Печать»</b> — программа печатается бланком: цель, критерии, задачи с отчётами и докладами, сроки и место для подписей. <b>«⬇ Excel»</b> — та же таблица файлом для расчётов и архива.</p>
+
+<h4>Живая работа вдвоём</h4>
+<p>Наверху программы видно, <b>кто ещё её открыл и кто печатает</b>. Правки коллег появляются сами; пока вы печатаете, чужая версия ваш текст не подменяет. Раньше сохранявший последним затирал чужую работу — теперь нет.</p>
+
 <h4>Что нового (07.09.2026)</h4>
 <ul>
+  <li><b>Сводка по всем программам</b> — кнопка «📊 Сводка».</li>
+  <li><b>Обсуждение в задаче</b>, <b>подпункты</b>, <b>образцы программ</b>.</li>
+  <li><b>Печать бланком</b> и <b>выгрузка в Excel</b>.</li>
+  <li><b>Работа вдвоём:</b> видно, кто в программе; правки не затирают друг друга.</li>
+  <li><b>На телефоне</b> у полей появились подписи, кнопки крупнее, окна закрываются Esc и кликом мимо.</li>
   <li><b>Доклад «что сделано» виден в задаче</b>, а не только в журнале.</li>
   <li><b>Перемещение задач</b> кнопками ▲▼.</li>
   <li><b>Менеджер проектов</b> — роль выше руководителя программы.</li>
@@ -1892,6 +2212,8 @@ function seedData(){
 const SUPA_URL='https://canlnlobmalsrmnormnz.supabase.co';
 const SUPA_KEY='sb_publishable_hZxYD2-HbLEusMXIQviHqw_nOioD8hU';
 let supa=null, cloudProgIds=new Set(), cloudEmpIds=new Set(), pushT=null;
+const dirtyProgs=new Set();          // что я менял и ещё не отправил
+const myWrites=new Map();            // мои последние записи — чтобы не реагировать на собственное эхо
 window.__supaReady=false;
 
 // Ничего не должно теряться при закрытии/обновлении вкладки: дописываем локально
@@ -1903,13 +2225,23 @@ function flushSaves(){
   try{ if(empPushT){ clearTimeout(empPushT); empPushT=null; cloudPushEmployeesNow(); } }catch(e){}
 }
 if(typeof window!=='undefined'){
+  // Любое окно закрывается клавишей Esc и кликом по затемнению — как ожидают люди
+  window.addEventListener('keydown',e=>{ if(e.key!=='Escape') return;
+    const open=[...document.querySelectorAll('.modal-bg.on')]; if(!open.length) return;
+    open[open.length-1].classList.remove('on');
+    if(typeof clearInviteBox==='function') clearInviteBox();
+  });
+  document.addEventListener('click',e=>{ if(e.target&&e.target.classList&&e.target.classList.contains('modal-bg')){ e.target.classList.remove('on'); if(typeof clearInviteBox==='function') clearInviteBox(); } });
   window.addEventListener('beforeunload',flushSaves);
   window.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='hidden') flushSaves(); });
 }
 async function cloudPushNow(){
   if(!window.__supaReady||!supa) return;
   try{
-    if(state.length) await supa.from('pp_programs').upsert(state.map(p=>({id:p.id,data:p,number:parseInt(p.number)||null,updated_at:new Date().toISOString()})));
+    const rows=state.filter(p=>dirtyProgs.has(p.id)||!cloudProgIds.has(p.id))
+      .map(p=>{ const at=new Date().toISOString(); myWrites.set(p.id,at); return {id:p.id,data:p,number:parseInt(p.number)||null,updated_at:at}; });
+    if(rows.length) await supa.from('pp_programs').upsert(rows);
+    dirtyProgs.clear();
     const ids=new Set(state.map(p=>p.id));
     const del=[...cloudProgIds].filter(id=>!ids.has(id));
     if(del.length) await supa.from('pp_programs').delete().in('id',del);
@@ -1926,16 +2258,21 @@ async function cloudPushEmployeesNow(){
     cloudEmpIds=ids;
   }catch(e){ console.warn('push emp now',e); }
 }
+// Отправляем в облако ТОЛЬКО изменённые программы: раньше уходил весь список,
+// и чужие правки, сделанные минуту назад, затирались нашей устаревшей копией.
+function markDirty(p){ if(p&&p.id) dirtyProgs.add(p.id); }
 function cloudPushPrograms(){
   if(!window.__supaReady||!supa) return;
   clearTimeout(pushT);
   pushT=setTimeout(async()=>{
     try{
-      if(state.length) await supa.from('pp_programs').upsert(state.map(p=>({id:p.id,data:p,number:parseInt(p.number)||null,updated_at:new Date().toISOString()})));
       const ids=new Set(state.map(p=>p.id));
+      const rows=state.filter(p=>dirtyProgs.has(p.id)||!cloudProgIds.has(p.id))
+        .map(p=>{ const at=new Date().toISOString(); myWrites.set(p.id,at); return {id:p.id,data:p,number:parseInt(p.number)||null,updated_at:at}; });
+      if(rows.length) await supa.from('pp_programs').upsert(rows);
       const del=[...cloudProgIds].filter(id=>!ids.has(id));
       if(del.length) await supa.from('pp_programs').delete().in('id',del);
-      cloudProgIds=ids;
+      cloudProgIds=ids; dirtyProgs.clear();
     }catch(e){ console.warn('push programs',e); }
   },800);
 }
@@ -1950,6 +2287,87 @@ function cloudPushEmployees(){
     if(del.length) await supa.from('pp_employees').delete().in('id',del);
     cloudEmpIds=ids;
   }catch(e){ console.warn('push emp',e); } },800);
+}
+//====================== живая синхронизация ======================
+// 1) правки коллег приезжают сами (postgres_changes), 2) видно, кто сейчас в программе
+// и кто печатает (presence + broadcast). Если в базе не включена репликация таблиц —
+// присутствие всё равно работает, просто правки подтягиваются при следующей загрузке.
+let rtDb=null, rtRoom=null, rtRoomId=null, pendingRemote=new Map(), typingT=null;
+let liveWho=[], liveTyping={};
+function meLabel(){ const me=myEmp(); return (me&&me.name)||window.__meEmail||'кто-то'; }
+function initials(n){ return String(n||'?').trim().split(/\s+/).slice(0,2).map(w=>w[0]||'').join('').toUpperCase()||'?'; }
+function busyWith(id){ return dirtyProgs.has(id) || (document.activeElement && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName) && selected===id); }
+function applyRemoteProgram(row){
+  if(!row||!row.id) return;
+  const at=row.updated_at||'';
+  if(myWrites.get(row.id)===at) return;                       // это наша же запись вернулась
+  if(busyWith(row.id)){ pendingRemote.set(row.id,row); return; } // человек печатает — применим, когда отпустит
+  const fresh=migrate(Object.assign({},row.data,{id:row.id}));
+  const i=state.findIndex(p=>p.id===row.id);
+  if(i<0) state.push(fresh); else state[i]=fresh;
+  cloudProgIds.add(row.id);
+  lsSet(LS_KEY,JSON.stringify(state)); renderMain();
+}
+function flushPendingRemote(){
+  if(!pendingRemote.size) return;
+  const rows=[...pendingRemote.values()]; pendingRemote.clear();
+  rows.forEach(r=>{ if(!busyWith(r.id)) applyRemoteProgram(r); else pendingRemote.set(r.id,r); });
+}
+function startRealtime(){
+  if(!supa||rtDb) return;
+  try{
+    rtDb=supa.channel('pp-db')
+      .on('postgres_changes',{event:'*',schema:'public',table:'pp_programs'},pl=>{
+        if(pl.eventType==='DELETE'){ const id=pl.old&&pl.old.id; if(id){ state=state.filter(p=>p.id!==id); cloudProgIds.delete(id); if(selected===id) selected=state[0]?state[0].id:null; lsSet(LS_KEY,JSON.stringify(state)); renderMain(); } return; }
+        applyRemoteProgram(pl.new);
+      })
+      .on('postgres_changes',{event:'*',schema:'public',table:'pp_employees'},pl=>{
+        if(pl.eventType==='DELETE'){ const id=pl.old&&pl.old.id; if(id){ employees=employees.filter(e=>e.id!==id); cloudEmpIds.delete(id); } }
+        else if(pl.new&&pl.new.id){ const e=empMigrate(Object.assign({},pl.new.data,{id:pl.new.id})); const i=employees.findIndex(x=>x.id===e.id); if(i<0) employees.push(e); else employees[i]=e; cloudEmpIds.add(e.id); }
+        lsSet(LS_EMP,JSON.stringify(employees)); renderMain();
+      })
+      .subscribe();
+  }catch(e){ console.warn('realtime',e); }
+  document.addEventListener('focusout',()=>setTimeout(flushPendingRemote,400));
+}
+// присутствие в открытой программе
+function joinRoom(id){
+  if(!supa||!id||rtRoomId===id) return;
+  leaveRoom();
+  rtRoomId=id;
+  try{
+    rtRoom=supa.channel('prog:'+id,{config:{presence:{key:window.__meId||meLabel()}}});
+    rtRoom.on('presence',{event:'sync'},()=>{
+      const st=rtRoom.presenceState()||{};
+      liveWho=Object.values(st).flat().map(x=>x.name).filter(Boolean);
+      renderLiveBar();
+    });
+    rtRoom.on('broadcast',{event:'typing'},pl=>{
+      const n=pl&&pl.payload&&pl.payload.name; if(!n||n===meLabel()) return;
+      liveTyping[n]=Date.now(); renderLiveBar();
+      setTimeout(()=>{ if(Date.now()-(liveTyping[n]||0)>2500){ delete liveTyping[n]; renderLiveBar(); } },3000);
+    });
+    rtRoom.subscribe(st=>{ if(st==='SUBSCRIBED') rtRoom.track({name:meLabel(),at:new Date().toISOString()}); });
+  }catch(e){ console.warn('presence',e); }
+}
+function leaveRoom(){ try{ if(rtRoom) supa.removeChannel(rtRoom); }catch(e){} rtRoom=null; rtRoomId=null; liveWho=[]; liveTyping={}; }
+function notifyTyping(){
+  if(!rtRoom||typingT) return;
+  typingT=setTimeout(()=>{typingT=null;},2000);
+  try{ rtRoom.send({type:'broadcast',event:'typing',payload:{name:meLabel()}}); }catch(e){}
+}
+function renderLiveBar(){
+  const bar=document.getElementById('liveBar'); if(!bar) return;
+  const others=liveWho.filter(n=>n!==meLabel());
+  const typing=Object.keys(liveTyping).filter(n=>Date.now()-liveTyping[n]<2500);
+  bar.innerHTML='';
+  if(!others.length && !typing.length){ bar.hidden=true; return; }
+  bar.hidden=false;
+  bar.appendChild(el('span','livedot'));
+  bar.appendChild(el('span','livetxt', typing.length?(typing.join(', ')+(typing.length>1?' печатают…':' печатает…')):('сейчас в программе: '+(others.length+1))));
+  const av=el('span','liveav');
+  [meLabel(),...others].slice(0,5).forEach(n=>{ const a=el('span','av1',initials(n)); a.title=n; av.appendChild(a); });
+  bar.appendChild(av);
 }
 async function cloudLoad(){
   const [pr,em]=await Promise.all([supa.from('pp_programs').select('id,data'),supa.from('pp_employees').select('id,data')]);
@@ -2023,6 +2441,7 @@ async function afterLogin(session){
   if(!selected || !state.find(p=>p.id===selected)) selected=state[0]?state[0].id:null;
   await loadSharedKey();
   renderMain(); applyBrandLogo();      // роль уже определена выше (captureRole до загрузки данных)
+  startRealtime();                     // правки коллег приезжают сами
   addLogoutBtn(session&&session.user&&session.user.email);
   maybeAutoHelp();
 }
