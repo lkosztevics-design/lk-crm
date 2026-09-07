@@ -36,8 +36,19 @@
   .brand .logo.has-img{background-color:#fff;background-size:contain;background-repeat:no-repeat;background-position:center;color:transparent;box-shadow:var(--shadow)}
   .brand h1{font-size:15px;margin:0}
   .brand small{color:var(--muted);font-weight:400}
-  .side .actions{padding:12px 14px;display:flex;flex-direction:column;gap:7px;border-bottom:1px solid var(--line)}
+  .side .actions{padding:12px 14px;display:flex;flex-direction:column;gap:4px;border-bottom:1px solid var(--line)}
   .side .actions .primary{font-size:14px;padding:9px 12px}
+  /* меню: иконка + подпись, выровнено по левому краю — один ритм у всех пунктов */
+  .navnew{display:flex;align-items:center;justify-content:center;gap:8px;font-weight:600;margin-bottom:6px}
+  .navbtn{display:flex;align-items:center;gap:11px;width:100%;padding:9px 12px;border:1px solid transparent;
+    background:transparent;border-radius:9px;color:var(--ink);font-size:14px;text-align:left}
+  .navbtn:hover{background:#f2f5fa;border-color:transparent}
+  .navbtn.on{background:var(--accent-soft);color:var(--accent-ink);font-weight:600}
+  .navbtn svg,.navnew svg{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;
+    stroke-linecap:round;stroke-linejoin:round}
+  .navbtn svg{color:var(--faint)}
+  .navbtn:hover svg{color:var(--accent)}
+  .navbtn.on svg{color:var(--accent-ink)}
   .linkbtn{background:none;border:none;color:var(--accent-ink);font-size:12px;text-align:left;padding:0 2px;cursor:pointer;align-self:flex-start}
   .linkbtn:hover{text-decoration:underline;background:none;border-color:transparent}
   .plist{overflow:auto;flex:1;padding:8px}
@@ -125,7 +136,10 @@
   .emppick{display:flex;align-items:center;gap:8px;padding:7px 4px;border-bottom:1px solid var(--line);cursor:pointer}
   .emppick:last-child{border-bottom:none}
   .emppicklab{font-size:13px}
-  .rosterlist{max-height:220px;overflow:auto}
+  .rosterlist{max-height:300px;overflow:auto}
+  .emppick.on{background:var(--accent-soft)}
+  .emppick:hover{background:#f4f7fd}
+  .pickmark{margin-left:auto;font-size:11.5px;color:var(--accent-ink);font-weight:600;white-space:nowrap}
   .suggest{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:8px 6px;margin-bottom:18px}
   .srow{display:flex;align-items:flex-start;gap:8px;padding:7px 12px;border-radius:var(--r-sm)}
   .srow:hover{background:#f7f9fc}
@@ -221,7 +235,7 @@
   .bcol{font-size:11px;font-weight:600;color:var(--faint);padding:9px 0 7px;min-width:62px;white-space:nowrap}
   table.bmx th.brow{text-align:left}
   .brow{position:sticky;left:0;z-index:2;background:#fff;text-align:left;padding:7px 13px 7px 14px;
-    border-right:1px solid var(--line);min-width:320px;max-width:320px;cursor:pointer}
+    border-right:1px solid var(--line);min-width:352px;max-width:352px;cursor:pointer}
   table.bmx tbody .brow{height:46px}
   table.bmx thead .brow{border-bottom:1px solid var(--line)}
   table.bmx tbody td,table.bmx tbody th{border-top:1px solid #eef1f4}
@@ -249,12 +263,6 @@
     border:1px dashed var(--line);color:var(--faint);cursor:pointer}
   .k-none{background:#eef0f3;border-color:#e2e6ea;cursor:default}
   .k-none:hover{box-shadow:none}
-  /* компактный режим: только цвет состояния — влезает программа на 50+ задач */
-  table.bmx.compact .bcol{min-width:26px;font-size:9.5px;padding:8px 0 6px}
-  table.bmx.compact .bcell{height:26px;margin:2px;border-radius:5px;gap:0}
-  table.bmx.compact .bcol{white-space:nowrap}
-  table.bmx.compact .bcell b{display:none}
-  table.bmx.compact .bcell .bic{font-size:10px}
   .btot{padding:0 13px 0 8px;white-space:nowrap;text-align:right}
   .btot .bar{width:60px;height:6px;display:inline-block;vertical-align:middle}
   .btot .bn{font-size:12px;color:var(--faint);margin-left:7px}
@@ -438,10 +446,10 @@
       <div><h1>CRM · Программы</h1><small>контроль выполнения</small></div>
     </div>
     <div class="actions">
-      <button class="primary" id="btnNew">+ Программа</button>
-      <button class="ghost" id="btnDash" title="Сводка по всем программам: что просрочено, где стопоры, кто тормозит">📊 Сводка</button>
-      <button class="ghost" id="btnBoard" title="Доска прогресса: все программы и задачи одной таблицей — где выполнено, где горит">📋 Доска</button>
-      <button class="ghost" id="btnEmp" title="Команда: люди, должности и доступ в CRM — всё в одном месте">👥 Команда</button>
+      <button class="primary navnew" id="btnNew"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4.5v11M4.5 10h11"/></svg>Программа</button>
+      <button class="navbtn" id="btnDash" title="Сводка по всем программам: что просрочено, где стопоры, кто тормозит"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 16V9M10 16V4M16 16v-5"/></svg>Сводка</button>
+      <button class="navbtn" id="btnBoard" title="Доска прогресса: все программы и задачи одной таблицей — где выполнено, где горит"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="4" width="14" height="12" rx="2"/><path d="M3 8h14M8.5 8v8"/></svg>Доска</button>
+      <button class="navbtn" id="btnEmp" title="Команда: люди, должности и доступ в CRM — всё в одном месте"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8" cy="7.5" r="2.6"/><path d="M3.5 16c0-2.4 2-4 4.5-4s4.5 1.6 4.5 4"/><path d="M14 12.4c1.5.5 2.5 1.8 2.5 3.6"/><circle cx="14.2" cy="8" r="2.1"/></svg>Команда</button>
       <input type="file" id="fileImport" accept="application/json" hidden>
     </div>
     <div class="plist" id="plist"></div>
@@ -616,6 +624,15 @@
   </div>
 </div>
 
+<div class="modal-bg" id="roleBg">
+  <div class="modal" style="max-width:520px">
+    <h3 id="roleTtl">Кто отвечает</h3>
+    <p id="roleHint"></p>
+    <div id="roleList" class="rosterlist"></div>
+    <div class="btns"><button class="ghost" id="roleClose">Закрыть</button></div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <!-- версия зафиксирована + контрольная сумма: подменённый файл браузер не выполнит -->
@@ -738,6 +755,8 @@ try{ if(typeof navigator!=='undefined'&&navigator.storage&&navigator.storage.per
 
 //====================== helpers ======================
 const el=(t,c,txt)=>{const e=document.createElement(t); if(c)e.className=c; if(txt!=null)e.textContent=txt; return e;};
+// выбранный вариант <select>: сначала свойство selected, потом value — так надёжнее
+const selValue=sel=>{ const o=[...sel.querySelectorAll('option')].find(x=>x.selected); return o?o.value:(sel.value||''); };
 const esc=s=>(s||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 function toast(m){const t=document.getElementById('toast'); t.textContent=m; t.classList.add('on'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('on'),1900);}
 function progress(p){const n=p.tasks.length, d=p.tasks.filter(t=>t.done).length; return {n,d,pct:n?Math.round(d/n*100):0};}
@@ -777,7 +796,7 @@ function renderList(){
 
 //====================== main detail ======================
 function renderMain(){
-  renderList();
+  renderList(); markNav();
   const m=document.getElementById('main'); m.innerHTML='';
   // доска и сводка — таблицы: им отдаём всю ширину экрана, форме программы оставляем колонку
   m.className='main'+((view==='dash'||view==='board')?' wide':'');
@@ -842,9 +861,9 @@ function renderMain(){
     return it;
   };
   const openEdit=()=>{ editHeaderFor=p.id; _editSnap=headerSnap(p); renderMain(); };
-  rs.appendChild(roleItem('★ Менеджер',p.pmId,'v',canSetPM(p)&&!editing,openEdit));
+  rs.appendChild(roleItem('★ Менеджер',p.pmId,'v',canSetPM(p)&&!editing,()=>openRolePicker(p,'pm')));
   rs.appendChild(el('span','vsep'));
-  rs.appendChild(roleItem('Руководитель',p.ownerId,'',lead&&!editing,openEdit));
+  rs.appendChild(roleItem('Руководитель',p.ownerId,'',lead&&!editing,()=>openRolePicker(p,'owner')));
   rs.appendChild(el('span','vsep'));
   // исполнители — стопка аватаров
   const pit=el('span','ritem'); pit.appendChild(el('span','lb','Исполнители'));
@@ -1090,6 +1109,12 @@ function daysSinceCoord(p){
   if(!cds.length) return null;
   return Math.floor((Date.now()-new Date(cds[cds.length-1].at).getTime())/86400000);
 }
+// какой пункт меню сейчас открыт — подсвечиваем его
+function markNav(){
+  const map={dash:'btnDash',board:'btnBoard'};
+  ['btnDash','btnBoard','btnEmp'].forEach(id=>{ const b=document.getElementById(id); if(b) b.classList.remove('on'); });
+  const act=map[view]; if(act){ const b=document.getElementById(act); if(b) b.classList.add('on'); }
+}
 function renderDashboard(){
   const box=el('div','dash');
   const progs=livePrograms();
@@ -1174,7 +1199,7 @@ function seedChiefPM(){
 // столбец — задача №N, а клетка показывает СОСТОЯНИЕ задачи (а не просто дату).
 // Дата в клетке — та самая, что стоит в задаче: срок готовности, а у выполненных —
 // день, когда отметили выполнение.
-let boardFilter={owner:'',scope:'active',dense:''};   // dense: ''=авто, 'dates', 'compact'
+let boardFilter={owner:'',pm:'',scope:'active'};
 // Кто какие программы видит на доске: владелец и менеджер проектов — все,
 // остальные — только те, где они руководят, участвуют или отвечают за задачу.
 function boardPrograms(){
@@ -1220,36 +1245,33 @@ function renderBoard(){
   });
   tools.appendChild(seg);
 
-  const owners=[...new Set(mine.map(p=>p.ownerId).filter(Boolean))]
-    .sort((a,b)=>empName(a).localeCompare(empName(b),'ru'));
-  const sel=el('select'); sel.title='Показать программы одного руководителя';
-  const o0=el('option',null,'Все руководители'); o0.value=''; if(!boardFilter.owner)o0.selected=true; sel.appendChild(o0);
-  owners.forEach(id=>{ const o=el('option',null,empName(id)); o.value=id; if(boardFilter.owner===id)o.selected=true; sel.appendChild(o); });
-  if(mine.some(p=>!p.ownerId)){ const on=el('option',null,'Без руководителя'); on.value='__none__'; if(boardFilter.owner==='__none__')on.selected=true; sel.appendChild(on); }
-  // читаем выбранный вариант напрямую: надёжнее, чем sel.value
-  sel.onchange=()=>{ const o=[...sel.querySelectorAll('option')].find(x=>x.selected);
-    boardFilter.owner=o?o.value:''; renderMain(); };
-  tools.appendChild(sel);
+  // фильтры по людям: отдельно менеджер проекта, отдельно руководитель
+  const pickSel=(field,keyOf,allLabel,noneLabel,title)=>{
+    const ids=[...new Set(mine.map(keyOf).filter(Boolean))].sort((a,b)=>empName(a).localeCompare(empName(b),'ru'));
+    const f=boardFilter[field];
+    if(f && f!=='__none__' && !ids.includes(f)) boardFilter[field]='';   // человека уже нет в списке
+    const sel=el('select'); sel.title=title;
+    const o0=el('option',null,allLabel); o0.value=''; if(!boardFilter[field])o0.selected=true; sel.appendChild(o0);
+    ids.forEach(id=>{ const o=el('option',null,empName(id)); o.value=id; if(boardFilter[field]===id)o.selected=true; sel.appendChild(o); });
+    if(mine.some(x=>!keyOf(x))){ const on=el('option',null,noneLabel); on.value='__none__'; if(boardFilter[field]==='__none__')on.selected=true; sel.appendChild(on); }
+    sel.onchange=()=>{ boardFilter[field]=selValue(sel); renderMain(); };
+    return sel;
+  };
+  tools.appendChild(pickSel('pm',x=>x.pmId,'★ Все менеджеры','Без менеджера','Показать программы одного менеджера проекта'));
+  tools.appendChild(pickSel('owner',x=>x.ownerId,'👤 Все руководители','Без руководителя','Показать программы одного руководителя'));
 
   //--- отбор строк ---
   let progs=mine.slice();
   if(boardFilter.owner==='__none__') progs=progs.filter(p=>!p.ownerId);
   else if(boardFilter.owner) progs=progs.filter(p=>p.ownerId===boardFilter.owner);
+  if(boardFilter.pm==='__none__') progs=progs.filter(p=>!p.pmId);
+  else if(boardFilter.pm) progs=progs.filter(p=>p.pmId===boardFilter.pm);
   if(boardFilter.scope==='active') progs=progs.filter(p=>p.status==='approved'||p.status==='in_progress');
   else if(boardFilter.scope==='problem') progs=progs.filter(p=>(p.tasks||[]).some(t=>isOverdue(t)||(t.stopper&&!t.done)||(!t.due&&!t.done)));
 
   const allTasks=progs.reduce((a,p)=>a+(p.tasks||[]).length,0);
   const lateN=progs.reduce((a,p)=>a+(p.tasks||[]).filter(isOverdue).length,0);
   const maxT=Math.max(1,...progs.map(p=>(p.tasks||[]).length));
-  // длинные программы (20+ задач) по умолчанию показываем клетками без дат — иначе таблица уезжает за экран
-  const dense=boardFilter.dense||(maxT>18?'compact':'dates');
-  const dseg=el('div','bseg');
-  [['dates','С датами'],['compact','Компактно']].forEach(([k,lab])=>{
-    const b=el('button',dense===k?'on':'',lab);
-    b.title=k==='compact'?'Только цвет состояния — влезает даже программа на 50 задач':'В клетке видна дата из задачи';
-    b.onclick=()=>{ boardFilter.dense=k; renderMain(); }; dseg.appendChild(b);
-  });
-  tools.appendChild(dseg);
   tools.appendChild(el('span','bnote','показано '+progs.length+' из '+mine.length+' · '+allTasks+' задач'+(lateN?(' · '+lateN+' просрочено'):'')));
   wrap.appendChild(tools);
 
@@ -1261,7 +1283,7 @@ function renderBoard(){
   }
 
   //--- таблица ---
-  const scroll=el('div','bscroll'); const tb=el('table','bmx'+(dense==='compact'?' compact':''));
+  const scroll=el('div','bscroll'); const tb=el('table','bmx');
   const thead=el('thead'); const hr=el('tr');
   const h0=el('th','brow'); h0.appendChild(el('span','brt','Программа')); hr.appendChild(h0);
   for(let i=1;i<=maxT;i++) hr.appendChild(el('th','bcol','№'+i));
@@ -1289,7 +1311,8 @@ function renderBoard(){
     col.appendChild(t1);
     const t2=el('span','brs');
     const who=el('span','brwho');
-    if(p.ownerId){ who.appendChild(el('span','avat',initials(empName(p.ownerId)))); who.appendChild(el('span',null,empName(p.ownerId))); }
+    if(p.pmId){ const av=el('span','avat v',initials(empName(p.pmId))); av.title='★ Менеджер проекта: '+empName(p.pmId); who.appendChild(av); }
+    if(p.ownerId){ const av=el('span','avat',initials(empName(p.ownerId))); av.title='Руководитель: '+empName(p.ownerId); who.appendChild(av); who.appendChild(el('span',null,empName(p.ownerId))); }
     else who.appendChild(el('span',null,'руководитель не назначен'));
     const dc=daysSinceCoord(p);
     if((p.status==='approved'||p.status==='in_progress')){
@@ -1561,7 +1584,7 @@ function pmCell(p){
   const sel=el('select');
   const o0=el('option',null,act.length?'— выбрать —':'сначала добавьте людей в «👥 Команда»'); o0.value=''; sel.appendChild(o0);
   act.forEach(e=>{ const o=el('option',null,empLabel(e.id)); o.value=e.id; if(p.pmId===e.id)o.selected=true; sel.appendChild(o); });
-  sel.onchange=()=>{ p.pmId=sel.value; pushEvent(p,'edit','Менеджер проекта: '+(sel.value?empName(sel.value):'снят')); save(); renderMain(); };
+  sel.onchange=()=>{ const v=selValue(sel); p.pmId=v; pushEvent(p,'edit','Менеджер проекта: '+(v?empName(v):'снят')); save(); renderMain(); };
   box.appendChild(sel);
   return box;
 }
@@ -1577,7 +1600,7 @@ function ownerCell(p){
   const sel=el('select');
   const o0=el('option',null,parts.length?'— выбрать —':'сначала добавьте участников'); o0.value=''; sel.appendChild(o0);
   parts.forEach(pt=>{ const o=el('option',null,empLabel(pt.empId)); o.value=pt.empId; if(p.ownerId===pt.empId)o.selected=true; sel.appendChild(o); });
-  sel.onchange=()=>{ p.ownerId=sel.value; pushEvent(p,'edit','Руководитель программы: '+(sel.value?empName(sel.value):'снят')); save(); renderMain(); };
+  sel.onchange=()=>{ const v=selValue(sel); p.ownerId=v; pushEvent(p,'edit','Руководитель программы: '+(v?empName(v):'снят')); save(); renderMain(); };
   box.appendChild(sel);
   if(p.owner && !p.ownerId) box.appendChild(el('div','legacy','старое: '+p.owner));
   return box;
@@ -2267,173 +2290,213 @@ async function teamInvite(preset){
 }
 
 //====================== инструкция / помощь ======================
-const HELP_VERSION=8;   // при обновлении инструкции увеличить — у всех появится пометка «обновлено» и автопоказ
-const HELP_HTML=`<p>Привет! Это приложение помогает вести <b>программы</b> — наборы задач, чтобы навести порядок и внедрить изменения в компании. Одна программа — это одна цель, понятные признаки «победы» и список задач с исполнителями и сроками. Ниже всё по шагам.</p>
+const HELP_VERSION=9;   // при обновлении инструкции увеличить — у всех появится пометка «обновлено» и автопоказ
+const HELP_CSS=`
+.hb{font-size:14px;line-height:1.6}
+.hb h4{color:#1e5fd8;margin:22px 0 8px;font-size:15px;scroll-margin-top:8px}
+.hb h4 .hn{display:inline-grid;place-items:center;width:21px;height:21px;border-radius:50%;background:#e8f0ff;color:#1e5fd8;font-size:11px;font-weight:800;margin-right:7px;vertical-align:1px}
+.hb p{margin:7px 0}
+.hb ul,.hb ol{padding-left:20px;margin:7px 0}
+.hb li{margin:3px 0}
+.hb .hnote{background:#f1f5fb;border-left:3px solid #2f6df6;padding:7px 11px;margin:9px 0;font-size:13px;color:#4a5361;border-radius:0 7px 7px 0}
+.hb .htoc{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 4px}
+.hb .htoc a{font-size:12.5px;text-decoration:none;color:#4a5361;background:#f2f5fa;border:1px solid #e3e7ec;border-radius:99px;padding:4px 11px}
+.hb .htoc a:hover{background:#e8f0ff;color:#1e5fd8;border-color:#c9daff}
+.hb .hflow{display:flex;align-items:stretch;gap:7px;flex-wrap:wrap;margin:10px 0}
+.hb .hfx{flex:1 1 130px;min-width:120px;background:#fff;border:1px solid #e3e7ec;border-radius:10px;padding:9px 11px}
+.hb .hfx b{display:block;font-size:13px;margin-bottom:2px}
+.hb .hfx span{font-size:11.5px;color:#6b7787}
+.hb .hfx.acc{border-color:#c9daff;background:#f7faff}
+.hb .hlg{display:flex;flex-wrap:wrap;gap:7px 16px;margin:9px 0;font-size:12.5px;color:#4a5361}
+.hb .hlg span.l{display:inline-flex;align-items:center;gap:7px}
+.hb .hsw{min-width:54px;height:23px;padding:0 6px;border-radius:6px;border:1px solid transparent;display:grid;place-items:center;font-size:10.5px;font-weight:700;flex:none;white-space:nowrap}
+.hb .sw-done{background:#e4f6ec;border-color:rgba(31,157,87,.3);color:#157a42}
+.hb .sw-soon{background:#e8f0ff;border-color:rgba(47,109,246,.3);color:#1e5fd8}
+.hb .sw-plan{background:#fff;border-color:#e3e7ec;color:#6b7787}
+.hb .sw-late{background:#fdecec;border-color:rgba(214,69,69,.35);color:#a83232}
+.hb .sw-stop{background:#fbf1df;border-color:rgba(201,130,26,.4);color:#8a5a12}
+.hb .sw-noda{background:repeating-linear-gradient(135deg,transparent 0 5px,rgba(107,119,135,.1) 5px 10px);border:1px dashed #cfd6de;color:#67717f}
+.hb .sw-none{background:#eef0f3;border-color:#e2e6ea}
+.hb .htab{width:100%;border-collapse:collapse;margin:9px 0;font-size:12.5px}
+.hb .htab th{text-align:left;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#67717f;padding:6px 8px;border-bottom:1px solid #e3e7ec}
+.hb .htab td{padding:6px 8px;border-bottom:1px solid #eef1f4;vertical-align:top}
+.hb .htab td.y{color:#157a42;font-weight:700;text-align:center;width:58px}
+.hb .htab td.n{color:#b6bec8;text-align:center;width:58px}
+.hb .hrole{display:flex;flex-direction:column;gap:5px;margin:10px 0}
+.hb .hrl{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid #e3e7ec;border-radius:9px;padding:8px 11px}
+.hb .hrl b{font-size:13px}
+.hb .hrl span{font-size:11.5px;color:#6b7787}
+.hb .hdot{width:9px;height:9px;border-radius:50%;flex:none}
+.hb .hmock{border:1px solid #e3e7ec;border-radius:10px;overflow:hidden;margin:10px 0;background:#fff}
+.hb .hmr{display:flex;align-items:center;gap:9px;padding:8px 11px;border-top:1px solid #eef1f4;font-size:12.5px}
+.hb .hmr:first-child{border-top:0;background:#fafbfc;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#67717f;font-weight:700}
+.hb .hmr .g{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hb .hcell{min-width:54px;height:24px;padding:0 6px;border-radius:6px;border:1px solid transparent;display:grid;place-items:center;font-size:10.5px;font-weight:600;flex:none;white-space:nowrap}
+.hb .hav{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:8.5px;font-weight:700;color:#fff;background:#2f6df6;flex:none}
+.hb .hav.v{background:#7b5cd6}.hav.g{background:#1f9d57}
+.hb .hq{border-left:3px solid #e3e7ec;padding:2px 0 2px 12px;margin:9px 0}
+.hb .hq b{display:block;font-size:13px}
+.hb .hq span{font-size:12.5px;color:#6b7787}
+`;
+const HELP_HTML=`<div class="hb">
+<p>Программа — это одна цель, признаки её достижения и список задач с исполнителями и сроками. Инструкция короткая: выбери раздел или прочитай подряд за 10 минут.</p>
 
-<h4>С чего начать: вход</h4>
+<div class="htoc">
+  <a href="#h1">1 · Как всё устроено</a>
+  <a href="#h2">2 · Три экрана</a>
+  <a href="#h3">3 · Создать программу</a>
+  <a href="#h4">4 · Кто что может</a>
+  <a href="#h5">5 · Работа с задачей</a>
+  <a href="#h6">6 · Доска прогресса</a>
+  <a href="#h7">7 · Координация</a>
+  <a href="#h8">8 · Команда и доступ</a>
+  <a href="#h9">9 · Файлы</a>
+  <a href="#h10">10 · Печать и Excel</a>
+  <a href="#h11">11 · Если что-то не так</a>
+</div>
+
+<h4 id="h1"><span class="hn">1</span>Как всё устроено</h4>
+<p>Одна программа проходит путь слева направо:</p>
+<div class="hflow">
+  <div class="hfx acc"><b>Цель</b><span>чего добиваемся, одной фразой</span></div>
+  <div class="hfx acc"><b>Критерии-победы</b><span>по чему поймём, что цель достигнута</span></div>
+  <div class="hfx"><b>Задачи</b><span>кто, что и к какому числу делает</span></div>
+  <div class="hfx"><b>Координация</b><span>раз в неделю сверяем, что сделано</span></div>
+  <div class="hfx"><b>Завершена</b><span>все критерии отмечены победами</span></div>
+</div>
+<div class="hnote">Программа без критериев — просто список дел. Критерии отвечают на вопрос «а зачем мы это делали».</div>
+
+<h4 id="h2"><span class="hn">2</span>Три экрана</h4>
+<p>Слева в меню три кнопки — это и есть три способа смотреть на одни и те же данные:</p>
+<div class="hrole">
+  <div class="hrl"><span class="hdot" style="background:#2f6df6"></span><span><b>Программы</b> — список слева. Открываешь одну и работаешь внутри: задачи, отчёты, файлы.</span></div>
+  <div class="hrl"><span class="hdot" style="background:#c9821a"></span><span><b>Доска</b> — все программы одной таблицей. Видно, где горит, не заходя внутрь.</span></div>
+  <div class="hrl"><span class="hdot" style="background:#1f9d57"></span><span><b>Сводка</b> — итоги: сколько просрочено, где стопоры, кто чем загружен.</span></div>
+</div>
+
+<h4 id="h3"><span class="hn">3</span>Создать программу</h4>
 <ol>
-  <li>Открой сайт — появится экран <b>«Вход в CRM»</b>.</li>
-  <li>Введи <b>почту</b> и <b>пароль</b> — их выдаёт владелец или администратор, когда приглашает тебя.</li>
+  <li>Нажми <b>«+ Программа»</b>. Предложат взять образец или начать с нуля.</li>
+  <li>Впиши <b>номер, название и цель</b>. Кто создал — тот сразу становится менеджером программы.</li>
+  <li>Добавь <b>критерии-победы</b>: 2–5 штук, каждый проверяемый.</li>
+  <li>Назначь <b>руководителя</b> и добавь <b>исполнителей</b> — карандашами в ленте ролей.</li>
+  <li>Заведи <b>задачи</b>, поставь сроки и переведи статус в <b>«В работе»</b>.</li>
 </ol>
-<div class="hint">Нет доступа или забыл пароль? Просто напиши владельцу — он пришлёт новый.</div>
-<p>После входа ты на главном экране: слева — <b>список программ</b>, справа — открытая программа. Кликни программу слева, и она откроется справа.</p>
+<div class="hnote">Кнопка <b>«✨ Сгенерировать»</b> в режиме правки предложит задачи под твою цель — их останется поправить под себя.</div>
 
-<h4>Создать программу</h4>
-<p>Нажми <b>«+ Программа»</b> слева (или «✨ Новая программа» на пустом экране) — появится пустая программа. Дальше можно заполнить всё руками, а можно позвать помощника.</p>
-<p>Нажми <b>«✨ Сгенерировать шапку»</b> — включится AI-помощник:</p>
-<ol>
-  <li>Опиши своими словами, что нужно сделать. Можно печатать, а можно наговорить голосом — кнопка <b>«🎤 Наговорить»</b>.</li>
-  <li>Помощник задаст пару уточняющих вопросов (на них тоже можно ответить голосом 🎤).</li>
-  <li>В ответ он предложит <b>Название</b>, <b>Цель</b>, <b>Критерии приёмки</b> и список задач-подсказок. Отметь галочками те задачи, которые берёшь в работу.</li>
-</ol>
-<div class="hint">Помощник только предлагает — всё можно поправить под себя.</div>
+<h4 id="h4"><span class="hn">4</span>Кто что может</h4>
+<p>Четыре уровня, сверху вниз:</p>
+<div class="hrole">
+  <div class="hrl"><span class="hav">В</span><span><b>Владелец</b> — видит и меняет всё, приглашает людей, отзывает доступ.</span></div>
+  <div class="hrl"><span class="hav v">★</span><span><b>Менеджер проекта</b> — следит за программой и за руководителем. Ставится в шапке программы карандашом у «★ Менеджер».</span></div>
+  <div class="hrl"><span class="hav">👤</span><span><b>Руководитель программы</b> — ведёт её: задачи, сроки, исполнители, координации. Выбирается из участников.</span></div>
+  <div class="hrl"><span class="hav g">И</span><span><b>Исполнитель</b> — делает свои задачи, пишет отчёты, прикладывает файлы.</span></div>
+</div>
+<table class="htab">
+  <tr><th>Действие</th><th>Владелец<br>и менеджер</th><th>Руководитель</th><th>Участник</th></tr>
+  <tr><td>Менять цель, критерии, статус, сроки программы</td><td class="y">✓</td><td class="y">✓</td><td class="n">—</td></tr>
+  <tr><td>Назначать менеджера проекта</td><td class="y">✓</td><td class="n">—</td><td class="n">—</td></tr>
+  <tr><td>Менять руководителя и состав исполнителей</td><td class="y">✓</td><td class="y">✓</td><td class="n">—</td></tr>
+  <tr><td>Добавлять задачи, назначать на них людей</td><td class="y">✓</td><td class="y">✓</td><td class="n">—</td></tr>
+  <tr><td>Вступить самому («🙋 Я участвую») и взять свободную задачу</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td></tr>
+  <tr><td>Свой отчёт, свой доклад, отметка «выполнено» по своей задаче</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td></tr>
+  <tr><td>Приглашать людей и отзывать доступ</td><td class="y">✓</td><td class="n">—</td><td class="n">—</td></tr>
+</table>
+<div class="hnote">Участник не может назначить на задачу другого человека — только взять свободную себе. Так задачи не «раздаются» мимо руководителя.</div>
 
-<h4>Заполнить шапку (и кто что может менять)</h4>
-<p>Шапка — это «лицо» программы. В ней три главных поля:</p>
+<h4 id="h5"><span class="hn">5</span>Работа с задачей</h4>
+<div class="hflow">
+  <div class="hfx"><b>1. Поставили</b><span>текст, исполнитель, срок</span></div>
+  <div class="hfx"><b>2. Договорились</b><span>критерий «как считается выполненной»</span></div>
+  <div class="hfx"><b>3. Сделали</b><span>галочка + доклад что именно сделано</span></div>
+  <div class="hfx acc"><b>4. Приняли</b><span>на координации сверили и закрыли</span></div>
+</div>
+<p>В строке задачи есть ещё:</p>
 <ul>
-  <li><b>Название</b> — коротко, о чём программа.</li>
-  <li><b>Цель программы</b> — чего хотим добиться.</li>
-  <li><b>Критерии приёмки</b> — по каким признакам поймём, что всё готово (это «победы»).</li>
-</ul>
-<p>Чтобы поправить эти поля, нажми <b>«✏ Редактировать шапку»</b>, внеси правки и нажми <b>«💾 Сохранить»</b>.</p>
-<div class="hint"><b>Важно про права:</b> программой управляют <b>руководитель</b> (ответственный), <b>создатель программы</b> и <b>владелец</b>. Только они: правят название, цель и критерии, меняют руководителя, набирают и исключают участников, назначают исполнителей на задачи, меняют статус и сроки, удаляют программу.<br>
-<b>Участник</b> может сам: нажать <b>«🙋 Я участвую»</b> (вступить в команду программы), <b>взять свободную задачу себе</b> и снять себя с неё, отмечать выполнение своих задач. Назначать других людей участник не может.<br>
-Чтобы кнопки «про себя» работали, ваша <b>почта входа должна быть вписана</b> в «👥 Команда». Каждое изменение сохраняется в журнал программы — видно, кто, что и когда.</div>
-<p>Внизу шапки настраивается остальное:</p>
-<ul>
-  <li><b>Участники</b> — руководитель отмечает галочками, кто в команде; сотрудник может присоединиться сам.</li>
-  <li><b>Ответственный</b> — руководитель проекта, выбирается из участников.</li>
-  <li><b>Статус</b> — черновик / утверждена / в работе / завершена.</li>
-  <li><b>Срок</b> и <b>Дата завершения</b>.</li>
-</ul>
-
-<h4>Задачи</h4>
-<p>Задачи — это конкретные шаги к цели. У каждой задачи есть:</p>
-<ul>
-  <li>описание и то, <b>что считается выполненным</b> (отчёт или критерий);</li>
-  <li><b>исполнитель</b>, <b>срок</b> и оценка времени;</li>
-  <li><b>тип</b>: первоочередная, жизненно важная или рабочая;</li>
-  <li>галочка <b>«выполнено»</b>;</li>
-  <li>можно прикрепить файл или фото — кнопка <b>«📎 файл»</b>.</li>
-</ul>
-<p>Сверху есть <b>фильтры</b> (по исполнителю, просроченные, стопоры, невыполненные) и <b>лидерборд</b> — кто сколько задач закрыл. Просроченные задачи и «стопоры» подсвечиваются, чтобы сразу бросались в глаза.</p>
-
-<h4>Критерии — это «победы»</h4>
-<p>Критерии приёмки показывают, что программа реально выполнена. Когда признак достигнут, его отмечают галочкой, а общий прогресс виден полоской.</p>
-<div class="hint">Отметить критерий выполненным может <b>руководитель программы, её создатель или владелец</b> — так «победа» не засчитается случайно.</div>
-
-<h4>Координация (совещание по программе)</h4>
-<p>Нажми <b>«+ Координация»</b> (🗓) наверху программы, чтобы провести совещание:</p>
-<ol>
-  <li>Отметь, <b>кто был</b>, а кого не было.</li>
-  <li>Пройди по задачам — готовое можно отметить прямо на совещании.</li>
-  <li>Напиши <b>итог</b> встречи.</li>
-</ol>
-<p>Получится <b>документ координации</b>. Все такие документы показываются наверху программы под сводкой. Нажми <b>«▸ показать документ»</b>, чтобы раскрыть его на месте, или <b>«⤢ на весь экран»</b> — для удобного чтения.</p>
-
-<h4>👥 Команда — люди и доступ в одном месте</h4>
-<p>Кнопка <b>«👥 Команда»</b> слева — здесь ВСЯ команда: имя, должность, почта, Telegram, дата добавления и статус доступа (✓ вход есть / 🔑 админ / ⏳ приглашён / 🚫 отозван / без входа / без почты — человек в списке, но входить не может).</p>
-<p>Администратор добавляет человека одной формой:</p>
-<ol>
-  <li>Введи <b>Имя</b>, <b>Должность</b>, <b>Почту</b> и в поле <b>Права</b> выбери «Сотрудник» или «Администратор» (по умолчанию — Сотрудник). С почтой человек сразу получит доступ: появятся логин, временный пароль и ссылка — нажми <b>«📋 Скопировать всё для отправки»</b> и вышли ему в Telegram.</li>
-  <li>Без почты человек попадёт в список «без входа» (например, рабочий без компьютера) — его всё равно можно назначать исполнителем. Дать доступ позже — кнопка <b>🔑 вход</b> в его строке.</li>
-  <li>Забрать доступ — кнопка <b>⛔ вход</b>; убрать из команды — <b>✕ архив</b> (уходит в архив с датой, можно вернуть ↩).</li>
-</ol>
-<div class="hint"><b>Сотрудник</b> — ведёт программы. <b>Администратор</b> — ещё и управляет людьми: добавляет, даёт и отзывает доступ.</div>
-
-<h4>📎 Файлы и фото к задачам</h4>
-<p>К любой задаче можно прикрепить <b>фото или документ</b> (кнопка «📎 файл» в колонке отчёта). Клик по файлу: <b>фото открывается сразу в окне</b>, PDF — в соседней вкладке; скачивать ничего не нужно (для прочих форматов — скачивание). Файлы уходят в общее облако — их видит вся команда, с любого устройства. Файлы, добавленные раньше, попадут в облако, когда их автор один раз откроет свою задачу.</p>
-
-<h4>Полезное: настройки, история</h4>
-<p><b>«⚙ Настройки»</b> — здесь администратор задаёт AI-ключ (Groq) для умной генерации; ключ общий для всей команды. Тут же меняется логотип компании.</p>
-<div class="hint"><b>Важно:</b> почта человека в «👥 Команда» должна <b>совпадать с почтой, которой он входит</b> в приложение. Иначе система его не узнает: не будет кнопок «Я участвую», «Взять себе» и прав руководителя.</div>
-<p><b>Журнал программы</b> внизу — это история всех событий: отметки задач, переносы сроков, координации, изменения шапки, стопоры. Загляни туда, если нужно вспомнить, что и когда происходило.</p>
-
-<h4>Порядок задач, доклады, роли</h4>
-<p><b>Переставить задачу</b> — кнопки <b>▲ ▼</b> слева от номера (важное поднимаем наверх). Доступны руководителю; при включённом фильтре порядок не меняется — сначала сбросьте фильтр.</p>
-<p><b>Доклад о выполнении.</b> Когда ставишь галочку «выполнено», программа спрашивает «Что сделано?». Этот текст теперь виден <b>прямо в задаче</b> — зелёной плашкой «✓ Доклад» с датой и исполнителем (и, как раньше, попадает в журнал). Дописать или поправить — ссылка «изменить» в той же плашке.</p>
-<p><b>Менеджер проектов</b> — в «👥 Команда» кнопкой <b>★ PM</b>. Такой человек ведёт <b>все</b> программы: правит шапки и критерии, назначает исполнителей, меняет руководителей, переставляет задачи. Раздавать доступы в CRM по-прежнему может только владелец-администратор.</p>
-<div class="hint">Порядок прав: <b>владелец</b> → <b>менеджер проектов</b> → <b>руководитель программы</b> (в своей программе) → <b>участник</b> (свои задачи).</div>
-
-<h4>Как теперь устроена шапка программы</h4>
-<p>Сверху — <b>название и лента состояния</b>: статус, срок, критерии («1/3»), когда была координация. Просроченный срок и застой подсвечиваются. Справа — <b>кольцо прогресса</b>: «12 из 19 · 63%».</p>
-<p>Под ними — <b>лента людей</b>: ★ менеджер проекта, руководитель и исполнители кружками. Карандаш ✎ виден только тому, кому можно менять.</p>
-<p>Цель — плашкой. <b>Критерии свёрнуты</b>: нажми чип «Критерии 1/3», чтобы раскрыть список. Кнопки: на виду «+ Координация» и «✏ Редактировать», остальное (печать, Excel, образцы, удаление) — под «⋯ ещё».</p>
-<div class="hint">Поля ввода (статус, сроки, менеджер, руководитель) появляются, когда нажали <b>«✏ Редактировать»</b>, и прячутся после «Сохранить». Так шапка читается как документ, а не как анкета.</div>
-<p>В списке слева у программ теперь <b>цветная полоса по статусу</b> (серый — черновик, синий — утверждена, оранжевый — в работе, зелёный — завершена) и кружки ролей.</p>
-
-<h4>Кто есть в программе: менеджер, руководитель, исполнители</h4>
-<p>В шапке программы два поля рядом:</p>
-<ul>
-  <li><b>★ Менеджер проекта</b> — смотрит за руководителем и за всей программой, имеет все права. Выбирается из всей команды. Ставит его <b>владелец</b>, сам менеджер или тот, кто создал программу — <b>руководитель менять менеджера не может</b>.</li>
-  <li><b>Руководитель (из участников)</b> — отвечает за эту программу: ведёт задачи, назначает исполнителей, отмечает критерии. Может быть и исполнителем.</li>
-  <li><b>Исполнители</b> — участники, которые делают задачи (могут взять свободную задачу себе).</li>
-</ul>
-<p>Кто создал программу, тот сразу становится её менеджером — дальше он назначает руководителя. В списке слева у каждой программы видно «★ менеджер · 👤 руководитель».</p>
-<div class="hint">Отдельно в «👥 Команда» есть кнопка <b>«☆ Менеджер»</b> — она даёт человеку роль менеджера <b>по всем</b> программам сразу (например, вам или заместителю). Поле в шапке — менеджер <b>одной</b> программы.</div>
-
-<h4>📊 Сводка — пульт владельца</h4>
-<p>Кнопка <b>«📊 Сводка»</b> слева — один экран по всем программам: сколько просрочено, где стопоры, какая программа давно без координации, кто из людей чем загружен. Клик по строке открывает программу, клик по человеку — фильтр его задач.</p>
-
-<h4>📋 Доска прогресса — все программы одной таблицей</h4>
-<p>Кнопка <b>«📋 Доска»</b> слева. Строка — программа, столбец — задача №1, №2, №3…, а клетка показывает <b>состояние</b> задачи и её дату (ту самую, что стоит в задаче; у выполненных — день выполнения):</p>
-<ul>
-  <li><b>зелёная</b> — выполнено;</li>
-  <li><b>синяя</b> — срок на этой неделе, сюда смотреть в первую очередь;</li>
-  <li><b>белая</b> — в работе, срок впереди;</li>
-  <li><b>красная</b> — просрочено;</li>
-  <li><b>оранжевая ⛔</b> — стопор, работа встала;</li>
-  <li><b>штриховка «задать»</b> — срок никто не поставил;</li>
-  <li><b>серая</b> — задачи с таким номером в программе нет.</li>
-</ul>
-<p>Сверху — отбор «В работе / Все / С отклонениями» и выбор <b>руководителя</b>: можно смотреть только его программы. Клик по клетке открывает программу прямо на этой задаче, клик по названию — программу целиком.</p>
-<div class="hint">Владелец и менеджер проектов видят на доске <b>все</b> программы. Руководители и участники — только те, где они руководят, участвуют или отвечают за задачу.</div>
-
-<h4>💬 Обсуждение в задаче</h4>
-<p>В колонке отчёта у каждой задачи — <b>«💬 Обсуждение»</b>. Исполнитель задаёт вопрос, руководитель отвечает, и переписка остаётся в задаче (а не в мессенджере). Отправка — кнопкой или Enter. Каждое сообщение попадает и в журнал программы.</p>
-
-<h4>Подпункты внутри задачи</h4>
-<p>Крупную задачу не нужно дробить на десяток строк: под её текстом — <b>«＋ подпункт»</b>. Видно движение («3 из 5»), отмечает исполнитель задачи или руководитель, а сама задача закрывается как раньше — галочкой с докладом.</p>
-
-<h4>Образцы программ</h4>
-<p><b>«+ Программа»</b> теперь спрашивает: взять образец или начать с нуля. Свою готовую программу можно сохранить в образцы кнопкой <b>«📋 В образцы»</b> — переносятся задачи, отчёты-критерии и подпункты, а исполнители, сроки и отметки остаются пустыми.</p>
-
-<h4>Печать и Excel</h4>
-<p><b>«🖨 Печать»</b> — программа печатается бланком: цель, критерии, задачи с отчётами и докладами, сроки и место для подписей. <b>«⬇ Excel»</b> — та же таблица файлом для расчётов и архива.</p>
-
-<h4>Живая работа вдвоём</h4>
-<p>Наверху программы видно, <b>кто ещё её открыл и кто печатает</b>. Правки коллег появляются сами; пока вы печатаете, чужая версия ваш текст не подменяет. Раньше сохранявший последним затирал чужую работу — теперь нет.</p>
-
-<h4>Что нового (07.09.2026)</h4>
-<ul>
-  <li><b>Доска прогресса</b> — кнопка «📋 Доска»: все программы и задачи одной таблицей.</li>
-  <li><b>Новая шапка:</b> лента состояния, кольцо прогресса, роли людьми, «⋯ ещё», сворачиваемые критерии.</li>
-  <li><b>Сводка по всем программам</b> — кнопка «📊 Сводка».</li>
-  <li><b>Обсуждение в задаче</b>, <b>подпункты</b>, <b>образцы программ</b>.</li>
-  <li><b>Печать бланком</b> и <b>выгрузка в Excel</b>.</li>
-  <li><b>Работа вдвоём:</b> видно, кто в программе; правки не затирают друг друга.</li>
-  <li><b>На телефоне</b> у полей появились подписи, кнопки крупнее, окна закрываются Esc и кликом мимо.</li>
-  <li><b>Доклад «что сделано» виден в задаче</b>, а не только в журнале.</li>
-  <li><b>Перемещение задач</b> кнопками ▲▼.</li>
-  <li><b>Менеджер проектов</b> — роль выше руководителя программы.</li>
-  <li><b>Даты не слетают:</b> дата сохраняется сразу при выборе, а несохранённое дописывается при закрытии вкладки.</li>
-  <li><b>Фото сжимаются</b> при загрузке — быстрее уходят в общее облако; в ⚙ есть кнопка «Проверить» облако файлов.</li>
+  <li><b>⛔ стопор</b> — работа встала не по вине исполнителя. Пиши причину: это главный сигнал руководителю.</li>
+  <li><b>＋ подпункт</b> — крупную задачу дробим внутри, не плодя строки. Видно «3 из 5».</li>
+  <li><b>💬 обсуждение</b> — вопросы по задаче остаются в задаче, а не в мессенджере.</li>
+  <li><b>📎 файл</b> — фото и документы; их видит вся команда.</li>
+  <li><b>▲ ▼</b> — переставить задачу в списке.</li>
 </ul>
 
-<h4>Что было в 26.08.2026</h4>
+<h4 id="h6"><span class="hn">6</span>Доска прогресса</h4>
+<p>Строка — программа, столбец — задача №1, №2, №3… В клетке стоит <b>дата из самой задачи</b>, а цвет говорит о состоянии:</p>
+<div class="hlg">
+  <span class="l"><span class="hsw sw-done">✓ 14.08</span>выполнено, дата доклада</span>
+  <span class="l"><span class="hsw sw-soon">11.09</span>срок на этой неделе</span>
+  <span class="l"><span class="hsw sw-plan">02.10</span>в работе, срок впереди</span>
+  <span class="l"><span class="hsw sw-late">⚠ 03.09</span>просрочено</span>
+  <span class="l"><span class="hsw sw-stop">⛔ 05.09</span>стопор</span>
+  <span class="l"><span class="hsw sw-noda">задать</span>срок никто не поставил</span>
+  <span class="l"><span class="hsw sw-none"></span>задачи с таким номером нет</span>
+</div>
+<div class="hmock">
+  <div class="hmr"><span class="g">Программа</span><span style="min-width:54px;text-align:center">№1</span><span style="min-width:54px;text-align:center">№2</span><span style="min-width:54px;text-align:center">№3</span><span style="min-width:54px;text-align:center">№4</span></div>
+  <div class="hmr">
+    <span class="g"><b>7 · Доставка мелких материалов</b><br><span style="color:#67717f;font-size:11px"><span class="hav v" style="display:inline-grid;vertical-align:-4px">KD</span> <span class="hav" style="display:inline-grid;vertical-align:-4px">VR</span> Vladimir Rotar · 7/23</span></span>
+    <span class="hcell sw-done">✓ 14.08</span><span class="hcell sw-late">⚠ 03.09</span><span class="hcell sw-stop">⛔ 05.09</span><span class="hcell sw-noda">задать</span>
+  </div>
+</div>
 <ul>
-  <li>Кнопки «Сотрудники», «+ Добавить сотрудников» и «🔑 Команда» объединены в одну — <b>«👥 Команда»</b>: люди, должности, даты и доступ в одном окне.</li>
-  <li>Фото открываются <b>прямо в приложении</b>, PDF — в соседней вкладке; файлы теперь в общем облаке и видны всей команде.</li>
-  <li>У каждого человека видна <b>дата добавления</b>; удалённые уходят в архив с датой, их можно вернуть.</li>
-  <li>Новые права: участник может сам вступить в программу («🙋 Я участвую») и взять свободную задачу («Взять себе»); назначать других может только руководитель.</li>
-</ul>`;
+  <li>Наведи мышку на клетку — покажет задачу, исполнителя и на сколько дней просрочено.</li>
+  <li><b>Клик по клетке</b> открывает программу прямо на этой задаче.</li>
+  <li>Сверху отбор <b>«В работе / Все / С отклонениями»</b> и фильтры по <b>★ менеджеру</b> и <b>👤 руководителю</b>.</li>
+</ul>
+<div class="hnote">Владелец и менеджер проектов видят на доске все программы. Руководители и участники — только те, где они руководят, участвуют или отвечают за задачу.</div>
+
+<h4 id="h7"><span class="hn">7</span>Координация</h4>
+<p>Координация — короткая планёрка по программе. Нажми <b>«+ Координация»</b>: отметь, кто был, пройди по задачам, поставь галочки выполненным и запиши решения.</p>
+<div class="hq"><b>Зачем это нужно</b><span>Программа без координаций «засыпает»: в списке и на доске такая программа помечается застоем через 7 дней тишины.</span></div>
+
+<h4 id="h8"><span class="hn">8</span>Команда и доступ</h4>
+<p>Кнопка <b>«Команда»</b> — один экран для всего: добавить человека, указать должность, дать вход в CRM, отозвать доступ, увидеть даты добавления и архив уволенных.</p>
+<ul>
+  <li><b>Пригласить</b> — человек получает почту и пароль и сразу видит общие данные.</li>
+  <li><b>☆ / ★ Менеджер</b> — даёт роль менеджера сразу по <b>всем</b> программам (например, заместителю). Роль в шапке программы — менеджер <b>одной</b> программы.</li>
+  <li><b>Отозвать доступ</b> — войти человек больше не сможет, а его задачи и история останутся.</li>
+</ul>
+<div class="hnote">Человека узнают <b>по почте</b>: почта входа должна совпадать с почтой в карточке. Иначе программа не поймёт, что задачи — твои.</div>
+
+<h4 id="h9"><span class="hn">9</span>Файлы и фото</h4>
+<p>Кнопка <b>«файл»</b> в задаче. Фото открывается прямо в приложении, PDF — в соседней вкладке. Файлы лежат в общем облаке, поэтому их видит вся команда, а не только тот, кто загрузил. Фото сжимаются при загрузке, чтобы не тормозить.</p>
+
+<h4 id="h10"><span class="hn">10</span>Печать, Excel, образцы, бэкап</h4>
+<ul>
+  <li><b>«⋯ ещё» → 🖨 Печать</b> — программа печатается бланком: цель, критерии, задачи с отчётами и место для подписей.</li>
+  <li><b>«⋯ ещё» → ⬇ Excel</b> — та же таблица файлом для расчётов.</li>
+  <li><b>«⋯ ещё» → 📋 В образцы</b> — сохранить программу как заготовку для будущих.</li>
+  <li><b>«⭳+ Бэкап»</b> внизу слева — файл со всеми данными и вложениями. Делай раз в месяц.</li>
+</ul>
+
+<h4 id="h11"><span class="hn">11</span>Если что-то не так</h4>
+<div class="hq"><b>Не вижу своих задач / не могу отметить выполнено</b><span>Почта входа не совпала с почтой в «Команда» — попроси владельца поправить.</span></div>
+<div class="hq"><b>Нажимаю карандаш у роли — ничего</b><span>Открывается окно со списком людей: выбери человека кликом. Если карандаша нет — у тебя нет прав на эту роль.</span></div>
+<div class="hq"><b>Дата слетела</b><span>Дата сохраняется сразу при выборе. Если связь пропала, приложение работает локально и дошлёт данные, когда связь вернётся.</span></div>
+<div class="hq"><b>Коллега не видит мою правку</b><span>Правки приезжают сами. Если сомневаешься — Ctrl+F5.</span></div>
+<div class="hq"><b>Всё пропало</b><span>Не паникуй и не импортируй ничего: напиши владельцу, данные лежат в облаке.</span></div>
+
+<h4>Что изменилось в последней версии</h4>
+<ul>
+  <li><b>Доска прогресса</b> — новая вкладка со всеми программами и задачами.</li>
+  <li><b>Роли назначаются кликом</b>: карандаш открывает список людей, а не режим правки всей шапки.</li>
+  <li><b>Фильтры доски</b> по менеджеру проекта и по руководителю.</li>
+  <li><b>Меню слева</b> — новые иконки, видно, какой экран открыт.</li>
+  <li><b>Инструкция</b> переписана: оглавление, схемы, разбор частых проблем.</li>
+</ul>
+</div>`;
 const helpBg=document.getElementById('helpBg');
 function helpSeen(){ let s=0; try{ s=parseInt(localStorage.getItem('crm_help_seen')||'0'); }catch(e){} return s||0; }
-function openHelp(){ const b=document.getElementById('helpBody'); if(b && b.dataset.filled!=='1'){ b.innerHTML=HELP_HTML; b.dataset.filled='1'; } if(helpBg) helpBg.classList.add('on'); try{ localStorage.setItem('crm_help_seen',String(HELP_VERSION)); }catch(e){} const bt=document.getElementById('btnHelp'); if(bt) bt.classList.remove('hasnew'); }
+function openHelp(){ const b=document.getElementById('helpBody');
+  if(b && b.dataset.filled!=='1'){ b.innerHTML='<style>'+HELP_CSS+'</style>'+HELP_HTML; b.dataset.filled='1';
+    // оглавление прокручивает внутри окна, не трогая адрес страницы
+    b.querySelectorAll('.htoc a').forEach(a=>{ a.onclick=e=>{ e.preventDefault();
+      const t=b.querySelector(a.getAttribute('href')); if(t) t.scrollIntoView({block:'start',behavior:'smooth'}); }; });
+  } if(helpBg) helpBg.classList.add('on'); try{ localStorage.setItem('crm_help_seen',String(HELP_VERSION)); }catch(e){} const bt=document.getElementById('btnHelp'); if(bt) bt.classList.remove('hasnew'); }
 function closeHelp(){ if(helpBg) helpBg.classList.remove('on'); }
 function helpBadge(){ const bt=document.getElementById('btnHelp'); if(bt && helpSeen()<HELP_VERSION) bt.classList.add('hasnew'); }
 function maybeAutoHelp(){ if(helpSeen()<HELP_VERSION) setTimeout(openHelp,500); }
-function printHelp(){ const w=window.open('','_blank'); if(!w){ toast('Разрешите всплывающие окна, чтобы сохранить в PDF'); return; } w.document.write('<!doctype html><html lang="ru"><head><meta charset="utf-8"><title>Инструкция — CRM «Проекты-Программы»</title><style>body{font-family:system-ui,Segoe UI,sans-serif;max-width:720px;margin:24px auto;padding:0 16px;line-height:1.55;color:#222}h3{color:#1e5fd8}h4{color:#1e5fd8;margin:16px 0 6px}.hint{background:#f1f5fb;border-left:3px solid #2f6df6;padding:6px 10px;margin:8px 0;font-size:13px;color:#555}ol,ul{padding-left:22px}li{margin:3px 0}</style></head><body><h3>📖 CRM «Проекты-Программы» — инструкция</h3>'+HELP_HTML+'<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},250);};</scr'+'ipt></body></html>'); w.document.close(); }
+function printHelp(){ const w=window.open('','_blank'); if(!w){ toast('Разрешите всплывающие окна, чтобы сохранить в PDF'); return; } w.document.write('<!doctype html><html lang="ru"><head><meta charset="utf-8"><title>Инструкция — CRM «Проекты-Программы»</title><style>body{font-family:system-ui,Segoe UI,sans-serif;max-width:760px;margin:24px auto;padding:0 16px;line-height:1.55;color:#222}h3{color:#1e5fd8}</style><style>'+HELP_CSS+'</style><style>.hb .htoc{display:none}</style></head><body><h3>📖 CRM «Проекты-Программы» — инструкция</h3>'+HELP_HTML+'<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},250);};</scr'+'ipt></body></html>'); w.document.close(); }
 (function(){ const b=document.getElementById('btnHelp'); if(b) b.onclick=openHelp; const c=document.getElementById('helpClose'); if(c) c.onclick=closeHelp; const c2=document.getElementById('helpClose2'); if(c2) c2.onclick=closeHelp; const pp=document.getElementById('helpPrint'); if(pp) pp.onclick=printHelp; helpBadge(); })();
 
 async function revokeMember(m){
@@ -2532,6 +2595,59 @@ function renderPartList(){
   });
 }
 document.getElementById('partClose').onclick=()=>{ partBg.classList.remove('on'); renderMain(); };
+
+// Карандаш у роли открывает выбор человека прямо на месте.
+// Раньше он переводил ВСЮ шапку в режим правки, поля появлялись ниже по странице —
+// со стороны выглядело как «нажал, и ничего не произошло».
+let _roleId=null,_roleKind='';
+const roleBg=document.getElementById('roleBg');
+function openRolePicker(p,kind){
+  if(kind==='pm' && !canSetPM(p)){ toast('Менеджера проекта назначает владелец, сам менеджер или создатель программы'); return; }
+  if(kind==='owner' && !canLead(p)){ toast('Руководителя меняет сам руководитель, менеджер программы, её создатель или владелец'); return; }
+  _roleId=p.id; _roleKind=kind;
+  document.getElementById('roleTtl').textContent=(kind==='pm'?'★ Менеджер проекта':'👤 Руководитель программы');
+  document.getElementById('roleHint').textContent=(kind==='pm'
+    ? 'Следит за программой и за руководителем. Выбирается из всей команды.'
+    : 'Ведёт программу и назначает исполнителей. Выбирается из участников программы.');
+  renderRoleList(); roleBg.classList.add('on');
+}
+function roleListOpen(){ return roleBg && roleBg.className.includes('on'); }
+function renderRoleList(){
+  const p=state.find(x=>x.id===_roleId), kind=_roleKind, wrap=document.getElementById('roleList');
+  if(!p||!wrap){ if(roleBg) roleBg.classList.remove('on'); return; }
+  wrap.innerHTML='';
+  const cur=(kind==='pm'?p.pmId:p.ownerId);
+  const list=(kind==='pm')
+    ? employees.filter(e=>!e.archived)
+    : (p.participants||[]).map(x=>emp(x.empId)).filter(e=>e&&!e.archived);
+  if(!list.length){
+    wrap.appendChild(el('div','minihint', kind==='pm'
+      ? 'Команда пуста — добавьте людей в «👥 Команда».'
+      : 'В программе ещё нет участников. Добавьте их карандашом у «Исполнители» — из них и выбирается руководитель.'));
+  }
+  const setTo=id=>{
+    // ищем программу заново: пока окно открыто, правка коллеги могла заменить объект
+    const cur2=state.find(x=>x.id===_roleId);
+    if(!cur2){ roleBg.classList.remove('on'); toast('Программа изменилась — откройте окно заново'); renderMain(); return; }
+    if(kind==='owner' && !id && (cur2.status==='approved'||cur2.status==='in_progress')){
+      toast('У утверждённой программы должен быть руководитель — назначьте другого'); return; }
+    if(kind==='pm'){ cur2.pmId=id; pushEvent(cur2,'edit','Менеджер проекта: '+(id?empName(id):'снят')); }
+    else { cur2.ownerId=id; pushEvent(cur2,'edit','Руководитель программы: '+(id?empName(id):'снят')); }
+    save(); roleBg.classList.remove('on'); renderMain();
+    toast(id?((kind==='pm'?'Менеджер: ':'Руководитель: ')+empName(id)):'Роль снята');
+  };
+  list.forEach(e=>{
+    const row=el('div','emppick'+(cur===e.id?' on':''));
+    row.appendChild(el('span','avat '+(kind==='pm'?'v':'g'),initials(empName(e.id))));
+    const nm=el('span','emppicklab',(e.name||'(без имени)')+(e.role?(' · '+e.role):''));
+    row.appendChild(nm);
+    if(cur===e.id) row.appendChild(el('span','pickmark','✓ сейчас'));
+    row.onclick=()=>setTo(e.id);
+    wrap.appendChild(row);
+  });
+  if(cur){ const off=el('div','emppick'); const t=el('span','emppicklab','— снять роль —'); t.style.color='var(--faint)'; off.appendChild(t); off.onclick=()=>setTo(''); wrap.appendChild(off); }
+}
+document.getElementById('roleClose').onclick=()=>{ roleBg.classList.remove('on'); };
 
 //====================== export / import / seed ======================
 document.getElementById('btnExport').onclick=()=>{
@@ -2709,6 +2825,7 @@ function applyRemoteProgram(row){
   if(i<0) state.push(fresh); else state[i]=fresh;
   cloudProgIds.add(row.id);
   lsSet(LS_KEY,JSON.stringify(state)); renderMain();
+  if(roleListOpen() && _roleId===row.id) renderRoleList();   // открытое окно ролей — на свежих данных
 }
 function flushPendingRemote(){
   if(!pendingRemote.size) return;
