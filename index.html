@@ -84,7 +84,7 @@
   .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:14px}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
   .field label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px;font-weight:600;letter-spacing:.01em}
-  .metarow{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:12px;margin-top:14px;align-items:end}
+  .metarow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:14px;align-items:end}
   .progresswrap{display:flex;align-items:center;gap:12px;margin-top:16px;padding-top:14px;border-top:1px dashed var(--line)}
   .progresswrap .big{font-weight:800;font-size:22px;color:var(--ink);font-variant-numeric:tabular-nums;min-width:52px}
   .progresswrap .bar{height:9px}
@@ -527,6 +527,7 @@ function migrate(p){
   if(!p.status) p.status='draft';
   if(p.ownerId==null) p.ownerId='';
   if(p.createdBy==null) p.createdBy='';
+  if(p.pmId==null) p.pmId='';           // менеджер проекта (выше руководителя программы)
   if(!p.criteria){ const parts=[]; if(p.concept)parts.push(p.concept); if(p.product)parts.push('Конечный продукт: '+p.product); p.criteria=parts.join('\n'); }
   if(typeof p.criteria==='string') p.criteria=parseCriteria(p.criteria);
   if(!Array.isArray(p.criteria)) p.criteria=[];
@@ -637,7 +638,13 @@ function renderList(){
     const {n,d,pct}=progress(p);
     const c=el('div','pcard'+(p.id===selected&&view!=='dash'?' active':'')); c.onclick=()=>{view='program'; selected=p.id; journalExpanded=false; resetTaskFilter(); save(); renderMain();};
     const ownerNm=p.ownerId?empName(p.ownerId):(p.owner||'');
-    if(ownerNm) c.appendChild(el('div','powner','👤 '+ownerNm));
+    const pmNm=p.pmId?empName(p.pmId):'';
+    if(pmNm||ownerNm){ const who=el('div','powner');
+      if(pmNm) who.appendChild(el('span',null,'★ '+pmNm));
+      if(pmNm&&ownerNm) who.appendChild(el('span','psep',' · '));
+      if(ownerNm) who.appendChild(el('span',null,'👤 '+ownerNm));
+      who.title=(pmNm?('Менеджер проекта: '+pmNm):'')+(pmNm&&ownerNm?'\n':'')+(ownerNm?('Руководитель: '+ownerNm):'');
+      c.appendChild(who); }
     const ttl=el('div','ttl'); ttl.appendChild(el('span','num',p.number?('№'+p.number):'—'));
     ttl.appendChild(el('span',null,p.title||'Без названия')); c.appendChild(ttl);
     const meta=el('div','meta');
@@ -716,7 +723,7 @@ function renderMain(){
     pushEvent(p,'status_changed','Статус программы: '+statusLabel(nv)); save(); renderMain(); };
   const due=dateFor(p,'dueDate'); const done=dateFor(p,'doneDate');
   if(!lead){ sel.disabled=true; due.disabled=true; done.disabled=true; }
-  mr.append(wrapField(ownerCell(p),'Ответственный (из участников)'), wrapField(sel,'Статус'), wrapField(due,'Срок завершения'), wrapField(done,'Дата завершения'));
+  mr.append(wrapField(pmCell(p),'★ Менеджер проекта'), wrapField(ownerCell(p),'Руководитель (из участников)'), wrapField(sel,'Статус'), wrapField(due,'Срок завершения'), wrapField(done,'Дата завершения'));
   head.appendChild(mr);
 
   //--- progress ---
@@ -1213,6 +1220,23 @@ function assigneeCell(p,t){
   if(t.assigneeLegacy && !t.assigneeId) box.appendChild(el('div','legacy',t.assigneeLegacy+' (старое)'));
   return box;
 }
+// Менеджер проекта — смотрит за руководителем и всей программой. Выбирается из всей
+// команды (он может не быть исполнителем). Ставит владелец / менеджер / создатель.
+function pmCell(p){
+  const box=el('div'); box.style.cssText='display:flex;flex-direction:column;gap:3px;width:100%';
+  if(!canSetPM(p)){
+    const nm=el('div',null,p.pmId?empLabel(p.pmId):'— не назначен —');
+    nm.title='Менеджера проекта назначает владелец или сам менеджер'; box.appendChild(nm);
+    return box;
+  }
+  const act=employees.filter(e=>!e.archived);
+  const sel=el('select');
+  const o0=el('option',null,act.length?'— выбрать —':'сначала добавьте людей в «👥 Команда»'); o0.value=''; sel.appendChild(o0);
+  act.forEach(e=>{ const o=el('option',null,empLabel(e.id)); o.value=e.id; if(p.pmId===e.id)o.selected=true; sel.appendChild(o); });
+  sel.onchange=()=>{ p.pmId=sel.value; pushEvent(p,'edit','Менеджер проекта: '+(sel.value?empName(sel.value):'снят')); save(); renderMain(); };
+  box.appendChild(sel);
+  return box;
+}
 // Руководителя программы меняет только сам руководитель, создатель программы или владелец (админ)
 function ownerCell(p){
   const box=el('div'); box.style.cssText='display:flex;flex-direction:column;gap:3px;width:100%';
@@ -1404,7 +1428,7 @@ function saveHeaderEdit(p){
 
 //====================== create / new ======================
 function newTask(n){ return {id:uid(),n,text:'',report:'',doneReport:'',assigneeId:'',assigneeLegacy:'',due:'',estimate:'',type:'work',done:false,doneDate:'',origDue:'',stopper:'',attachments:[],subs:[],comments:[]}; }
-function newProgram(){ return {id:uid(),number:'',title:'',goal:'',criteria:[],owner:'',ownerId:'',createdBy:(window.__meEmail||''),status:'draft',dueDate:'',doneDate:'',approvedDate:'',participants:[],timeline:[],suggestions:[],tasks:[newTask(1)]}; }
+function newProgram(){ return {id:uid(),number:'',title:'',goal:'',criteria:[],owner:'',ownerId:'',pmId:(typeof myEmpId==='function'?(myEmpId()||''):''),createdBy:(window.__meEmail||''),status:'draft',dueDate:'',doneDate:'',approvedDate:'',participants:[],timeline:[],suggestions:[],tasks:[newTask(1)]}; }
 document.getElementById('btnNew').onclick=()=>openTemplatePicker();
 document.getElementById('btnDash').onclick=()=>{ view=(view==='dash'?'program':'dash'); renderMain(); };
 function createBlankProgram(){ const p=newProgram(); p.number=String(nextProgramNumber()); state.unshift(p); selected=p.id; markDirty(p); save(); renderMain(); openGen(); }
@@ -1728,7 +1752,8 @@ function accessBadge(e){
 }
 function renderEmp(){
   const wrap=document.getElementById('empList'); if(!wrap) return;
-  if(document.activeElement && wrap.contains(document.activeElement)) return;   // не сбивать ввод под пальцем
+  const ae=document.activeElement;                                              // не сбивать ТЕКСТОВЫЙ ввод под пальцем;
+  if(ae && wrap.contains(ae) && /INPUT|TEXTAREA/.test(ae.tagName)) return;      // нажатие кнопки перерисовку не блокирует
   wrap.innerHTML='';
   const canManage=isAdmin()||soloMode();
   const inv=document.getElementById('teamInvite'); if(inv) inv.hidden=!canManage;
@@ -1808,7 +1833,17 @@ function canLead(p){
   if(soloMode()||isAdmin()||isPM()) return true; if(!p) return false;
   const em=(window.__meEmail||'').toLowerCase();
   if(p.createdBy && em && String(p.createdBy).toLowerCase()===em) return true;
-  const me=myEmp(); return !!(me && p.ownerId && me.id===p.ownerId);
+  const me=myEmp(); if(!me) return false;
+  if(p.pmId && me.id===p.pmId) return true;            // менеджер этой программы
+  return !!(p.ownerId && me.id===p.ownerId);           // руководитель этой программы
+}
+// Менеджера проекта ставит владелец, менеджер этой программы или её создатель —
+// но НЕ руководитель программы: менеджер стоит выше него.
+function canSetPM(p){
+  if(soloMode()||isAdmin()||isPM()) return true; if(!p) return false;
+  const em=(window.__meEmail||'').toLowerCase();
+  if(p.createdBy && em && String(p.createdBy).toLowerCase()===em) return true;
+  const me=myEmp(); return !!(me && p.pmId && me.id===p.pmId);
 }
 async function captureRole(session){
   window.__meId=(session&&session.user)?session.user.id:null;
@@ -1899,7 +1934,7 @@ async function teamInvite(preset){
 }
 
 //====================== инструкция / помощь ======================
-const HELP_VERSION=5;   // при обновлении инструкции увеличить — у всех появится пометка «обновлено» и автопоказ
+const HELP_VERSION=6;   // при обновлении инструкции увеличить — у всех появится пометка «обновлено» и автопоказ
 const HELP_HTML=`<p>Привет! Это приложение помогает вести <b>программы</b> — наборы задач, чтобы навести порядок и внедрить изменения в компании. Одна программа — это одна цель, понятные признаки «победы» и список задач с исполнителями и сроками. Ниже всё по шагам.</p>
 
 <h4>С чего начать: вход</h4>
@@ -1986,6 +2021,16 @@ const HELP_HTML=`<p>Привет! Это приложение помогает �
 <p><b>Доклад о выполнении.</b> Когда ставишь галочку «выполнено», программа спрашивает «Что сделано?». Этот текст теперь виден <b>прямо в задаче</b> — зелёной плашкой «✓ Доклад» с датой и исполнителем (и, как раньше, попадает в журнал). Дописать или поправить — ссылка «изменить» в той же плашке.</p>
 <p><b>Менеджер проектов</b> — в «👥 Команда» кнопкой <b>★ PM</b>. Такой человек ведёт <b>все</b> программы: правит шапки и критерии, назначает исполнителей, меняет руководителей, переставляет задачи. Раздавать доступы в CRM по-прежнему может только владелец-администратор.</p>
 <div class="hint">Порядок прав: <b>владелец</b> → <b>менеджер проектов</b> → <b>руководитель программы</b> (в своей программе) → <b>участник</b> (свои задачи).</div>
+
+<h4>Кто есть в программе: менеджер, руководитель, исполнители</h4>
+<p>В шапке программы два поля рядом:</p>
+<ul>
+  <li><b>★ Менеджер проекта</b> — смотрит за руководителем и за всей программой, имеет все права. Выбирается из всей команды. Ставит его <b>владелец</b>, сам менеджер или тот, кто создал программу — <b>руководитель менять менеджера не может</b>.</li>
+  <li><b>Руководитель (из участников)</b> — отвечает за эту программу: ведёт задачи, назначает исполнителей, отмечает критерии. Может быть и исполнителем.</li>
+  <li><b>Исполнители</b> — участники, которые делают задачи (могут взять свободную задачу себе).</li>
+</ul>
+<p>Кто создал программу, тот сразу становится её менеджером — дальше он назначает руководителя. В списке слева у каждой программы видно «★ менеджер · 👤 руководитель».</p>
+<div class="hint">Отдельно в «👥 Команда» есть кнопка <b>«☆ Менеджер»</b> — она даёт человеку роль менеджера <b>по всем</b> программам сразу (например, вам или заместителю). Поле в шапке — менеджер <b>одной</b> программы.</div>
 
 <h4>📊 Сводка — пульт владельца</h4>
 <p>Кнопка <b>«📊 Сводка»</b> слева — один экран по всем программам: сколько просрочено, где стопоры, какая программа давно без координации, кто из людей чем загружен. Клик по строке открывает программу, клик по человеку — фильтр его задач.</p>
