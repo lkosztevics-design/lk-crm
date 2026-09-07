@@ -440,6 +440,7 @@
       <div class="btns" style="justify-content:flex-start;margin-top:2px"><button class="primary" id="teamInviteBtn">➕ Добавить в команду</button><span class="minihint" id="teamInviteHint">С почтой — сразу получит доступ и пароль для входа. Без почты — попадёт в список «без входа».</span></div>
       <div id="teamInviteResult" hidden style="margin-top:8px;padding:10px;border:1px solid #dcdfe4;border-radius:8px;background:#f8fafc"></div>
     </div>
+    <div class="hint" style="margin-top:10px">Роли: кнопка <b>«☆ Менеджер»</b> в строке человека делает его <b>менеджером проектов</b> — он ведёт все программы (правит шапки, назначает исполнителей, меняет руководителей). <b>«🔑 вход»</b> — дать доступ в CRM, <b>«⛔ вход»</b> — забрать, <b>«✕ архив»</b> — убрать из команды.</div>
     <div id="empList" style="margin-top:8px"></div>
     <div class="btns">
       <button class="ghost" id="empClose">Закрыть</button>
@@ -1746,8 +1747,8 @@ function renderEmp(){
     row.appendChild(right);
     const acts=el('span'); acts.style.display='flex'; acts.style.gap='3px';
     if(canManage){
-      const pmb=el('button','ghost tiny',e.pm?'★ PM':'☆ PM');
-      pmb.title=e.pm?'Снять роль менеджера проектов':'Сделать менеджером проектов (управляет всеми программами)';
+      const pmb=el('button','ghost tiny',e.pm?'★ Менеджер':'☆ Менеджер');
+      pmb.title=e.pm?'Снять роль менеджера проектов':'Сделать менеджером проектов — будет вести все программы';
       pmb.onclick=()=>{ e.pm=!e.pm; saveEmployees(); renderEmp(); renderMain(); toast(e.pm?('«'+(e.name||'')+'» — менеджер проектов'):'Роль менеджера снята'); };
       acts.appendChild(pmb);
     }
