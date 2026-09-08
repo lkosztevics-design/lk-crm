@@ -36,34 +36,59 @@
   .brand .logo.has-img{background-color:#fff;background-size:contain;background-repeat:no-repeat;background-position:center;color:transparent;box-shadow:var(--shadow)}
   .brand h1{font-size:15px;margin:0}
   .brand small{color:var(--muted);font-weight:400}
-  .side .actions{padding:12px 14px;display:flex;flex-direction:column;gap:4px;border-bottom:1px solid var(--line)}
-  .side .actions .primary{font-size:14px;padding:9px 12px}
+  .side .actions{padding:9px 12px;display:flex;flex-direction:column;gap:2px;border-bottom:1px solid var(--line)}
+  .side .actions .primary{font-size:13.5px;padding:8px 12px}
   /* меню: иконка + подпись, выровнено по левому краю — один ритм у всех пунктов */
-  .navnew{display:flex;align-items:center;justify-content:center;gap:8px;font-weight:600;margin-bottom:6px}
-  .navbtn{display:flex;align-items:center;gap:11px;width:100%;padding:9px 12px;border:1px solid transparent;
-    background:transparent;border-radius:9px;color:var(--ink);font-size:14px;text-align:left}
+  .navnew{display:flex;align-items:center;justify-content:center;gap:8px;font-weight:600;margin-bottom:5px}
+  .navbtn{display:flex;align-items:center;gap:10px;width:100%;padding:6px 11px;border:1px solid transparent;
+    background:transparent;border-radius:8px;color:var(--ink);font-size:13.5px;text-align:left}
   .navbtn:hover{background:#f2f5fa;border-color:transparent}
   .navbtn.on{background:var(--accent-soft);color:var(--accent-ink);font-weight:600}
-  .navbtn svg,.navnew svg{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;
+  .navbtn svg,.navnew svg{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;
     stroke-linecap:round;stroke-linejoin:round}
   .navbtn svg{color:var(--faint)}
   .navbtn:hover svg{color:var(--accent)}
   .navbtn.on svg{color:var(--accent-ink)}
   .linkbtn{background:none;border:none;color:var(--accent-ink);font-size:12px;text-align:left;padding:0 2px;cursor:pointer;align-self:flex-start}
   .linkbtn:hover{text-decoration:underline;background:none;border-color:transparent}
-  .plist{overflow:auto;flex:1;padding:8px}
-  .pcard{position:relative;padding:11px 12px 11px 14px;border-radius:var(--r-sm);border:1px solid transparent;cursor:pointer;margin-bottom:4px;transition:background .13s,border-color .13s,box-shadow .13s}
-  .pcard:hover{background:#f7f9fc;box-shadow:0 1px 3px rgba(20,30,45,.06)}
+  /* панель над списком: поиск, «мои/все», человек */
+  .pbar{padding:7px 10px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:5px}
+  .psearch{width:100%;padding:5px 9px;border:1px solid var(--line);border-radius:8px;font-size:12.5px;background:#fff;color:var(--ink)}
+  .psearch:focus{outline:none;border-color:var(--accent);box-shadow:var(--focus)}
+  .prow{display:flex;gap:5px;align-items:center}
+  .prow .bseg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;flex:none}
+  .prow .bseg button{border:0;border-radius:0;background:#fff;color:var(--muted);padding:4px 9px;font-size:12px}
+  .prow .bseg button+button{border-left:1px solid var(--line)}
+  .prow .bseg button.on{background:var(--accent-soft);color:var(--accent-ink);font-weight:600}
+  .prow select{flex:1;min-width:0;font-size:12px;padding:4px 6px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+  .plist{overflow:auto;flex:1;padding:6px 8px 10px}
+  /* заголовок группы: «В работе», «Черновики», «Отложенные», «Завершённые» */
+  .pgh{display:flex;align-items:center;gap:6px;padding:8px 4px 3px;font-size:10.5px;font-weight:700;
+    letter-spacing:.06em;text-transform:uppercase;color:var(--faint);cursor:pointer;user-select:none}
+  .pgh:hover{color:var(--accent-ink)}
+  .pgh .car{width:8px;font-size:8px;line-height:1}
+  .pgh .cnt{margin-left:auto;letter-spacing:0;color:var(--muted);font-size:11px}
+  .pcard{position:relative;padding:6px 9px 6px 12px;border-radius:var(--r-sm);border:1px solid transparent;cursor:pointer;margin-bottom:2px;transition:background .13s,border-color .13s,box-shadow .13s}
+  .pcard:hover{background:#f7f9fc}
   .pcard.active{background:var(--accent-soft);border-color:#cfe0ff}
-  .pcard.active::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:99px;background:var(--accent)}
-  .pcard .ttl{font-weight:600;font-size:13.5px;display:flex;gap:6px;align-items:baseline}
-  .pcard .ttl .num{color:var(--muted);font-weight:600}
-  .pcard .meta{display:flex;align-items:center;gap:6px;margin-top:7px;flex-wrap:wrap}
+  .pcard.active::before{content:"";position:absolute;left:0;top:6px;bottom:6px;width:3px;border-radius:99px;background:var(--accent)}
+  .pcard.parked{opacity:.66}
+  .pline{display:flex;align-items:center;gap:6px;min-width:0}
+  .pline .num{color:var(--muted);font-weight:600;font-size:11.5px;flex:none}
+  .pline .pt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;font-size:13px}
+  .pline .pav{display:flex;flex:none}
+  .pline .pav .avat{width:19px;height:19px;font-size:8.5px;border:1.5px solid #fff;margin-left:-5px}
+  .pline .pav .avat:first-child{margin-left:0}
+  .pcard .meta{display:flex;align-items:center;gap:5px;margin-top:3px}
+  .pcard .meta .pill{font-size:10.5px;padding:0 6px}
+  .pcard .meta .bar{height:5px}
+  .pcard .meta .pct{font-size:11px;min-width:32px}
   .bar{height:6px;background:#eceff3;border-radius:99px;overflow:hidden;flex:1}
   .bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--ok),#37bd72);border-radius:99px;transition:width .35s cubic-bezier(.4,0,.2,1)}
   .pct{font-size:11.5px;color:var(--muted);min-width:34px;text-align:right}
-  .side .foot{padding:9px 12px;border-top:1px solid var(--line);color:var(--faint);font-size:12px;display:flex;flex-direction:column;gap:6px}
-  .footutil{display:flex;flex-wrap:wrap;gap:5px}
+  .side .foot{padding:7px 10px;border-top:1px solid var(--line);color:var(--faint);font-size:11.5px;display:flex;flex-direction:column;gap:4px}
+  .footutil{display:flex;flex-wrap:wrap;gap:3px}
+  .footutil button{padding:4px 7px;font-size:11.5px}
   #btnHelp.hasnew{position:relative}
   #btnHelp.hasnew::after{content:'';position:absolute;top:1px;right:1px;width:6px;height:6px;background:#e5484d;border-radius:50%}
   .helpbody h4{margin:16px 0 6px;color:var(--accent-ink,#1e5fd8);font-size:15px}
@@ -115,6 +140,7 @@
   .ttype{font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:2px 4px;width:auto;max-width:160px;margin-bottom:4px;background:#fff}
   .pill{font-size:11px;padding:1px 7px;border-radius:99px;font-weight:600;white-space:nowrap}
   .pill-over{background:var(--danger-soft);color:var(--danger)}
+  .pill-park{background:#eef0f3;color:var(--faint)}
   .hintbox{margin-top:12px;background:var(--warn-soft);border:1px solid #f0dcae;border-radius:10px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start;font-size:12.5px}
   .hintbox .grow{flex:1}
   .trow .n{justify-content:center;color:var(--muted);font-variant-numeric:tabular-nums}
@@ -217,6 +243,7 @@
   .dbar:hover .dname{color:var(--accent,#2f6df6)}
   .dbar .dname{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .dbar .bar{height:8px}
+  .dbar.parkedrow{opacity:.6}
   .dbar .dnum{font-size:12px;color:var(--faint,#8a8f98);white-space:nowrap;min-width:56px;text-align:right}
   @media(max-width:640px){.dtiles{grid-template-columns:repeat(2,1fr)}}
   /* ── доска прогресса: программа × задача ─────────────────────────────── */
@@ -333,9 +360,6 @@
   .pcard.st-approved::before{background:#2f6df6}
   .pcard.st-in_progress::before{background:#e0821a}
   .pcard.st-done::before{background:var(--ok,#2e9e5b)}
-  .pcard .powner{display:flex;align-items:center;gap:5px;margin-bottom:3px}
-  .pcard .powner .avat{width:20px;height:20px;font-size:9px}
-  .pcard .pwho{font-size:11px;color:var(--faint,#8a8f98);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .livebar{display:flex;align-items:center;gap:8px;padding:7px 11px;margin-bottom:10px;background:var(--accent-soft,#e9f0ff);border-radius:9px;font-size:12.5px;color:var(--accent-ink,#1c4fc4)}
   .livedot{width:7px;height:7px;border-radius:50%;background:var(--ok,#2e9e5b);box-shadow:0 0 0 3px rgba(46,158,91,.18);flex:none}
   .livetxt{flex:1;min-width:0}
@@ -433,6 +457,7 @@
     .emprow>span:nth-last-child(2){justify-self:start}
     .emprow button{min-width:40px;min-height:36px}
     .modal{padding:16px}
+    .psearch{font-size:16px}
     .att{font-size:13px;padding:5px 9px}
   }
 </style>
@@ -451,6 +476,13 @@
       <button class="navbtn" id="btnBoard" title="Доска прогресса: все программы и задачи одной таблицей — где выполнено, где горит"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="4" width="14" height="12" rx="2"/><path d="M3 8h14M8.5 8v8"/></svg>Доска</button>
       <button class="navbtn" id="btnEmp" title="Команда: люди, должности и доступ в CRM — всё в одном месте"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8" cy="7.5" r="2.6"/><path d="M3.5 16c0-2.4 2-4 4.5-4s4.5 1.6 4.5 4"/><path d="M14 12.4c1.5.5 2.5 1.8 2.5 3.6"/><circle cx="14.2" cy="8" r="2.1"/></svg>Команда</button>
       <input type="file" id="fileImport" accept="application/json" hidden>
+    </div>
+    <div class="pbar">
+      <input type="search" id="pSearch" class="psearch" placeholder="Поиск: номер или название" autocomplete="off">
+      <div class="prow">
+        <div class="bseg pscope"><button id="pMine" type="button">Мои</button><button id="pAll" type="button">Все</button></div>
+        <select id="pWho" title="Показать программы одного человека — менеджера или руководителя"></select>
+      </div>
     </div>
     <div class="plist" id="plist"></div>
     <div class="foot">
@@ -653,6 +685,7 @@ const TASK_TYPES=[['main','Главная'],['first','Первоочередна
 const typeLabel=t=>(TASK_TYPES.find(x=>x[0]===t)||TASK_TYPES[3])[1];
 const isOverdue=t=>!!t.due && !t.done && t.due < today();
 function migrate(p){
+  if(p.parked==null) p.parked=false;
   if(!p.id) p.id=uid();
   if(!Array.isArray(p.tasks)) p.tasks=[];
   if(!p.status) p.status='draft';
@@ -764,35 +797,145 @@ function progress(p){const n=p.tasks.length, d=p.tasks.filter(t=>t.done).length;
 //====================== sidebar list ======================
 function livePrograms(){ return state.filter(p=>!p.isTemplate); }
 function templates(){ return state.filter(p=>p.isTemplate); }
-function renderList(){
-  const wrap=document.getElementById('plist'); wrap.innerHTML='';
-  const shown=livePrograms();
-  if(!shown.length){ wrap.appendChild(el('div','pcard','Пока нет программ. Нажмите «+ Программа».')); }
-  shown.forEach(p=>{
-    const {n,d,pct}=progress(p);
-    const c=el('div','pcard'+(p.id===selected&&view!=='dash'?' active':'')); c.onclick=()=>{view='program'; selected=p.id; journalExpanded=false; resetTaskFilter(); save(); renderMain();};
-    c.classList.add('st-'+p.status);                       // цветная полоса слева по статусу
-    const ownerNm=p.ownerId?empName(p.ownerId):(p.owner||'');
-    const pmNm=p.pmId?empName(p.pmId):'';
-    if(pmNm||ownerNm){ const who=el('div','powner');        // роли — кружками, а не мелкой строкой
-      if(pmNm){ const a=el('span','avat v',initials(pmNm)); a.title='Менеджер проекта: '+pmNm; who.appendChild(a); }
-      if(ownerNm){ const a=el('span','avat',initials(ownerNm)); a.title='Руководитель: '+ownerNm; who.appendChild(a); }
-      const nm=el('span','pwho',[pmNm&&('★ '+pmNm),ownerNm&&('👤 '+ownerNm)].filter(Boolean).join(' · '));
-      who.appendChild(nm); c.appendChild(who); }
-    const ttl=el('div','ttl'); ttl.appendChild(el('span','num',p.number?('№'+p.number):'—'));
-    ttl.appendChild(el('span',null,p.title||'Без названия')); c.appendChild(ttl);
-    const meta=el('div','meta');
-    const badge=el('span','badge b-'+p.status,statusLabel(p.status)); meta.appendChild(badge);
-    const ov=p.tasks.filter(isOverdue).length; if(ov) meta.appendChild(el('span','pill pill-over','⚠ '+ov));
-    const stopN=p.tasks.filter(x=>x.stopper && !x.done).length; if(stopN) meta.appendChild(el('span','pill pill-over','⛔ '+stopN));
-    const cds=(p.timeline||[]).filter(e=>e.type==='coordination'); const lc=cds.length?cds[cds.length-1]:null; const ds=lc?Math.floor((Date.now()-new Date(lc.at).getTime())/86400000):null; if((p.status==='approved'||p.status==='in_progress') && (cds.length===0 || (ds!==null && ds>=7))) meta.appendChild(el('span','pill pill-over','💤 застой'));
-    const bar=el('div','bar'); const i=el('i'); i.style.width=pct+'%'; if(pct===100)i.style.background='var(--ok)'; bar.appendChild(i); meta.appendChild(bar);
-    meta.appendChild(el('span','pct',d+'/'+n)); c.appendChild(meta);
-    wrap.appendChild(c);
-  });
-  const ls=livePrograms(); const total=ls.length, tasks=ls.reduce((a,p)=>a+p.tasks.length,0), done=ls.reduce((a,p)=>a+p.tasks.filter(t=>t.done).length,0);
-  document.getElementById('statAll').textContent=`${total} прогр. · ${done}/${tasks} задач`;
+// ── список программ слева ────────────────────────────────────────────────────
+// Задача: за один взгляд видеть много программ и понимать, у кого что.
+// Поэтому карточка в две строки, программы разложены по группам, а неактуальные
+// («отложенные») свёрнуты и не мешают.
+let listFilter={scope:'',who:'',q:''};
+let listOpen={work:true,draft:true,parked:false,done:false};
+function listScope(){ return listFilter.scope || (isPriv()?'all':'mine'); }
+function groupOf(p){
+  if(p.parked) return 'parked';
+  if(p.status==='done') return 'done';
+  if(p.status==='draft') return 'draft';
+  return 'work';
 }
+const GROUPS=[['work','В работе'],['draft','Черновики'],['parked','Отложенные'],['done','Завершённые']];
+// программы, которые человек видит в списке
+function listBase(){
+  const all=livePrograms();
+  return listScope()==='all'?all:all.filter(involvedIn);
+}
+function listPrograms(){
+  let out=listBase();
+  if(listFilter.who) out=out.filter(p=>p.pmId===listFilter.who||p.ownerId===listFilter.who);
+  const q=(listFilter.q||'').trim().toLowerCase();
+  if(q) out=out.filter(p=>((p.number||'')+' '+(p.title||'')).toLowerCase().includes(q));
+  return out;
+}
+function renderListFilter(){
+  const sc=listScope();
+  const bm=document.getElementById('pMine'), ba=document.getElementById('pAll');
+  if(bm) bm.classList.toggle('on',sc==='mine'); if(ba) ba.classList.toggle('on',sc==='all');
+  const sel=document.getElementById('pWho');
+  if(!sel || document.activeElement===sel) return;           // не мешаем, пока человек выбирает
+  const base=listBase();
+  const cnt={};
+  base.forEach(p=>{ [p.pmId,p.ownerId].filter(Boolean).forEach(id=>{ cnt[id]=(cnt[id]||0)+1; }); });
+  const ids=Object.keys(cnt).sort((a,b)=>(cnt[b]-cnt[a])||empName(a).localeCompare(empName(b),'ru'));
+  if(listFilter.who && !ids.includes(listFilter.who)) listFilter.who='';   // человека больше нет в списке
+  const sig=sc+'|'+ids.map(i=>i+':'+cnt[i]).join(',')+'|'+listFilter.who;
+  if(sel.dataset.sig===sig) return;                          // список тот же — не пересобираем
+  sel.dataset.sig=sig; sel.innerHTML='';
+  const o0=el('option',null,'Все люди'); o0.value=''; if(!listFilter.who)o0.selected=true; sel.appendChild(o0);
+  ids.forEach(id=>{ const o=el('option',null,empName(id)+' · '+cnt[id]); o.value=id;
+    if(listFilter.who===id)o.selected=true; sel.appendChild(o); });
+  sel.onchange=()=>{ listFilter.who=selValue(sel); renderList(); };
+}
+function renderList(){
+  renderListFilter();
+  const wrap=document.getElementById('plist'); wrap.innerHTML='';
+  const shown=listPrograms();
+  const buckets={work:[],draft:[],parked:[],done:[]};
+  shown.forEach(p=>buckets[groupOf(p)].push(p));
+  // ищут — значит хотят увидеть найденное, даже если группа была свёрнута
+  const searching=!!(String(listFilter.q||'').trim()||listFilter.who);
+  const openSel=(()=>{ const c=state.find(x=>x.id===selected); return (c&&!c.isTemplate&&view==='program')?groupOf(c):null; })();
+  const isOpen=key=>searching||listOpen[key]||key===openSel;
+
+  if(!shown.length){
+    const hint=el('div','minihint');
+    hint.style.padding='14px 8px';
+    hint.textContent=(listFilter.q||listFilter.who) ? 'Ничего не нашлось — снимите поиск или фильтр.'
+      : (listScope()==='mine' ? 'Вас пока нет ни в одной программе. Нажмите «Все», чтобы посмотреть остальные. Если программы должны быть — проверьте, что ваша почта указана в «Команде».'
+                              : 'Пока нет программ. Нажмите «+ Программа».');
+    wrap.appendChild(hint);
+  }
+
+  GROUPS.forEach(([key,label])=>{
+    const arr=buckets[key]; if(!arr.length) return;
+    const open=isOpen(key);
+    const gh=el('div','pgh');
+    gh.appendChild(el('span','car',open?'▾':'▸'));
+    gh.appendChild(el('span',null,label));
+    gh.appendChild(el('span','cnt',String(arr.length)));
+    const flip=()=>{ listOpen[key]=!isOpen(key); renderList(); };
+    gh.onclick=flip;
+    gh.tabIndex=0; gh.setAttribute('role','button'); gh.setAttribute('aria-expanded',open?'true':'false');
+    gh.onkeydown=e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); flip(); } };
+    gh.title=(open?'Свернуть':'Развернуть')+' «'+label+'»';
+    wrap.appendChild(gh);
+    if(!open) return;
+    arr.forEach(p=>wrap.appendChild(programCard(p)));
+  });
+
+  const ls=livePrograms(); const total=ls.length, tasks=ls.reduce((a,p)=>a+p.tasks.length,0), done=ls.reduce((a,p)=>a+p.tasks.filter(t=>t.done).length,0);
+  const st=document.getElementById('statAll');
+  if(st) st.textContent=(shown.length!==total?(shown.length+' из '+total+' прогр.'):(total+' прогр.'))+' · '+done+'/'+tasks+' задач';
+}
+// одна карточка: строка «№ · название · кто отвечает», строка «состояние · прогресс»
+function programCard(p){
+  const {n,d,pct}=progress(p);
+  const c=el('div','pcard'+(p.id===selected&&view==='program'?' active':'')+(p.parked?' parked':''));
+  c.classList.add('st-'+p.status);
+  c.onclick=()=>{ view='program'; selected=p.id; journalExpanded=false; resetTaskFilter(); save(); renderMain(); };
+
+  const line=el('div','pline');
+  line.appendChild(el('span','num',p.number?('№'+p.number):'—'));
+  const t=el('span','pt',p.title||'Без названия');
+  const pmNm=p.pmId?empName(p.pmId):'', ownerNm=p.ownerId?empName(p.ownerId):(p.owner||'');
+  t.title=(p.number?('№'+p.number+' '):'')+(p.title||'Без названия')
+    +(pmNm?('\n★ Менеджер: '+pmNm):'')+(ownerNm?('\n👤 Руководитель: '+ownerNm):'')
+    +(p.parked?'\n⏸ Отложена':'');
+  line.appendChild(t);
+  const av=el('span','pav');
+  // клик по кружку = быстрый отбор «покажи всё этого человека»
+  const roleAv=(id,nm,cls,lab)=>{
+    const a=el('span','avat '+cls,initials(nm)); a.title=lab+': '+nm+' — нажмите, чтобы отобрать его программы';
+    a.style.cursor='pointer';
+    a.onclick=e=>{ e.stopPropagation(); listFilter.who=(listFilter.who===id?'':id); renderList(); };
+    return a;
+  };
+  if(pmNm) av.appendChild(roleAv(p.pmId,pmNm,'v','★ Менеджер'));
+  if(ownerNm && p.ownerId) av.appendChild(roleAv(p.ownerId,ownerNm,'','👤 Руководитель'));
+  else if(ownerNm){ const a=el('span','avat',initials(ownerNm)); a.title='👤 Руководитель: '+ownerNm; av.appendChild(a); }
+  if(!pmNm&&!ownerNm){ const a=el('span','avat',' '); a.style.background='#c9ced6'; a.title='Ответственные не назначены'; av.appendChild(a); }
+  line.appendChild(av);
+  c.appendChild(line);
+
+  const meta=el('div','meta');
+  if(p.parked){ const z=el('span','pill pill-park','⏸ отложена'); z.title='Вернуть можно в «⋯ ещё»'; meta.appendChild(z); }
+  else if(p.status!=='in_progress') meta.appendChild(el('span','badge b-'+p.status,statusLabel(p.status)));
+  const ov=p.tasks.filter(isOverdue).length;
+  if(ov){ const z=el('span','pill pill-over','⚠ '+ov); z.title='Просрочено задач: '+ov; meta.appendChild(z); }
+  const stopN=p.tasks.filter(x=>x.stopper&&!x.done).length;
+  if(stopN){ const z=el('span','pill pill-over','⛔ '+stopN); z.title='Стопоров: '+stopN+' — работа встала'; meta.appendChild(z); }
+  const dc=daysSinceCoord(p);
+  if(!p.parked && (p.status==='approved'||p.status==='in_progress') && (dc===null||dc>=7)){
+    const z=el('span','pill pill-over','💤'); z.title=(dc===null?'Координации ещё не было':'Координации не было '+dc+' дн.'); meta.appendChild(z); }
+  const bar=el('div','bar'); const i=el('i'); i.style.width=pct+'%'; if(pct===100)i.style.background='var(--ok)';
+  bar.appendChild(i); meta.appendChild(bar);
+  meta.appendChild(el('span','pct',d+'/'+n));
+  c.appendChild(meta);
+  return c;
+}
+(function(){
+  const q=document.getElementById('pSearch');
+  if(q){ listFilter.q=q.value||''; q.oninput=()=>{ listFilter.q=q.value; renderList(); }; }
+  const bm=document.getElementById('pMine'), ba=document.getElementById('pAll');
+  if(bm) bm.onclick=()=>{ listFilter.scope='mine'; renderList(); };
+  if(ba) ba.onclick=()=>{ listFilter.scope='all'; renderList(); };
+})();
 
 //====================== main detail ======================
 function renderMain(){
@@ -921,6 +1064,12 @@ function renderMain(){
       const xlBtn=el('button','ghost tiny','⬇ Excel'); xlBtn.onclick=()=>exportExcel(p); mBar.appendChild(xlBtn);
       if(lead){ const genBtn=el('button','ghost tiny','✨ Сгенерировать'); genBtn.onclick=openGen; mBar.appendChild(genBtn); }
       if(lead){ const tplBtn=el('button','ghost tiny','📋 В образцы'); tplBtn.onclick=()=>saveAsTemplate(p); mBar.appendChild(tplBtn); }
+      // отложенные программы уходят из «В работе» в свёрнутую группу списка и не мешают
+      if(lead){ const pkBtn=el('button','ghost tiny',p.parked?'▶ Вернуть в работу':'⏸ Отложить');
+        pkBtn.title=p.parked?'Вернуть программу в рабочий список':'Убрать из активных: программа уйдёт в свёрнутую группу «Отложенные»';
+        pkBtn.onclick=()=>{ p.parked=!p.parked; pushEvent(p,'edit',p.parked?'Программа отложена':'Программа возвращена в работу');
+          moreOpen=false; save(); renderMain(); toast(p.parked?'Отложена — она в группе «Отложенные»':'Снова в работе'); };
+        mBar.appendChild(pkBtn); }
       if(lead){ const delBtn=el('button','ghost tiny','🗑 Удалить'); delBtn.onclick=()=>{ if(confirm('Удалить программу «'+(p.title||'')+'»?')){ state=state.filter(x=>x.id!==p.id); selected=state[0]?state[0].id:null; save(); renderMain(); } }; mBar.appendChild(delBtn); }
       hbar.appendChild(mBar);
     }
@@ -1118,9 +1267,10 @@ function markNav(){
 function renderDashboard(){
   const box=el('div','dash');
   const progs=livePrograms();
-  const active=progs.filter(p=>p.status==='approved'||p.status==='in_progress');
+  const active=progs.filter(p=>!p.parked&&(p.status==='approved'||p.status==='in_progress'));
   const overdue=[], stoppers=[];
-  progs.forEach(p=>{ (p.tasks||[]).forEach(t=>{ if(isOverdue(t)) overdue.push({p,t}); if(t.stopper&&!t.done) stoppers.push({p,t}); }); });
+  // отложенные программы не создают отклонений: их специально убрали из работы
+  progs.filter(p=>!p.parked).forEach(p=>{ (p.tasks||[]).forEach(t=>{ if(isOverdue(t)) overdue.push({p,t}); if(t.stopper&&!t.done) stoppers.push({p,t}); }); });
 
   const head=el('div','dashhead');
   head.appendChild(el('h2',null,'📊 Сводка по всем программам'));
@@ -1168,9 +1318,9 @@ function renderDashboard(){
 
   // программы построчно
   const pl=el('div','dsect'); pl.appendChild(el('h3',null,'Программы'));
-  progs.forEach(p=>{
-    const {n,d,pct}=progress(p); const r=el('div','dbar');
-    r.appendChild(el('span','dname',(p.number?('№'+p.number+' '):'')+(p.title||'без названия')));
+  [...progs].sort((a,b)=>(a.parked?1:0)-(b.parked?1:0)).forEach(p=>{
+    const {n,d,pct}=progress(p); const r=el('div','dbar'+(p.parked?' parkedrow':''));
+    r.appendChild(el('span','dname',(p.parked?'⏸ ':'')+(p.number?('№'+p.number+' '):'')+(p.title||'без названия')));
     const tr=el('div','bar'); const i=el('i'); i.style.width=pct+'%'; if(pct===100)i.style.background='var(--ok)'; tr.appendChild(i); r.appendChild(tr);
     r.appendChild(el('span','dnum',d+'/'+n));
     r.onclick=()=>{ view='program'; selected=p.id; save(); renderMain(); };
@@ -1200,19 +1350,19 @@ function seedChiefPM(){
 // Дата в клетке — та самая, что стоит в задаче: срок готовности, а у выполненных —
 // день, когда отметили выполнение.
 let boardFilter={owner:'',pm:'',scope:'active'};
-// Кто какие программы видит на доске: владелец и менеджер проектов — все,
-// остальные — только те, где они руководят, участвуют или отвечают за задачу.
+// Владелец и менеджер проектов видят всё; остальные — то, к чему причастны.
+function isPriv(){ return soloMode()||isAdmin()||isPM(); }
+function involvedIn(p){
+  const me=myEmpId(), em=(window.__meEmail||'').toLowerCase();
+  if(p.createdBy && em && String(p.createdBy).toLowerCase()===em) return true;
+  if(!me) return false;
+  if(p.ownerId===me || p.pmId===me) return true;
+  if((p.participants||[]).some(x=>x.empId===me)) return true;
+  return (p.tasks||[]).some(t=>t.assigneeId===me);
+}
 function boardPrograms(){
   const all=livePrograms();
-  if(soloMode()||isAdmin()||isPM()) return all;
-  const me=myEmpId(), em=(window.__meEmail||'').toLowerCase();
-  return all.filter(p=>{
-    if(p.createdBy && em && String(p.createdBy).toLowerCase()===em) return true;
-    if(!me) return false;
-    if(p.ownerId===me || p.pmId===me) return true;
-    if((p.participants||[]).some(x=>x.empId===me)) return true;
-    return (p.tasks||[]).some(t=>t.assigneeId===me);
-  });
+  return isPriv()?all:all.filter(involvedIn);
 }
 const fmtDShort=d=>{ const a=(''+(d||'')).split('-'); return a.length===3?(a[2]+'.'+a[1]):''; };
 const plusDays=n=>{ const d=new Date(); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); };
@@ -1266,8 +1416,8 @@ function renderBoard(){
   else if(boardFilter.owner) progs=progs.filter(p=>p.ownerId===boardFilter.owner);
   if(boardFilter.pm==='__none__') progs=progs.filter(p=>!p.pmId);
   else if(boardFilter.pm) progs=progs.filter(p=>p.pmId===boardFilter.pm);
-  if(boardFilter.scope==='active') progs=progs.filter(p=>p.status==='approved'||p.status==='in_progress');
-  else if(boardFilter.scope==='problem') progs=progs.filter(p=>(p.tasks||[]).some(t=>isOverdue(t)||(t.stopper&&!t.done)||(!t.due&&!t.done)));
+  if(boardFilter.scope==='active') progs=progs.filter(p=>!p.parked&&(p.status==='approved'||p.status==='in_progress'));
+  else if(boardFilter.scope==='problem') progs=progs.filter(p=>!p.parked&&(p.tasks||[]).some(t=>isOverdue(t)||(t.stopper&&!t.done)||(!t.due&&!t.done)));
 
   const allTasks=progs.reduce((a,p)=>a+(p.tasks||[]).length,0);
   const lateN=progs.reduce((a,p)=>a+(p.tasks||[]).filter(isOverdue).length,0);
@@ -1783,7 +1933,7 @@ function saveHeaderEdit(p){
 
 //====================== create / new ======================
 function newTask(n){ return {id:uid(),n,text:'',report:'',doneReport:'',assigneeId:'',assigneeLegacy:'',due:'',estimate:'',type:'work',done:false,doneDate:'',origDue:'',stopper:'',attachments:[],subs:[],comments:[]}; }
-function newProgram(){ return {id:uid(),number:'',title:'',goal:'',criteria:[],owner:'',ownerId:'',pmId:(typeof myEmpId==='function'?(myEmpId()||''):''),createdBy:(window.__meEmail||''),status:'draft',dueDate:'',doneDate:'',approvedDate:'',participants:[],timeline:[],suggestions:[],tasks:[newTask(1)]}; }
+function newProgram(){ return {id:uid(),number:'',title:'',goal:'',criteria:[],parked:false,owner:'',ownerId:'',pmId:(typeof myEmpId==='function'?(myEmpId()||''):''),createdBy:(window.__meEmail||''),status:'draft',dueDate:'',doneDate:'',approvedDate:'',participants:[],timeline:[],suggestions:[],tasks:[newTask(1)]}; }
 document.getElementById('btnNew').onclick=()=>openTemplatePicker();
 document.getElementById('btnDash').onclick=()=>{ view=(view==='dash'?'program':'dash'); renderMain(); };
 document.getElementById('btnBoard').onclick=()=>{ view=(view==='board'?'program':'board'); renderMain(); };
@@ -2373,6 +2523,15 @@ const HELP_HTML=`<div class="hb">
   <div class="hrl"><span class="hdot" style="background:#c9821a"></span><span><b>Доска</b> — все программы одной таблицей. Видно, где горит, не заходя внутрь.</span></div>
   <div class="hrl"><span class="hdot" style="background:#1f9d57"></span><span><b>Сводка</b> — итоги: сколько просрочено, где стопоры, кто чем загружен.</span></div>
 </div>
+<p>Список слева устроен так, чтобы много программ было видно сразу:</p>
+<ul>
+  <li><b>Мои / Все</b> — «Мои» оставляет только те программы, где ты менеджер, руководитель, участник или исполнитель задачи. Владелец и менеджер проектов по умолчанию видят все.</li>
+  <li><b>Все люди</b> — отбор по человеку: рядом с именем стоит, сколько у него программ. Можно и просто нажать на <b>кружок с инициалами</b> в карточке.</li>
+  <li><b>Поиск</b> — по номеру или названию.</li>
+  <li><b>Группы</b> «В работе», «Черновики», «Отложенные», «Завершённые» сворачиваются щелчком по заголовку.</li>
+  <li>В карточке: <b>⚠</b> просрочено, <b>⛔</b> стопор, <b>💤</b> давно без координации, полоса и «сделано из всего».</li>
+</ul>
+<div class="hnote">Программу-идею, до которой руки дойдут потом, отправь в <b>«⋯ ещё» → ⏸ Отложить</b>. Она уйдёт в свёрнутую группу «Отложенные» и перестанет мешать в работе, на доске и в сводке. Вернуть — тем же меню.</div>
 
 <h4 id="h3"><span class="hn">3</span>Создать программу</h4>
 <ol>
