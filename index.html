@@ -202,8 +202,29 @@
   .chipx:hover{opacity:1}
   .legacy{font-size:11px;color:var(--faint)}
   .minihint{font-size:11px;color:var(--faint)}
-  .emprow{display:grid;grid-template-columns:1.4fr 1fr 1.2fr 1fr auto auto;gap:6px;margin-bottom:6px;align-items:center}
-  .emprow input{padding:5px 7px;font-size:12.5px}
+  .teamhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+  .teamhead h3{margin:0}
+  .teamcount{font-size:12px;color:var(--faint)}
+  .teamhead .primary{margin-left:auto}
+  .modal.team #teamSearch{margin-bottom:6px}
+  #teamLegend{margin:0 0 4px;font-size:11.5px}
+  .modal.team #empList{margin-top:6px;max-height:52vh;overflow:auto}
+  .empwrap{border-bottom:1px solid var(--line-soft,#eef1f4)}
+  .empcard{display:flex;align-items:center;gap:10px;padding:8px 4px}
+  .empcard.open{background:#f6f8fc;border-radius:9px}
+  .empcard.archived{opacity:.7}
+  .einfo{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+  .eline{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:13.5px}
+  .esub{font-size:11.5px;color:var(--faint);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .eline .etag{font-size:10.5px;padding:1px 7px;border-radius:99px;white-space:nowrap;font-weight:600;color:var(--faint);background:#eef0f3}
+  .eline .etag.star{background:#efeaff;color:#5b3fc4}
+  .empedit .field{margin-bottom:0}
+  .eacts{display:flex;gap:3px;flex:none}
+  .eacts button{min-width:30px}
+  .empedit{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:2px 4px 12px 48px}
+  .empedit input{padding:6px 8px;font-size:13px}
+  .empacts{display:flex;flex-wrap:wrap;gap:6px;padding:0 4px 10px 48px}
+  .empacts .danger{color:var(--danger)}
   .empdate{font-size:11px;color:#8a8f98;white-space:nowrap}
   .subsbox{display:flex;flex-direction:column;gap:2px;margin-top:5px}
   .subbar{display:flex;align-items:center;gap:7px}
@@ -329,7 +350,14 @@
   .schip.crit b{color:#2c7a4b}
   .schip.alert{border-color:#d64541;background:#fcebea;color:#c23a35}
   .schip.alert b{color:#c23a35}
+  .stopwrap{display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap;margin-top:4px}
+  .stopoff{color:var(--danger);font-size:11.5px;white-space:nowrap;padding-top:2px}
   .cflip{opacity:.6}
+  .stpill{border:1px solid transparent;cursor:pointer;font:inherit;font-size:11px;padding:1px 9px;line-height:1.7;min-height:0}
+  .stpill:disabled{cursor:default}
+  .statusbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px;padding:8px 10px;
+    background:#f6f8fc;border:1px solid var(--line);border-radius:10px}
+  .vsep2{width:1px;height:20px;background:var(--line);margin:0 2px}
   .ring{display:flex;align-items:center;gap:10px;padding:8px 13px;border:1px solid var(--line,#dcdfe4);border-radius:11px;background:#f6f8fc}
   .ringc{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;flex:none}
   .ringc span{width:35px;height:35px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:11.5px;font-weight:800}
@@ -371,7 +399,6 @@
   .movebtns{display:flex;flex-direction:column;gap:2px;margin-top:3px}
   .movebtns button{padding:0 4px;font-size:11px;line-height:1.4;border:1px solid var(--line,#dcdfe4);border-radius:4px;background:#fff;cursor:pointer;color:#666}
   .movebtns button:disabled{opacity:.3;cursor:default}
-  .emprow.archived{display:flex;justify-content:space-between;gap:8px;opacity:.75;padding:3px 0}
   .atts{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin-top:3px}
   .att{display:inline-flex;align-items:center;gap:5px;background:#eef1f5;border-radius:7px;padding:2px 7px;font-size:11px;cursor:pointer;max-width:100%;overflow:hidden;white-space:nowrap}
   .powner{font-size:11px;color:var(--muted);font-weight:600;margin-bottom:3px}
@@ -440,6 +467,7 @@
     .app{display:block}
     .side,.addrow,.hintbox,.genhead,.filterbar,.stopper,.chipx,.modal-bg,.toast{display:none!important}
     button{display:none!important}
+    .stpill{display:inline-block!important;border:0!important}
     .main{max-width:100%;padding:0}
     .head,.tasks,.parts,.leaderboard,.journal{box-shadow:none;border-color:#c9cfd6;break-inside:avoid}
     .head{border-top:3px solid var(--accent)}
@@ -452,10 +480,11 @@
   /* телефон: поля команды в одну колонку, иначе четыре поля сжимаются в нечитаемые полоски */
   @media(max-width:640px){
     .teamform{grid-template-columns:1fr}
-    .emprow{grid-template-columns:1fr;gap:4px;padding:8px 0;border-bottom:1px solid var(--line)}
-    .emprow input{font-size:14px;padding:8px}
-    .emprow>span:nth-last-child(2){justify-self:start}
-    .emprow button{min-width:40px;min-height:36px}
+    .empedit{grid-template-columns:1fr;padding-left:8px}
+    .empacts{padding-left:8px}
+    .modal.team #empList{max-height:46vh}
+    .empedit input{font-size:16px;padding:8px}
+    #teamSearch{font-size:16px}
     .modal{padding:16px}
     .psearch{font-size:16px}
     .att{font-size:13px;padding:5px 9px}
@@ -581,21 +610,25 @@
 
 <!-- Team modal: люди + доступ, всё в одном месте -->
 <div class="modal-bg" id="empBg">
-  <div class="modal" style="max-width:680px">
-    <h3>👥 Команда</h3>
-    <p>Все люди компании в одном месте: имя, должность, почта и <b>доступ в CRM</b>. По почте система узнаёт человека и даёт ему кнопки «про себя» (взять задачу, «я участвую»).</p>
-    <div id="teamInvite">
+  <div class="modal team" style="max-width:720px">
+    <div class="teamhead">
+      <h3>👥 Команда</h3>
+      <span class="teamcount" id="teamCount"></span>
+      <button class="primary tiny" id="teamAddBtn">＋ Добавить человека</button>
+    </div>
+    <input type="search" id="teamSearch" class="psearch" placeholder="Поиск по имени, должности или почте" autocomplete="off">
+    <div id="teamInvite" hidden>
       <div class="teamform">
         <div class="field"><label>Имя и фамилия</label><input id="teamName" placeholder="Иван Петров"></div>
         <div class="field"><label>Должность</label><input id="teamPost" placeholder="прораб / логист / офис"></div>
-        <div class="field"><label>Почта (для входа в CRM)</label><input id="teamEmail" type="email" placeholder="ivan@example.com"></div>
-        <div class="field" id="teamRoleField"><label>Права</label><select id="teamRole"><option value="member">Сотрудник (работает в программах: берёт задачи, отмечает выполнение)</option><option value="pm">Менеджер проектов (ведёт все программы)</option><option value="admin">Администратор (управляет людьми и программами)</option></select></div>
+        <div class="field"><label>Почта — по ней человек входит в CRM</label><input id="teamEmail" type="email" placeholder="ivan@example.com"></div>
+        <div class="field" id="teamRoleField"><label>Права</label><select id="teamRole"><option value="member">Сотрудник — работает в программах</option><option value="pm">Менеджер проектов — ведёт все программы</option><option value="admin">Администратор — управляет людьми и программами</option></select></div>
       </div>
-      <div class="btns" style="justify-content:flex-start;margin-top:2px"><button class="primary" id="teamInviteBtn">➕ Добавить в команду</button><span class="minihint" id="teamInviteHint">С почтой — сразу получит доступ и пароль для входа. Без почты — попадёт в список «без входа».</span></div>
+      <div class="btns" style="justify-content:flex-start;margin-top:4px"><button class="primary" id="teamInviteBtn">Добавить в команду</button><button class="ghost" id="teamAddCancel">Отмена</button><span class="minihint" id="teamInviteHint">С почтой — сразу получит доступ и пароль для входа. Без почты — попадёт в список «без входа».</span></div>
       <div id="teamInviteResult" hidden style="margin-top:8px;padding:10px;border:1px solid #dcdfe4;border-radius:8px;background:#f8fafc"></div>
     </div>
-    <div class="hint" style="margin-top:10px">Роли: кнопка <b>«☆ Менеджер»</b> в строке человека делает его <b>менеджером проектов</b> — он ведёт все программы (правит шапки, назначает исполнителей, меняет руководителей). <b>«🔑 вход»</b> — дать доступ в CRM, <b>«⛔ вход»</b> — забрать, <b>«✕ архив»</b> — убрать из команды.</div>
-    <div id="empList" style="margin-top:8px"></div>
+    <div class="minihint" id="teamLegend">✎ — имя, должность, почта и телеграм. ⋯ — роль менеджера проектов, вход в CRM, архив.</div>
+    <div id="empList"></div>
     <div class="btns">
       <button class="ghost" id="empClose">Закрыть</button>
     </div>
@@ -724,6 +757,8 @@ let openCoordIds=new Set();   // какие документы координа�
 let coordListExpanded=false;  // показать все координации наверху, а не последние 3
 let lbExpanded=true;
 let suggestOpen=true;
+let statusOpenFor=null;   // у какой программы открыт выбор статуса
+let empEditId=null, empActsId=null, empQuery='';   // кабинет «Команда»
 let editHeaderFor=null;   // id программы, у которой сейчас открыт режим редактирования шапки
 let _editSnap=null;       // снимок шапки до редактирования (для записи изменений в историю)
 let taskFilter={who:'',overdue:false,stopper:false,undone:false};
@@ -914,7 +949,7 @@ function programCard(p){
   c.appendChild(line);
 
   const meta=el('div','meta');
-  if(p.parked){ const z=el('span','pill pill-park','⏸ отложена'); z.title='Вернуть можно в «⋯ ещё»'; meta.appendChild(z); }
+  if(p.parked){ const z=el('span','pill pill-park','⏸ отложена'); z.title='Вернуть можно кнопкой статуса в шапке программы'; meta.appendChild(z); }
   else if(p.status!=='in_progress') meta.appendChild(el('span','badge b-'+p.status,statusLabel(p.status)));
   const ov=p.tasks.filter(isOverdue).length;
   if(ov){ const z=el('span','pill pill-over','⚠ '+ov); z.title='Просрочено задач: '+ov; meta.appendChild(z); }
@@ -969,7 +1004,14 @@ function renderMain(){
   else { const h=el('div','nh-title',p.title||'Без названия'); idb.appendChild(h); }
   // лента состояния: статус, срок, критерии, координация
   const strip=el('div','statestrip');
-  const stPill=el('span','pill b-'+p.status,statusLabel(p.status)); strip.appendChild(stPill);
+  const stPill=el('button','pill b-'+p.status+' stpill',statusLabel(p.status)+(p.parked?' · ⏸ отложена':''));
+  if(lead){
+    stPill.title='Нажмите, чтобы сменить статус программы';
+    stPill.onclick=()=>{ statusOpenFor=(statusOpenFor===p.id?null:p.id); renderMain(); };
+    stPill.appendChild(el('span','cflip',statusOpenFor===p.id?' ▴':' ▾'));
+  } else { stPill.setAttribute('aria-disabled','true'); stPill.style.cursor='default';
+    stPill.title='Статус меняет руководитель программы'+(p.ownerId?(' — '+empName(p.ownerId)):''); }
+  strip.appendChild(stPill);
   if(p.dueDate){ const overdueProg=!p.doneDate && p.dueDate<today();
     const c=el('span','schip'+(overdueProg?' due':'')); c.append(el('span',null,'Срок'),el('b',null,fmtDFull(p.dueDate))); strip.appendChild(c); }
   if(p.doneDate){ const c=el('span','schip crit'); c.append(el('span',null,'Завершена'),el('b',null,fmtDFull(p.doneDate))); strip.appendChild(c); }
@@ -982,6 +1024,21 @@ function renderMain(){
   if(ovc){ const c=el('span','schip alert'); c.append(el('b',null,'⚠ '+ovc),el('span',null,'просрочено')); strip.appendChild(c); }
   if(stopN){ const c=el('span','schip alert'); c.append(el('b',null,'⛔ '+stopN),el('span',null,'стопор')); strip.appendChild(c); }
   idb.appendChild(strip);
+  if(lead && statusOpenFor===p.id){
+    const sb=el('div','statusbar');
+    STATUS.forEach(([v,l])=>{
+      const b=el('button','tiny'+(p.status===v?' primary':''),l);
+      b.onclick=()=>{ if(p.status===v){ statusOpenFor=null; renderMain(); return; } if(setStatus(p,v)) statusOpenFor=null; renderMain(); };
+      sb.appendChild(b);
+    });
+    sb.appendChild(el('span','vsep2'));
+    const pk=el('button','ghost tiny',p.parked?'▶ Вернуть в работу':'⏸ В архив');
+    pk.title=p.parked?'Вернуть программу в рабочий список':'Убрать из активных: уйдёт в группу «Отложенные» и перестанет считаться в отклонениях';
+    pk.onclick=()=>{ p.parked=!p.parked; pushEvent(p,'edit',p.parked?'Программа отложена в архив':'Программа возвращена в работу');
+      statusOpenFor=null; save(); renderMain(); toast(p.parked?'В архиве — группа «Отложенные» слева':'Снова в работе'); };
+    sb.appendChild(pk);
+    idb.appendChild(sb);
+  }
   top.appendChild(idb);
   // кольцо прогресса
   const ring=el('div','ring');
@@ -1032,16 +1089,7 @@ function renderMain(){
   if(editing){
     const mr=el('div','metarow');
     const sel=el('select'); STATUS.forEach(([v,l])=>{const o=el('option',null,l); o.value=v; if(p.status===v)o.selected=true; sel.appendChild(o);});
-    sel.onchange=()=>{ const nv=sel.value, prev=p.status;
-      if((nv==='approved'||nv==='in_progress') && !p.ownerId){ toast('Сначала назначьте руководителя программы'); sel.value=prev; return; }
-      const openN=p.tasks.filter(x=>!x.done).length;
-      if(nv==='done' && openN>0 && !confirm('Есть невыполненные задачи ('+openN+'). Всё равно завершить программу?')){ sel.value=prev; return; }
-      const critLeft=(p.criteria||[]).filter(c=>!c.done).length;
-      if(nv==='done' && critLeft>0 && !confirm('Отмечены не все критерии приёмки ('+(p.criteria.length-critLeft)+'/'+p.criteria.length+'). Программа рабочая, когда все критерии — победы. Всё равно завершить?')){ sel.value=prev; return; }
-      p.status=nv;
-      if(nv==='approved' && !p.approvedDate) p.approvedDate=today();
-      if(nv==='done' && !p.doneDate) p.doneDate=today();
-      pushEvent(p,'status_changed','Статус программы: '+statusLabel(nv)); save(); renderMain(); };
+    sel.onchange=()=>{ setStatus(p,selValue(sel)); renderMain(); };
     const due=dateFor(p,'dueDate'); const done=dateFor(p,'doneDate');
     mr.append(wrapField(pmCell(p),'★ Менеджер проекта'), wrapField(ownerCell(p),'Руководитель (из участников)'), wrapField(sel,'Статус'), wrapField(due,'Срок завершения'), wrapField(done,'Дата завершения'));
     head.appendChild(mr);
@@ -1066,8 +1114,8 @@ function renderMain(){
       if(lead){ const tplBtn=el('button','ghost tiny','📋 В образцы'); tplBtn.onclick=()=>saveAsTemplate(p); mBar.appendChild(tplBtn); }
       // отложенные программы уходят из «В работе» в свёрнутую группу списка и не мешают
       if(lead){ const pkBtn=el('button','ghost tiny',p.parked?'▶ Вернуть в работу':'⏸ Отложить');
-        pkBtn.title=p.parked?'Вернуть программу в рабочий список':'Убрать из активных: программа уйдёт в свёрнутую группу «Отложенные»';
-        pkBtn.onclick=()=>{ p.parked=!p.parked; pushEvent(p,'edit',p.parked?'Программа отложена':'Программа возвращена в работу');
+        pkBtn.title=p.parked?'Вернуть программу в рабочий список':'То же, что «⏸ В архив» в статусе программы';
+        pkBtn.onclick=()=>{ p.parked=!p.parked; pushEvent(p,'edit',p.parked?'Программа отложена в архив':'Программа возвращена в работу');
           moreOpen=false; save(); renderMain(); toast(p.parked?'Отложена — она в группе «Отложенные»':'Снова в работе'); };
         mBar.appendChild(pkBtn); }
       if(lead){ const delBtn=el('button','ghost tiny','🗑 Удалить'); delBtn.onclick=()=>{ if(confirm('Удалить программу «'+(p.title||'')+'»?')){ state=state.filter(x=>x.id!==p.id); selected=state[0]?state[0].id:null; save(); renderMain(); } }; mBar.appendChild(delBtn); }
@@ -1637,7 +1685,32 @@ function taskRow(p,t,idx){
   const ta=el('textarea'); ta.className='tasktext'+(t.done?' strike':''); ta.value=t.text||''; ta.placeholder='Что сделать'; autserve(ta); ta.oninput=()=>{t.text=ta.value; debSave();};
   if(!lead){ ta.readOnly=true; ta.title='Текст задачи правит руководитель программы'; }
   c1.appendChild(ta);
-  const stp=el('div', t.stopper?'stopper on':'stopper', t.stopper?('⚠ стопор: '+t.stopper):'+ стопор'); stp.onclick=()=>{ const v=(prompt('Что мешает выполнить задачу (стопор)? Пусто — убрать.', t.stopper||'')||'').trim(); const had=!!t.stopper; t.stopper=v; if(v && !had) pushEvent(p,'stopper','Стопор по задаче №'+t.n+': '+v,{taskId:t.id}); save(); renderMain(); }; c1.appendChild(stp);
+  // стопор: поставить, переписать и — главное — снять. Раньше снять можно было
+  // только очистив текст в окошке, и об этом никто не догадывался.
+  const stpBox=el('div','stopwrap');
+  const stp=el('div', t.stopper?'stopper on':'stopper', t.stopper?('⛔ стопор: '+t.stopper):'+ стопор');
+  if(!owns){ stp.style.cursor='default'; stp.title='Стопор ставит исполнитель задачи или руководитель программы'; }
+  else stp.title=t.stopper?'Изменить причину':'Отметить, что работа встала не по вине исполнителя';
+  stp.onclick=()=>{
+    const raw=prompt(t.stopper?'Что мешает выполнить задачу? (снять стопор — кнопкой «✕ снять»)':'Что мешает выполнить задачу (стопор)?', t.stopper||'');
+    if(raw===null) return;                       // «Отмена» — ничего не трогаем
+    const v=raw.trim(), had=!!t.stopper;
+    if(v===(t.stopper||'')) return;
+    t.stopper=v;
+    if(v && !had) pushEvent(p,'stopper','Стопор по задаче №'+t.n+': '+v,{taskId:t.id});
+    else if(v && had) pushEvent(p,'stopper','Стопор изменён, задача №'+t.n+': '+v,{taskId:t.id});
+    else if(!v && had) pushEvent(p,'stopper','Стопор снят, задача №'+t.n,{taskId:t.id});
+    save(); renderMain(); if(!v && had) toast('Стопор снят');
+  };
+  if(!owns) stp.onclick=null;
+  if(t.stopper || owns) stpBox.appendChild(stp);
+  if(t.stopper && owns){
+    const off=el('button','linkbtn stopoff','✕ снять');
+    off.title='Помеха ушла — работа продолжается';
+    off.onclick=()=>{ t.stopper=''; pushEvent(p,'stopper','Стопор снят, задача №'+t.n,{taskId:t.id}); save(); renderMain(); toast('Стопор снят'); };
+    stpBox.appendChild(off);
+  }
+  c1.appendChild(stpBox);
   c1.appendChild(subsUI(p,t,lead,owns));
   if(t.done && !t.doneReport && !(t.attachments||[]).length) c1.appendChild(el('div','legacy','закрыто без доклада'));
   r.appendChild(c1);
@@ -1754,6 +1827,21 @@ function ownerCell(p){
   box.appendChild(sel);
   if(p.owner && !p.ownerId) box.appendChild(el('div','legacy','старое: '+p.owner));
   return box;
+}
+// Смена статуса с проверками — одна на все места (чип в шапке и поле в правке)
+function setStatus(p,nv){
+  if(!nv||nv===p.status) return false;
+  if((nv==='approved'||nv==='in_progress') && !p.ownerId){ toast('Сначала назначьте руководителя программы'); return false; }
+  const openN=p.tasks.filter(x=>!x.done).length;
+  if(nv==='done' && openN>0 && !confirm('Есть невыполненные задачи ('+openN+'). Всё равно завершить программу?')) return false;
+  const critLeft=(p.criteria||[]).filter(c=>!c.done).length;
+  if(nv==='done' && critLeft>0 && !confirm('Отмечены не все критерии приёмки ('+((p.criteria||[]).length-critLeft)+'/'+(p.criteria||[]).length+'). Программа рабочая, когда все критерии — победы. Всё равно завершить?')) return false;
+  p.status=nv;
+  if(nv==='approved' && !p.approvedDate) p.approvedDate=today();
+  if(nv==='done' && !p.doneDate) p.doneDate=today();
+  pushEvent(p,'status_changed','Статус программы: '+statusLabel(nv)); save();
+  toast('Статус: '+statusLabel(nv));
+  return true;
 }
 function criteriaBlock(p, editing){
   if(!Array.isArray(p.criteria)) p.criteria=[];
@@ -2230,8 +2318,21 @@ document.getElementById('setLogoDel').onclick=()=>{ try{ localStorage.removeItem
 //====================== team modal (люди + доступ, одно место) ======================
 const empBg=document.getElementById('empBg');
 function clearInviteBox(){ const b=document.getElementById('teamInviteResult'); if(b){ b.hidden=true; b.innerHTML=''; } }   // пароль на экране не оставляем
-document.getElementById('btnEmp').onclick=()=>{ clearInviteBox(); renderEmp(); empBg.classList.add('on'); refreshMembers().then(renderEmp); };
-document.getElementById('empClose').onclick=()=>{ empBg.classList.remove('on'); clearInviteBox(); };
+document.getElementById('btnEmp').onclick=()=>{ clearInviteBox(); resetTeamUI(); renderEmp(); empBg.classList.add('on'); refreshMembers().then(renderEmp); };
+(function(){
+  const q=document.getElementById('teamSearch');
+  if(q){ empQuery=q.value||''; q.oninput=()=>{ empQuery=q.value; renderEmp(); }; }
+  const add=document.getElementById('teamAddBtn'), box=document.getElementById('teamInvite'), cancel=document.getElementById('teamAddCancel');
+  const toggle=on=>{ if(box) box.hidden=!on; if(add) add.textContent=on?'× Свернуть':'＋ Добавить человека';
+    if(on){ const n=document.getElementById('teamName'); if(n&&n.focus) n.focus(); } };
+  if(add) add.onclick=()=>toggle(box.hidden);
+  if(cancel) cancel.onclick=()=>{ clearInviteBox(); toggle(false); };
+})();
+function resetTeamUI(){ empEditId=null; empActsId=null; empQuery='';
+  const q=document.getElementById('teamSearch'); if(q) q.value='';
+  const box=document.getElementById('teamInvite'); if(box) box.hidden=true;
+  const add=document.getElementById('teamAddBtn'); if(add) add.textContent='＋ Добавить человека'; }
+document.getElementById('empClose').onclick=()=>{ empBg.classList.remove('on'); clearInviteBox(); resetTeamUI(); };
 // кэш логинов (pp_members) для бейджей доступа; читать может любой вошедший
 window.__members=null;
 async function refreshMembers(){
@@ -2256,70 +2357,131 @@ function accessBadge(e){
   else { b.textContent=m.role==='admin'?'🔑 админ':'✓ вход есть'; }
   return b;
 }
+// ── кабинет «Команда» ────────────────────────────────────────────────────────
+// Человек = карточка: кружок, имя, под ним одной строкой должность, доступ и дата.
+// Поля правки и действия открываются по требованию — иначе окно превращается
+// в таблицу из полей ввода, в которой не найти человека.
 function renderEmp(){
   const wrap=document.getElementById('empList'); if(!wrap) return;
+  const canManage=isAdmin()||soloMode();
+  const addBtn=document.getElementById('teamAddBtn'); if(addBtn) addBtn.hidden=!canManage;
+  const invBox=document.getElementById('teamInvite');
+  if(invBox && !canManage) invBox.hidden=true;                                  // форма — только управляющим
   const ae=document.activeElement;                                              // не сбивать ТЕКСТОВЫЙ ввод под пальцем;
   if(ae && wrap.contains(ae) && /INPUT|TEXTAREA/.test(ae.tagName)) return;      // нажатие кнопки перерисовку не блокирует
+  const keepScroll=wrap.scrollTop;                                              // не прыгать в начало списка
   wrap.innerHTML='';
-  const canManage=isAdmin()||soloMode();
-  const inv=document.getElementById('teamInvite'); if(inv) inv.hidden=!canManage;
   const rf=document.getElementById('teamRoleField'); if(rf) rf.style.display=(canManage&&supa&&window.__supaReady)?'':'none';
   const ih=document.getElementById('teamInviteHint'); if(ih) ih.textContent=(supa&&window.__supaReady)?'С почтой — сразу получит доступ и пароль для входа. Без почты — попадёт в список «без входа».':'Почта нужна, чтобы человек входил в CRM и брал задачи «на себя».';
-  if(window.__membersErr) wrap.appendChild(el('div','minihint','⚠ Доступы не загрузились (нет связи с базой) — статусы входа и кнопки 🔑/⛔ временно скрыты. Закройте окно и откройте снова.'));
+  if(window.__membersErr) wrap.appendChild(el('div','minihint','⚠ Доступы не загрузились (нет связи с базой) — статусы входа и кнопки доступа временно скрыты. Закройте окно и откройте снова.'));
+
   const act=employees.filter(e=>!e.archived), arch=employees.filter(e=>e.archived);
-  if(!act.length) wrap.appendChild(el('div','minihint',canManage?'Пока пусто. Добавьте первого человека формой выше.':'Пока пусто.'));
-  act.forEach(e=>{
-    const row=el('div','emprow'); row.title=empHistTitle(e);
-    row.append(empInput(e,'name','Имя и фамилия',!canManage), empInput(e,'role','должность',!canManage), empInput(e,'email','email',!canManage), empInput(e,'tg','Telegram @/тел',!canManage));
-    const right=el('span','empdate'); right.style.display='flex'; right.style.flexDirection='column'; right.style.gap='2px'; right.style.alignItems='flex-end';
-    right.appendChild(el('span','empdate','с '+fmtDFull(e.createdAt)));
-    const ab=accessBadge(e); if(ab) right.appendChild(ab);
-    if(e.pm){ const pb=el('span','empdate','★ менеджер проектов'); pb.style.color='#1e5fd8'; pb.title='Ведёт все программы: правит шапки, назначает исполнителей, меняет руководителей'; right.appendChild(pb); }
-    row.appendChild(right);
-    const acts=el('span'); acts.style.display='flex'; acts.style.gap='3px';
-    if(canManage){
-      const pmb=el('button','ghost tiny',e.pm?'★ Менеджер':'☆ Менеджер');
-      pmb.title=e.pm?'Снять роль менеджера проектов':'Сделать менеджером проектов — будет вести все программы';
-      pmb.onclick=()=>{ e.pm=!e.pm; saveEmployees(); renderEmp(); renderMain(); toast(e.pm?('«'+(e.name||'')+'» — менеджер проектов'):'Роль менеджера снята'); };
-      acts.appendChild(pmb);
-    }
-    if(canManage && window.__members){
-      const m=memberByEmail(e.email);
-      if(m && m.user_id!==window.__meId && m.status!=='revoked' && isAdmin()){
-        const rv=el('button','ghost tiny','⛔ вход'); rv.title='Забрать вход в CRM'; rv.onclick=()=>revokeMember(m); acts.appendChild(rv);
-      } else if((!m || m.status==='revoked') && e.email && isAdmin()){
-        const iv=el('button','ghost tiny','🔑 вход'); iv.title=m?'Вернуть вход в CRM':'Дать вход в CRM';
-        iv.onclick=()=>teamInvite({name:e.name,post:e.role,email:e.email});
-        acts.appendChild(iv);
-      }
-    }
-    if(canManage){
-      const del=el('button','ghost tiny','✕ архив'); del.title='Убрать из команды (в архив)'; del.onclick=()=>{ if(confirm('Убрать «'+(e.name||'')+'» в архив? В старых программах он останется.'+(memberByEmail(e.email)?' Доступ в CRM отозвите отдельно (⛔).':''))){ e.archived=true; e.archivedAt=today(); empHist(e,'del'); saveEmployees(); renderEmp(); renderMain(); } };
-      acts.appendChild(del);
-    }
-    row.appendChild(acts); wrap.appendChild(row);
-  });
+  const cntEl=document.getElementById('teamCount');
+  if(cntEl){
+    const pmN=act.filter(e=>e.pm).length;
+    const noLogin=act.filter(e=>!e.email).length;
+    const q0=empQuery.trim().toLowerCase();
+    const found=q0?act.filter(e=>((e.name||'')+' '+(e.role||'')+' '+(e.email||'')+' '+(e.tg||'')).toLowerCase().includes(q0)).length:act.length;
+    cntEl.textContent=(q0?(found+' из '+act.length+' чел.'):(act.length+' чел.'))+(pmN?(' · ★ '+pmN):'')+(noLogin?(' · без входа '+noLogin):'');
+  }
+  const q=empQuery.trim().toLowerCase();
+  const list=q?act.filter(e=>((e.name||'')+' '+(e.role||'')+' '+(e.email||'')+' '+(e.tg||'')).toLowerCase().includes(q)):act;
+
+  if(!act.length) wrap.appendChild(el('div','minihint',canManage?'Пока пусто. Нажмите «＋ Добавить человека».':'Пока пусто.'));
+  else if(!list.length) wrap.appendChild(el('div','minihint','Никого не нашлось — измените поиск.'));
+
+  list.forEach(e=>wrap.appendChild(empCard(e,canManage)));
+  if(keepScroll) wrap.scrollTop=keepScroll;
+
   if(arch.length){
-    const tg=el('button','linkbtn','📦 Архив ('+arch.length+') '+(empArchOpen?'▴':'▾')); tg.style.marginTop='8px';
+    const tg=el('button','linkbtn','📦 Архив ('+arch.length+') '+(empArchOpen?'▴':'▾')); tg.style.marginTop='10px';
     tg.onclick=()=>{ empArchOpen=!empArchOpen; renderEmp(); }; wrap.appendChild(tg);
     if(empArchOpen) arch.forEach(e=>{
-      const row=el('div','emprow archived'); row.title=empHistTitle(e);
-      const nm=el('span','emppicklab',(e.name||'(без имени)')+(e.role?(' · '+e.role):''));
-      row.appendChild(nm);
-      const dt=el('span','empdate','добавлен '+fmtDFull(e.createdAt)+' · в архив '+fmtDFull(e.archivedAt)); row.appendChild(dt);
+      const row=el('div','empcard archived'); row.title=empHistTitle(e);
+      row.appendChild(el('span','avat',initials(e.name)));
+      const info=el('span','einfo');
+      info.appendChild(el('b',null,e.name||'(без имени)'));
+      info.appendChild(el('span','esub',(e.role?(e.role+' · '):'')+'добавлен '+fmtDFull(e.createdAt)+' · в архив '+fmtDFull(e.archivedAt)));
+      row.appendChild(info);
       if(canManage){ const back=el('button','ghost tiny','↩ вернуть'); back.title='Вернуть из архива';
-        back.onclick=()=>{ e.archived=false; e.archivedAt=''; empHist(e,'back'); saveEmployees(); renderEmp(); renderMain(); };
+        back.onclick=()=>{ e.archived=false; e.archivedAt=''; empHist(e,'back'); saveEmployees(); renderEmp(); renderMain(); toast('Вернули в команду'); };
         row.appendChild(back); }
       wrap.appendChild(row);
     });
   }
+}
+function empCard(e,canManage){
+  const box=el('div','empwrap');
+  const row=el('div','empcard'+(empEditId===e.id?' open':''));
+  const av=el('span','avat'+(e.pm?' v':''),initials(e.name)); av.title=empHistTitle(e); row.appendChild(av);
+
+  const info=el('span','einfo');
+  const nameLine=el('span','eline');
+  nameLine.appendChild(el('b',null,e.name||'(без имени)'));
+  if(e.pm){ const t=el('span','etag star','★ менеджер проектов'); t.title='Ведёт все программы: правит шапки, назначает исполнителей, меняет руководителей'; nameLine.appendChild(t); }
+  const ab=accessBadge(e); if(ab){ ab.classList.add('etag'); nameLine.appendChild(ab); }
+  info.appendChild(nameLine);
+  const bits=[e.role||'должность не указана'];
+  if(e.email) bits.push(e.email);
+  if(e.tg) bits.push(e.tg);
+  bits.push('с '+fmtDFull(e.createdAt));
+  const sub=el('span','esub',bits.join(' · ')); sub.title=bits.join(' · '); info.appendChild(sub);
+  row.appendChild(info);
+
+  const acts=el('span','eacts');
+  if(canManage){
+    const ed=el('button','ghost tiny',empEditId===e.id?'✕':'✎'); ed.title=empEditId===e.id?'Свернуть':'Изменить данные';
+    ed.onclick=()=>{ empEditId=(empEditId===e.id?null:e.id); empActsId=null; renderEmp(); }; acts.appendChild(ed);
+    const mo=el('button','ghost tiny','⋯'); mo.title='Роль, доступ, архив';
+    mo.onclick=()=>{ empActsId=(empActsId===e.id?null:e.id); empEditId=null; renderEmp(); }; acts.appendChild(mo);
+  }
+  row.appendChild(acts);
+  box.appendChild(row);
+
+  if(canManage && empEditId===e.id){
+    const f=el('div','empedit');
+    f.append(wrapField(empInput(e,'name','Имя и фамилия',false),'Имя и фамилия'),
+             wrapField(empInput(e,'role','должность',false),'Должность'),
+             wrapField(empInput(e,'email','email',false),'Почта — по ней человек входит в CRM'),
+             wrapField(empInput(e,'tg','@ник или телефон',false),'Telegram / телефон'));
+    const done=el('button','tiny','Готово'); done.onclick=()=>{ empEditId=null; renderEmp(); renderMain(); };
+    const dn=el('div'); dn.style.gridColumn='1 / -1'; dn.appendChild(done); f.appendChild(dn);
+    box.appendChild(f);
+  }
+  if(canManage && empActsId===e.id){
+    const bar=el('div','empacts');
+    const pmb=el('button','ghost tiny',e.pm?'★ Снять менеджера проектов':'☆ Сделать менеджером проектов');
+    pmb.title=e.pm?'Перестанет вести все программы':'Будет вести все программы: правит шапки, назначает исполнителей';
+    pmb.onclick=()=>{ e.pm=!e.pm; saveEmployees(); empActsId=null; renderEmp(); renderMain(); toast(e.pm?('«'+(e.name||'')+'» — менеджер проектов'):'Роль менеджера снята'); };
+    bar.appendChild(pmb);
+    if(window.__members){
+      const m=memberByEmail(e.email);
+      if(m && m.user_id!==window.__meId && m.status!=='revoked' && isAdmin()){
+        const rv=el('button','ghost tiny','⛔ Забрать вход в CRM'); rv.onclick=()=>revokeMember(m); bar.appendChild(rv);
+      } else if((!m || m.status==='revoked') && e.email && isAdmin()){
+        const iv=el('button','ghost tiny',m?'🔑 Вернуть вход в CRM':'🔑 Дать вход в CRM');
+        iv.onclick=()=>teamInvite({name:e.name,post:e.role,email:e.email}); bar.appendChild(iv);
+      } else if(!e.email && isAdmin()){
+        bar.appendChild(el('span','minihint','Чтобы дать вход — впишите почту через ✎'));
+      }
+    }
+    const del=el('button','ghost tiny danger','✕ Убрать из команды');
+    del.title='Уйдёт в архив, в старых программах останется';
+    del.onclick=()=>{ if(confirm('Убрать «'+(e.name||'')+'» в архив? В старых программах он останется.'+(memberByEmail(e.email)?' Вход в CRM заберите отдельно (⛔).':''))){ e.archived=true; e.archivedAt=today(); empHist(e,'del'); empActsId=null; saveEmployees(); renderEmp(); renderMain(); toast('Убрали в архив'); } };
+    bar.appendChild(del);
+    box.appendChild(bar);
+  }
+  return box;
 }
 let _empT=null;
 function empInput(e,key,ph,ro){
   const i=el('input'); i.value=e[key]||''; i.placeholder=ph;
   if(ro){ i.readOnly=true; i.title='Данные меняет администратор'; }
   i.oninput=()=>{ e[key]=key==='email'?i.value.trim().toLowerCase():i.value; clearTimeout(_empT); _empT=setTimeout(saveEmployees,400); };
-  i.onblur=()=>{ clearTimeout(_empT); saveEmployees(); if(key==='name'||key==='email'){ renderMain(); renderEmp(); } };  // права зависят от почты — перерисовываем
+  // права зависят от почты — перерисовываем, но НЕ мгновенно: иначе клик по кнопке
+  // рядом с полем теряется (blur успевает снести узел до события click)
+  i.onblur=()=>{ clearTimeout(_empT); saveEmployees();
+    if(key==='name'||key==='email') setTimeout(()=>{ renderMain(); renderEmp(); },0); };
   return i;
 }
 
@@ -2383,6 +2545,7 @@ async function wipeLocalAndLogout(){
 })();
 // Одна кнопка на всё: с почтой (и облаком) — приглашение с доступом; иначе — запись «без входа»
 async function teamSubmit(){
+  if(!(isAdmin()||soloMode())){ toast('Добавлять людей может только владелец'); return; }
   const name=(document.getElementById('teamName').value||'').trim();
   const post=(document.getElementById('teamPost').value||'').trim();
   const email=(document.getElementById('teamEmail').value||'').trim();
@@ -2396,10 +2559,12 @@ async function teamSubmit(){
   saveEmployees();
   document.getElementById('teamName').value=''; document.getElementById('teamPost').value=''; document.getElementById('teamEmail').value='';
   const rl=document.getElementById('teamRole'); if(rl) rl.value='member';
+  empQuery=''; const sq=document.getElementById('teamSearch'); if(sq) sq.value='';
   renderEmp(); renderMain(); toast(email?'Добавлен в команду':'Добавлен (без входа в CRM)');
 }
 // preset — вызов из строки списка (кнопка 🔑): не трогаем то, что админ печатает в форме
 async function teamInvite(preset){
+  if(!(isAdmin()||soloMode())){ toast('Приглашать может только владелец'); return; }
   const emailEl=document.getElementById('teamEmail'), nameEl=document.getElementById('teamName');
   const email=preset?String(preset.email||'').trim():(emailEl.value||'').trim();
   const pname=preset?String(preset.name||'').trim():(nameEl?(nameEl.value||''):'').trim();
@@ -2440,7 +2605,7 @@ async function teamInvite(preset){
 }
 
 //====================== инструкция / помощь ======================
-const HELP_VERSION=9;   // при обновлении инструкции увеличить — у всех появится пометка «обновлено» и автопоказ
+const HELP_VERSION=10;   // при обновлении инструкции увеличить — у всех появится пометка «обновлено» и автопоказ
 const HELP_CSS=`
 .hb{font-size:14px;line-height:1.6}
 .hb h4{color:#1e5fd8;margin:22px 0 8px;font-size:15px;scroll-margin-top:8px}
@@ -2539,7 +2704,7 @@ const HELP_HTML=`<div class="hb">
   <li>Впиши <b>номер, название и цель</b>. Кто создал — тот сразу становится менеджером программы.</li>
   <li>Добавь <b>критерии-победы</b>: 2–5 штук, каждый проверяемый.</li>
   <li>Назначь <b>руководителя</b> и добавь <b>исполнителей</b> — карандашами в ленте ролей.</li>
-  <li>Заведи <b>задачи</b>, поставь сроки и переведи статус в <b>«В работе»</b>.</li>
+  <li>Заведи <b>задачи</b>, поставь сроки и переведи статус в <b>«В работе»</b> — статус меняется нажатием на него же в шапке.</li>
 </ol>
 <div class="hnote">Кнопка <b>«✨ Сгенерировать»</b> в режиме правки предложит задачи под твою цель — их останется поправить под себя.</div>
 
@@ -2572,7 +2737,7 @@ const HELP_HTML=`<div class="hb">
 </div>
 <p>В строке задачи есть ещё:</p>
 <ul>
-  <li><b>⛔ стопор</b> — работа встала не по вине исполнителя. Пиши причину: это главный сигнал руководителю.</li>
+  <li><b>⛔ стопор</b> — работа встала не по вине исполнителя. Пиши причину: это главный сигнал руководителю. Помеха ушла — жми <b>«✕ снять»</b> рядом с причиной.</li>
   <li><b>＋ подпункт</b> — крупную задачу дробим внутри, не плодя строки. Видно «3 из 5».</li>
   <li><b>💬 обсуждение</b> — вопросы по задаче остаются в задаче, а не в мессенджере.</li>
   <li><b>📎 файл</b> — фото и документы; их видит вся команда.</li>
@@ -2637,7 +2802,11 @@ const HELP_HTML=`<div class="hb">
 
 <h4>Что изменилось в последней версии</h4>
 <ul>
-  <li><b>Доска прогресса</b> — новая вкладка со всеми программами и задачами.</li>
+  <li><b>Статус меняется прямо в шапке:</b> нажми на «В работе» — появятся все статусы и «⏸ В архив».</li>
+  <li><b>Стопор снимается кнопкой «✕ снять»</b> рядом с причиной.</li>
+  <li><b>Кабинет «Команда»</b>: человек — карточка, поля правки под «✎», роль и доступ под «⋯», сверху поиск.</li>
+  <li><b>Список программ</b> компактный, с группами, поиском и отбором по людям.</li>
+  <li><b>Доска прогресса</b> — вкладка со всеми программами и задачами.</li>
   <li><b>Роли назначаются кликом</b>: карандаш открывает список людей, а не режим правки всей шапки.</li>
   <li><b>Фильтры доски</b> по менеджеру проекта и по руководителю.</li>
   <li><b>Меню слева</b> — новые иконки, видно, какой экран открыт.</li>
