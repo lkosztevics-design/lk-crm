@@ -401,7 +401,6 @@
   .movebtns button:disabled{opacity:.3;cursor:default}
   .atts{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin-top:3px}
   .att{display:inline-flex;align-items:center;gap:5px;background:#eef1f5;border-radius:7px;padding:2px 7px;font-size:11px;cursor:pointer;max-width:100%;overflow:hidden;white-space:nowrap}
-  .powner{font-size:11px;color:var(--muted);font-weight:600;margin-bottom:3px}
   .pulse{display:flex;gap:6px 14px;flex-wrap:wrap;align-items:center;margin-top:12px;background:#f7f9fc;border:1px solid var(--line);border-radius:var(--r-sm);padding:8px 12px;font-size:12.5px;color:var(--muted)}
   .pulse.bad{background:var(--danger-soft);border-color:#f3c9c9;color:var(--danger);font-weight:600}
   .pulse .grow{flex:1;min-width:140px}
@@ -452,9 +451,9 @@
   .lbrank.g1{background:linear-gradient(135deg,#ffdf7e,var(--gold));color:#5a3d00;box-shadow:0 1px 4px rgba(242,169,0,.4)}
   .lbrank.g2{background:linear-gradient(135deg,#eef2f6,var(--silver));color:#39424c}
   .lbrank.g3{background:linear-gradient(135deg,#e6bd97,var(--bronze));color:#4a2a10}
-  .ring{position:relative;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--ok) calc(var(--p,0)*1%),#e9edf2 0)}
-  .ring::before{content:"";position:absolute;inset:5px;border-radius:50%;background:var(--panel)}
-  .ring b{position:relative;font-size:10.5px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+  .lbring{position:relative;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--ok) calc(var(--p,0)*1%),#e9edf2 0)}
+  .lbring::before{content:"";position:absolute;inset:5px;border-radius:50%;background:var(--panel)}
+  .lbring b{position:relative;font-size:10.5px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
   .lbname{font-weight:600;font-size:13.5px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .lbname .role{color:var(--faint);font-weight:500;font-size:12px}
   .lbmeta{display:flex;align-items:center;gap:10px}
@@ -1280,7 +1279,7 @@ function renderLeaderboard(p){
     const row=el('div','lbrow'); row.style.cursor='pointer';
     if(taskFilter.who===r.id) row.style.background='var(--accent-soft)';
     const rank=el('div','lbrank'+(i===0?' g1':i===1?' g2':i===2?' g3':''),String(i+1));
-    const ring=el('div','ring'); ring.style.setProperty('--p',r.pct); ring.appendChild(el('b',null,r.pct+'%'));
+    const ring=el('div','lbring'); ring.style.setProperty('--p',r.pct); ring.appendChild(el('b',null,r.pct+'%'));
     const e=emp(r.id); const nm=el('div','lbname'); nm.append(document.createTextNode(e?(e.name||'(без имени)'):'(удалён)')); if(e&&e.role) nm.appendChild(el('span','role',' · '+e.role));
     const meta=el('div','lbmeta'); meta.appendChild(el('span','lbcount',r.done+'/'+r.total+' ✓')); const bar=el('div','lbbar'); const bi=el('i'); bi.style.width=r.pct+'%'; bar.appendChild(bi); meta.appendChild(bar);
     row.append(rank,ring,nm,meta);
@@ -1292,7 +1291,7 @@ function renderLeaderboard(p){
     if(taskFilter.who==='__none__') row.style.background='var(--accent-soft)';
     const nm=el('div','lbname'); nm.append(document.createTextNode('Не распределено'));
     const meta=el('div','lbmeta'); meta.appendChild(el('span','lbcount',none.total+' задач'));
-    row.append(el('div','lbrank','—'), el('div','ring'), nm, meta);
+    row.append(el('div','lbrank','—'), el('div','lbring'), nm, meta);
     row.onclick=()=>{ taskFilter.who=(taskFilter.who==='__none__'?'':'__none__'); renderMain(); };
     wrap.appendChild(row);
   }
@@ -1327,7 +1326,7 @@ function renderDashboard(){
 
   const tiles=el('div','dtiles');
   const tile=(v,k,cls)=>{ const d=el('div','dtile'+(cls?(' '+cls):'')); d.appendChild(el('div','dv',String(v))); d.appendChild(el('div','dk',k)); return d; };
-  tiles.append(tile(active.length,'программы в работе'),tile(overdue.length,'просрочено задач',overdue.length?'bad':''),tile(stoppers.length,'стопора',stoppers.length?'warn':''),tile(progs.filter(p=>p.status==='done').length,'завершено'));
+  tiles.append(tile(active.length,'программы в работе'),tile(overdue.length,'просрочено задач',overdue.length?'bad':''),tile(stoppers.length,'стопора',stoppers.length?'warn':''),tile(progs.filter(p=>p.status==='done'&&!p.parked).length,'завершено'));
   box.appendChild(tiles);
 
   // требует внимания
@@ -1348,7 +1347,7 @@ function renderDashboard(){
 
   // загрузка людей
   const byPerson={};
-  progs.forEach(p=>(p.tasks||[]).forEach(t=>{ const k=t.assigneeId||'__none__'; (byPerson[k]||(byPerson[k]={done:0,total:0,over:0})); byPerson[k].total++; if(t.done)byPerson[k].done++; if(isOverdue(t))byPerson[k].over++; }));
+  progs.filter(p=>!p.parked).forEach(p=>(p.tasks||[]).forEach(t=>{ const k=t.assigneeId||'__none__'; (byPerson[k]||(byPerson[k]={done:0,total:0,over:0})); byPerson[k].total++; if(t.done)byPerson[k].done++; if(isOverdue(t))byPerson[k].over++; }));
   const ppl=Object.keys(byPerson).map(k=>Object.assign({id:k},byPerson[k])).sort((a,b)=>(b.total-b.done)-(a.total-a.done));
   const ps=el('div','dsect'); ps.appendChild(el('h3',null,'Люди и загрузка'));
   if(!ppl.length) ps.appendChild(el('div','minihint','Задачи пока не распределены.'));
@@ -1710,7 +1709,7 @@ function taskRow(p,t,idx){
     off.onclick=()=>{ t.stopper=''; pushEvent(p,'stopper','Стопор снят, задача №'+t.n,{taskId:t.id}); save(); renderMain(); toast('Стопор снят'); };
     stpBox.appendChild(off);
   }
-  c1.appendChild(stpBox);
+  if(stpBox.childNodes.length) c1.appendChild(stpBox);
   c1.appendChild(subsUI(p,t,lead,owns));
   if(t.done && !t.doneReport && !(t.attachments||[]).length) c1.appendChild(el('div','legacy','закрыто без доклада'));
   r.appendChild(c1);
@@ -2367,6 +2366,7 @@ function renderEmp(){
   const addBtn=document.getElementById('teamAddBtn'); if(addBtn) addBtn.hidden=!canManage;
   const invBox=document.getElementById('teamInvite');
   if(invBox && !canManage) invBox.hidden=true;                                  // форма — только управляющим
+  const lg=document.getElementById('teamLegend'); if(lg) lg.hidden=!canManage;   // подсказка про ✎ и ⋯
   const ae=document.activeElement;                                              // не сбивать ТЕКСТОВЫЙ ввод под пальцем;
   if(ae && wrap.contains(ae) && /INPUT|TEXTAREA/.test(ae.tagName)) return;      // нажатие кнопки перерисовку не блокирует
   const keepScroll=wrap.scrollTop;                                              // не прыгать в начало списка
@@ -2839,10 +2839,11 @@ async function revokeMember(m){
 
 //====================== coordination modal ======================
 const coordBg=document.getElementById('coordBg');
-let _coordP=null;
-function openCoord(p){ _coordP=p; document.getElementById('coordDate').value=today(); renderCoordRoster(); renderCoordTasks(); document.getElementById('coordNote').value=''; coordBg.classList.add('on'); }
+let _coordId=null;
+const coordProg=()=>state.find(x=>x.id===_coordId)||null;
+function openCoord(p){ _coordId=p.id; document.getElementById('coordDate').value=today(); renderCoordRoster(); renderCoordTasks(); document.getElementById('coordNote').value=''; coordBg.classList.add('on'); }
 function renderCoordRoster(){
-  const p=_coordP, wrap=document.getElementById('coordRoster'); wrap.innerHTML='';
+  const p=coordProg(), wrap=document.getElementById('coordRoster'); if(!p){ coordBg.classList.remove('on'); return; } wrap.innerHTML='';
   const parts=(p.participants||[]);
   if(!parts.length){ wrap.appendChild(el('div','minihint','У программы нет участников — добавьте их в «Участники».')); return; }
   parts.forEach(pt=>{ const row=el('label','emppick'); const cb=el('input'); cb.type='checkbox'; cb.className='chk'; cb.checked=true; cb.dataset.emp=pt.empId; row.append(cb, el('span','emppicklab', empLabel(pt.empId))); wrap.appendChild(row); });
@@ -2855,18 +2856,20 @@ function setTaskDone(p,t,val){
   save();
 }
 function renderCoordTasks(){
-  const p=_coordP, wrap=document.getElementById('coordTasks'); wrap.innerHTML='';
+  const p=coordProg(), wrap=document.getElementById('coordTasks'); if(!p){ coordBg.classList.remove('on'); return; } wrap.innerHTML='';
   if(!p.tasks.length){ wrap.appendChild(el('div','minihint','В программе пока нет задач.')); return; }
   p.tasks.forEach(t=>{
     const row=el('label','emppick'); const cb=el('input'); cb.type='checkbox'; cb.className='chk'; cb.checked=!!t.done; cb.dataset.task=t.id;
-    cb.onchange=()=>{ setTaskDone(p,t,cb.checked); renderCoordTasks(); };
+    cb.onchange=()=>{ const cp=coordProg(); const ct=cp&&(cp.tasks||[]).find(x=>x.id===t.id);
+      if(!cp||!ct){ toast('Программа изменилась — откройте координацию заново'); renderCoordTasks(); return; }
+      setTaskDone(cp,ct,cb.checked); renderCoordTasks(); };
     const lab=el('span','emppicklab','№'+t.n+' · '+(t.text||'(без описания)').slice(0,70)); if(t.done) lab.style.textDecoration='line-through';
     row.append(cb,lab); wrap.appendChild(row);
   });
 }
 document.getElementById('coordCancel').onclick=()=>coordBg.classList.remove('on');
 document.getElementById('coordSave').onclick=()=>{
-  const p=_coordP; if(!p) return;
+  const p=coordProg(); if(!p){ coordBg.classList.remove('on'); toast('Программа изменилась — откройте координацию заново'); return; }
   const boxes=[...document.querySelectorAll('#coordRoster input')];
   const absentIds=boxes.filter(b=>!b.checked).map(b=>b.dataset.emp);
   const absent=absentIds.map(id=>empName(id)).join(', ');
@@ -2907,17 +2910,19 @@ function openCoordDoc(ev){
 }
 //--- participants picker ---
 const partBg=document.getElementById('partBg');
-let _partP=null;
-function openPartPicker(p){ _partP=p; renderPartList(); partBg.classList.add('on'); }
+let _partId=null;
+const partProg=()=>state.find(x=>x.id===_partId)||null;
+function openPartPicker(p){ _partId=p.id; renderPartList(); partBg.classList.add('on'); }
 function renderPartList(){
-  const p=_partP, wrap=document.getElementById('partList'); wrap.innerHTML='';
+  const p=partProg(), wrap=document.getElementById('partList'); if(!p){ partBg.classList.remove('on'); return; } wrap.innerHTML='';
   const act=employees.filter(e=>!e.archived);
   if(!act.length){ wrap.appendChild(el('div','minihint','Команда пуста. Нажмите «👥 Команда» слева и добавьте людей.')); return; }
   act.forEach(e=>{
     const row=el('label','emppick'); const cb=el('input'); cb.type='checkbox'; cb.className='chk'; cb.checked=(p.participants||[]).some(z=>z.empId===e.id);
     cb.onchange=()=>{
-      if(cb.checked){ if(!(p.participants||[]).some(z=>z.empId===e.id)){ p.participants=[...(p.participants||[]),{empId:e.id,since:today()}]; pushEvent(p,'participant_added','Добавлен участник: '+empName(e.id)); } save(); }
-      else { if(!removeParticipant(p,e.id)){ cb.checked=true; return; } save(); }
+      const cp=partProg(); if(!cp){ partBg.classList.remove('on'); toast('Программа изменилась — откройте состав заново'); return; }
+      if(cb.checked){ if(!(cp.participants||[]).some(z=>z.empId===e.id)){ cp.participants=[...(cp.participants||[]),{empId:e.id,since:today()}]; pushEvent(cp,'participant_added','Добавлен участник: '+empName(e.id)); } save(); }
+      else { if(!removeParticipant(cp,e.id)){ cb.checked=true; return; } save(); }
     };
     row.append(cb, el('span','emppicklab', (e.name||'(без имени)')+(e.role?(' · '+e.role):''))); wrap.appendChild(row);
   });
@@ -3142,7 +3147,17 @@ let rtDb=null, rtRoom=null, rtRoomId=null, pendingRemote=new Map(), typingT=null
 let liveWho=[], liveTyping={};
 function meLabel(){ const me=myEmp(); return (me&&me.name)||window.__meEmail||'кто-то'; }
 function initials(n){ return String(n||'?').trim().split(/\s+/).slice(0,2).map(w=>w[0]||'').join('').toUpperCase()||'?'; }
-function busyWith(id){ return dirtyProgs.has(id) || (document.activeElement && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName) && selected===id); }
+function busyWith(id){
+  if(dirtyProgs.has(id)) return true;
+  if(selected!==id) return false;
+  // открытое окно (координация, участники, роли) работает с этой программой —
+  // не подменяем данные под руками
+  if(document.querySelector('.modal-bg.on')) return true;
+  // ввод внутри самой программы; поиск в списке слева и поля кабинета «Команда»
+  // приезд чужих правок задерживать не должны
+  const ae=document.activeElement, main=document.getElementById('main');
+  return !!(ae && main && main.contains(ae) && /INPUT|TEXTAREA|SELECT/.test(ae.tagName));
+}
 function applyRemoteProgram(row){
   if(!row||!row.id) return;
   const at=row.updated_at||'';
@@ -3153,7 +3168,9 @@ function applyRemoteProgram(row){
   if(i<0) state.push(fresh); else state[i]=fresh;
   cloudProgIds.add(row.id);
   lsSet(LS_KEY,JSON.stringify(state)); renderMain();
-  if(roleListOpen() && _roleId===row.id) renderRoleList();   // открытое окно ролей — на свежих данных
+  if(roleListOpen() && _roleId===row.id) renderRoleList();   // открытые окна — на свежих данных
+  if(_coordId===row.id && coordBg && coordBg.className.includes('on')){ renderCoordRoster(); renderCoordTasks(); }
+  if(_partId===row.id && partBg && partBg.className.includes('on')) renderPartList();
 }
 function flushPendingRemote(){
   if(!pendingRemote.size) return;
